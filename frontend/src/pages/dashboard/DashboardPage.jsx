@@ -1,8 +1,8 @@
 import React from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
@@ -67,4 +67,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;
