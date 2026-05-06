@@ -1,19 +1,43 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import Swal from 'sweetalert2';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: 'Konfirmasi Keluar',
+      text: 'Anda yakin ingin keluar dari akun?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3b82f6',
+      cancelButtonColor: '#ef4444',
+      confirmButtonText: 'Ya, Keluar!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout();
+        Swal.fire({
+          title: 'Logout Berhasil',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    });
+  };
   
   return (
     <div className="min-h-screen bg-base-200">
-      {/* Navbar Placeholder */}
+      {/* Navbar */}
       <div className="navbar bg-base-100 shadow-md px-8">
         <div className="flex-1">
           <a className="text-xl font-bold text-primary">AI Learning Assistant</a>
         </div>
         <div className="flex-none gap-4">
           <span className="hidden sm:inline-block font-medium">Hello, {user?.name}</span>
-          <button onClick={logout} className="btn btn-outline btn-error btn-sm">Logout</button>
+          <button onClick={handleLogout} className="btn btn-outline btn-error btn-sm">Logout</button>
         </div>
       </div>
 
@@ -35,7 +59,7 @@ const Dashboard = () => {
           <div className="py-20 text-center">
             <h3 className="text-xl font-semibold mb-2">Belum ada dokumen</h3>
             <p className="opacity-60 mb-6">Mulai unggah materi kuliah Anda untuk menggunakan AI Assistant</p>
-            <button className="btn btn-primary font-bold">Mulai Upload</button>
+            <button className="btn btn-primary font-bold shadow-lg">Mulai Upload</button>
           </div>
         </div>
       </div>
