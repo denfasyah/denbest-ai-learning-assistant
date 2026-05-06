@@ -4,43 +4,41 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Swal from 'sweetalert2';
-import api from '../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const schema = yup.object().shape({
-  name: yup.string().min(3, 'Nama minimal 3 karakter').required('Nama wajib diisi'),
-  email: yup.string()
-    .email('Format email tidak valid')
-    .matches(/@gmail\.com$/, 'Email harus menggunakan domain @gmail.com')
-    .required('Email wajib diisi'),
-  password: yup.string().min(6, 'Password minimal 6 karakter').required('Password wajib diisi'),
+  email: yup.string().email('Format email tidak valid').required('Email wajib diisi'),
+  password: yup.string().required('Password wajib diisi'),
 });
 
-const Register = () => {
+const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const { register: registerField, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema)
   });
 
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      await api.post('/auth/register', data);
+      await login(data.email, data.password);
       
       Swal.fire({
         icon: 'success',
-        title: 'Register Berhasil',
-        text: 'Silakan login dengan akun Anda',
-        confirmButtonColor: '#3b82f6',
+        title: 'Login Berhasil',
+        text: 'Selamat datang kembali!',
+        timer: 1500,
+        showConfirmButton: false,
       });
 
-      navigate('/login');
+      navigate('/dashboard');
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registrasi gagal';
+      const msg = err.message || 'Email atau password salah';
       Swal.fire({
         icon: 'error',
-        title: 'Oops...',
+        title: 'Login Gagal',
         text: msg,
       });
     } finally {
@@ -52,22 +50,9 @@ const Register = () => {
     <div className="page-container">
       <div className="card w-full max-w-md bg-base-100 shadow-2xl">
         <div className="card-body">
-          <h2 className="card-title justify-center text-3xl font-extrabold mb-6 text-primary">Daftar Akun</h2>
+          <h2 className="card-title justify-center text-3xl font-extrabold mb-6 text-primary">Login</h2>
           
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="form-control w-full mb-4">
-              <label className="label">
-                <span className="label-text font-bold">Nama Lengkap</span>
-              </label>
-              <input 
-                type="text" 
-                placeholder="Contoh: John Doe" 
-                className={`input input-bordered w-full ${errors.name ? 'input-error' : ''}`}
-                {...registerField('name')}
-              />
-              {errors.name && <p className="text-error text-xs mt-1">{errors.name.message}</p>}
-            </div>
-
             <div className="form-control w-full mb-4">
               <label className="label">
                 <span className="label-text font-bold">Email</span>
@@ -76,7 +61,7 @@ const Register = () => {
                 type="email" 
                 placeholder="user@gmail.com" 
                 className={`input input-bordered w-full ${errors.email ? 'input-error' : ''}`}
-                {...registerField('email')}
+                {...register('email')}
               />
               {errors.email && <p className="text-error text-xs mt-1">{errors.email.message}</p>}
             </div>
@@ -89,7 +74,7 @@ const Register = () => {
                 type="password" 
                 placeholder="••••••••" 
                 className={`input input-bordered w-full ${errors.password ? 'input-error' : ''}`}
-                {...registerField('password')}
+                {...register('password')}
               />
               {errors.password && <p className="text-error text-xs mt-1">{errors.password.message}</p>}
             </div>
@@ -100,11 +85,11 @@ const Register = () => {
                 className={`btn btn-primary w-full shadow-lg ${isLoading ? 'loading' : ''}`}
                 disabled={isLoading}
               >
-                {isLoading ? 'Sedang Memproses...' : 'Daftar Sekarang'}
+                {isLoading ? 'Processing...' : 'Masuk Dashboard'}
               </button>
               
               <p className="text-center text-sm">
-                Sudah punya akun? <Link to="/login" className="link link-primary font-semibold">Login di sini</Link>
+                Belum punya akun? <Link to="/register" className="link link-primary font-semibold">Daftar sekarang</Link>
               </p>
             </div>
           </form>
@@ -114,4 +99,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default LoginPage;

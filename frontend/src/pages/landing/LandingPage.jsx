@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Landing = () => {
+const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-secondary flex flex-col items-center justify-center text-white p-4">
       <div className="text-center max-w-2xl px-6 py-12 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl">
@@ -37,4 +37,4 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+export default LandingPage;

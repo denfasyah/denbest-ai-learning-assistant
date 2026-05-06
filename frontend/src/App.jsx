@@ -6,12 +6,13 @@ import PublicRoute from './components/PublicRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Workspace from './pages/Workspace';
-import NotFound from './pages/NotFound';
+import LandingPage from './pages/landing/LandingPage';
+import LoginPage from './pages/auth/LoginPage';
+import RegisterPage from './pages/auth/RegisterPage';
+import DashboardPage from './pages/dashboard/DashboardPage';
+import DocumentsPage from './pages/documents/DocumentsPage';
+import WorkspacePage from './pages/workspace/WorkspacePage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
               path="/" 
               element={
                 <PublicRoute>
-                  <Landing />
+                  <LandingPage />
                 </PublicRoute>
               } 
             />
@@ -32,7 +33,7 @@ function App() {
               path="/login" 
               element={
                 <PublicRoute>
-                  <Login />
+                  <LoginPage />
                 </PublicRoute>
               } 
             />
@@ -40,7 +41,7 @@ function App() {
               path="/register" 
               element={
                 <PublicRoute>
-                  <Register />
+                  <RegisterPage />
                 </PublicRoute>
               } 
             />
@@ -53,7 +54,16 @@ function App() {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/documents" 
+              element={
+                <ProtectedRoute>
+                  <DocumentsPage />
                 </ProtectedRoute>
               } 
             />
@@ -62,13 +72,13 @@ function App() {
               path="/workspace/:id" 
               element={
                 <ProtectedRoute>
-                  <Workspace />
+                  <WorkspacePage />
                 </ProtectedRoute>
               } 
             />
 
             {/* Fallback for invalid URLs */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
       </AuthProvider>
