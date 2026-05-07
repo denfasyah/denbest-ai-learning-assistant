@@ -40,6 +40,17 @@ const LoginPage = () => {
         text: "Selamat datang kembali!",
         timer: 1500,
         showConfirmButton: false,
+               background: "#050816",
+        color: "#fff",
+        backdrop: `
+    rgba(0,0,0,0.45)
+    blur(80px)
+  `,
+        customClass: {
+          popup: "rounded-3xl border border-white/10 shadow-2xl",
+          title: "text-white",
+          htmlContainer: "text-slate-300",
+        },
       });
 
       navigate("/dashboard");
@@ -50,6 +61,17 @@ const LoginPage = () => {
         icon: "error",
         title: "Login Gagal",
         text: msg,
+        background: "#050816",
+        color: "#fff",
+        backdrop: `
+    rgba(0,0,0,0.45)
+    blur(80px)
+  `,
+        customClass: {
+          popup: "rounded-3xl border border-white/10 shadow-2xl",
+          title: "text-white",
+          htmlContainer: "text-slate-300",
+        },
       });
     } finally {
       setIsLoading(false);
