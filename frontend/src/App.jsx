@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -10,7 +9,7 @@ import LandingPage from './pages/landing/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
-import DocumentsPage from './pages/documents/DocumentsPage';
+import MyLearning from './pages/mylearning/MyLearning';
 import WorkspacePage from './pages/workspace/WorkspacePage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -63,7 +62,7 @@ function App() {
               path="/documents" 
               element={
                 <ProtectedRoute>
-                  <DocumentsPage />
+                  <MyLearning />
                 </ProtectedRoute>
               } 
             />
