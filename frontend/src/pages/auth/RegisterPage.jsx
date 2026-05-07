@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Swal from "sweetalert2";
 import api from "../../services/api";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, ArrowLeft } from "lucide-react";
 
 const schema = yup.object().shape({
   name: yup
@@ -74,6 +74,8 @@ const RegisterPage = () => {
         px-4 py-10
       "
     >
+      {/* BACK BUTTON */}
+
       {/* BACKGROUND GLOW */}
       <div
         className="
@@ -97,23 +99,29 @@ const RegisterPage = () => {
           shadow-[0_10px_60px_rgba(0,0,0,0.45)]
         "
       >
+        <button
+          onClick={() => navigate("/")}
+          className="
+    absolute left-5 top-5 z-20
+    flex items-center gap-2
+    rounded-2xl
+    border border-white/10
+    bg-white/5
+    px-4 py-3
+    text-sm font-semibold text-slate-200
+    backdrop-blur-xl
+    transition-all duration-300
+    hover:bg-white/10
+    hover:shadow-[0_0_25px_rgba(139,92,246,0.25)]
+  "
+        >
+          <ArrowLeft size={17} />
+          Back to Home
+        </button>
         {/* LOGO */}
         <div className="mb-8 flex flex-col items-center">
-          <div
-            className="
-              mb-4 flex h-16 w-16 items-center justify-center
-              rounded-2xl
-              shadow-[0_0_30px_rgba(139,92,246,0.55)]
-            "
-          >
-            <img src="/logo.png" alt="" className="w-full" />
-          </div>
-
-          <h1 className="text-3xl font-black text-white">
+          <h1 className="text-3xl font-black text-white mt-16">
             Daftar{" "}
-            <span className="text-2xl font-black tracking-[-1px]">
-              Ai<span className="text-violet-400">Den</span>
-            </span>
           </h1>
 
           <p className="mt-2 text-center text-sm leading-relaxed text-slate-400">

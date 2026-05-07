@@ -1,15 +1,18 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import Swal from 'sweetalert2';
-import { useAuth } from '../../context/AuthContext';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import Swal from "sweetalert2";
+import { useAuth } from "../../context/AuthContext";
+import { Mail, Lock, ArrowRight, ArrowLeft } from "lucide-react";
 
 const schema = yup.object().shape({
-  email: yup.string().email('Format email tidak valid').required('Email wajib diisi'),
-  password: yup.string().required('Password wajib diisi'),
+  email: yup
+    .string()
+    .email("Format email tidak valid")
+    .required("Email wajib diisi"),
+  password: yup.string().required("Password wajib diisi"),
 });
 
 const LoginPage = () => {
@@ -32,20 +35,20 @@ const LoginPage = () => {
       await login(data.email, data.password);
 
       Swal.fire({
-        icon: 'success',
-        title: 'Login Berhasil',
-        text: 'Selamat datang kembali!',
+        icon: "success",
+        title: "Login Berhasil",
+        text: "Selamat datang kembali!",
         timer: 1500,
         showConfirmButton: false,
       });
 
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      const msg = err.message || 'Email atau password salah';
+      const msg = err.message || "Email atau password salah";
 
       Swal.fire({
-        icon: 'error',
-        title: 'Login Gagal',
+        icon: "error",
+        title: "Login Gagal",
         text: msg,
       });
     } finally {
@@ -62,7 +65,6 @@ const LoginPage = () => {
         px-5 py-10
       "
     >
-      {/* Background Glow */}
       <div
         className="
           absolute left-1/2 top-1/2
@@ -95,38 +97,36 @@ const LoginPage = () => {
           "
         >
           <div>
-            {/* Logo */}
-            <Link
-              to="/"
-              className="mb-14 flex items-center gap-3 text-white no-underline"
+            <button
+              onClick={() => navigate("/")}
+              className="
+    absolute left-5 top-5 z-20
+    flex items-center gap-2
+    rounded-2xl
+    border border-white/10
+    bg-white/5
+    px-4 py-3
+    text-sm font-semibold text-slate-200
+    backdrop-blur-xl
+    transition-all duration-300
+    hover:bg-white/10
+    hover:shadow-[0_0_25px_rgba(139,92,246,0.25)]
+  "
             >
-              <div
-                className="
-                  flex h-12 w-12 items-center justify-center
-                  rounded-2xl
-                  shadow-[0_8px_30px_rgba(59,130,246,0.35)]
-                "
-              >
-               <img src="/logo.png" alt="" className="w-full"/>
-              </div>
-
-              <span className="text-2xl font-black tracking-[-1px]">
-                Ai<span className="text-violet-400">Den</span>
-              </span>
-            </Link>
-
+              <ArrowLeft size={17} />
+              Back to Home
+            </button>
             {/* Text */}
             <h1
               className="
                 max-w-sm
                 text-5xl font-black leading-tight
                 tracking-[-2px]
-                text-white
+                text-white mt-20
               "
             >
               Welcome
               <br />
-
               Back.
             </h1>
 
@@ -154,24 +154,26 @@ const LoginPage = () => {
         <div className="w-full lg:w-120">
           <div className="p-7 sm:p-10">
             {/* Mobile Logo */}
-            <div className="mb-10 flex justify-center lg:hidden">
-              <Link
-                to="/"
-                className="flex items-center gap-3 text-white no-underline"
+            <div className="mb-16 flex justify-center lg:hidden">
+              <button
+                onClick={() => navigate("/")}
+                className="
+    absolute left-5 top-5 z-20
+    flex items-center gap-2
+    rounded-2xl
+    border border-white/10
+    bg-white/5
+    px-4 py-3
+    text-sm font-semibold text-slate-200
+    backdrop-blur-xl
+    transition-all duration-300
+    hover:bg-white/10
+    hover:shadow-[0_0_25px_rgba(139,92,246,0.25)]
+  "
               >
-                <div
-                  className="
-                    flex h-11 w-11 items-center justify-center
-                    rounded-2xl
-                  "
-                >
-                   <img src="/logo.png" alt="" className="h-10 w-10 "/>
-                </div>
-
-                <span className="text-2xl font-black">
-                  Ai<span className="text-violet-400">Den</span>
-                </span>
-              </Link>
+                <ArrowLeft size={17} />
+                Back to Home
+              </button>
             </div>
 
             {/* Header */}
@@ -216,13 +218,9 @@ const LoginPage = () => {
                       placeholder:text-slate-500
                       focus:border-blue-500
                       focus:bg-white/5
-                      ${
-                        errors.email
-                          ? 'border-red-500'
-                          : ''
-                      }
+                      ${errors.email ? "border-red-500" : ""}
                     `}
-                    {...register('email')}
+                    {...register("email")}
                   />
                 </div>
 
@@ -262,13 +260,9 @@ const LoginPage = () => {
                       placeholder:text-slate-500
                       focus:border-blue-500
                       focus:bg-white/5
-                      ${
-                        errors.password
-                          ? 'border-red-500'
-                          : ''
-                      }
+                      ${errors.password ? "border-red-500" : ""}
                     `}
-                    {...register('password')}
+                    {...register("password")}
                   />
                 </div>
 
@@ -297,7 +291,7 @@ const LoginPage = () => {
                   disabled:opacity-70
                 "
               >
-                {isLoading ? 'Processing...' : 'Masuk Dashboard'}
+                {isLoading ? "Processing..." : "Masuk Dashboard"}
 
                 {!isLoading && (
                   <ArrowRight
@@ -312,7 +306,7 @@ const LoginPage = () => {
 
               {/* Register */}
               <p className="mt-7 text-center text-sm text-slate-400">
-                Belum punya akun?{' '}
+                Belum punya akun?{" "}
                 <Link
                   to="/register"
                   className="

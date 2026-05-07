@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_LINKS = [
+  { label: "Home", href: "#home" },
   { label: "Fitur", href: "#features" },
   { label: "Cara Kerja", href: "#how-it-works" },
   { label: "Tentang", href: "#about" },
