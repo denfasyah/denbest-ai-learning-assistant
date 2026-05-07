@@ -5,11 +5,12 @@ import { ArrowRight, Sparkles } from "lucide-react";
 const Hero = () => {
   return (
     <section
+      id="home"
       className="
         relative flex min-h-screen justify-center overflow-hidden
           bg-linear-to-t from-violet-950 to-black"
     >
-       <div
+      <div
         className="
           absolute left-1/2 top-1/2
           h-175 w-175
@@ -74,9 +75,8 @@ const Hero = () => {
 
             {/* Desc */}
             <p className="mb-10 max-w-xl text-lg leading-relaxed text-slate-400">
-             Upload PDF, lalu AI bantu kamu memahami isi materi,
-              membuat summary, quiz, flashcard, dan chat berdasarkan
-              konteks dokumenmu.
+              Upload PDF, lalu AI bantu kamu memahami isi materi, membuat
+              summary, quiz, flashcard, dan chat berdasarkan konteks dokumenmu.
             </p>
 
             {/* Button */}
