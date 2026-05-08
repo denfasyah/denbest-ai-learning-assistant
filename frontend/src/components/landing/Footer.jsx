@@ -38,22 +38,28 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className=" relative flex justify-center overflow-hidden
-          bg-linear-to-t from-violet-950 to-black pt-20">
+    <footer
+      className=" relative flex justify-center overflow-hidden
+          bg-linear-to-t from-violet-950 to-[#050816] pt-28"
+    >
       <div className="mx-auto max-w-7xl px-6">
         <div className="footer-grid mb-16 grid gap-12 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <Link
-              to="/"
-              className="mb-4 flex items-center gap-3 no-underline"
-            >
+            <Link to="/" className="mb-4 flex items-center gap-3 no-underline">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-violet-500">
-                <img src="/logo.png" alt="" className="h-10 w-10"/>
+                <img src="/logo.png" alt="" className="h-10 w-10" />
               </div>
 
-              <span className="text-2xl font-extrabold tracking-tight text-white">
-              Ai<span className="text-violet-500">Den</span>
+              <span className="text-2xl font-extrabold tracking-tight  text-white">
+                Ai
+                <span
+                  className=" bg-linear-to-r
+              from-blue-500 to-violet-500
+              bg-clip-text text-transparent"
+                >
+                  Den
+                </span>
               </span>
             </Link>
 
@@ -89,9 +95,7 @@ const Footer = () => {
           {/* Links */}
           {LINKS.map((col) => (
             <div key={col.title}>
-              <h4 className="mb-5 text-sm font-bold text-white">
-                {col.title}
-              </h4>
+              <h4 className="mb-5 text-sm font-bold text-white">{col.title}</h4>
 
               <ul className="flex flex-col gap-3">
                 {col.items.map((item) => (
@@ -115,9 +119,7 @@ const Footer = () => {
                             : undefined
                         }
                         target={
-                          item.href.startsWith("http")
-                            ? "_blank"
-                            : undefined
+                          item.href.startsWith("http") ? "_blank" : undefined
                         }
                         rel={
                           item.href.startsWith("http")

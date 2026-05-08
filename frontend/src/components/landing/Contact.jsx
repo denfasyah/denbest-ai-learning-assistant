@@ -1,11 +1,6 @@
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
-import {
-  Mail,
-  Code2,
-  Send,
-  MessageSquare,
-} from "lucide-react";
+import { Mail, Code2, Send, MessageSquare } from "lucide-react";
 
 const CONTACT_LINKS = [
   {
@@ -23,7 +18,7 @@ const CONTACT_LINKS = [
     value: "denfasyah",
     href: "https://github.com/denfasyah",
     color: "#1e293b",
-    bg: "rgba(30,41,59,0.06)",
+    bg: "rgba(59,130,246,0.08)",
     border: "rgba(30,41,59,0.12)",
   },
 ];
@@ -43,7 +38,8 @@ const Contact = () => {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden bg-white py-24 lg:py-28"
+      className="relative flex min-h-screen justify-center overflow-hidden
+          bg-linear-to-b from-violet-950 to-[#050816] py-24"
     >
       {/* Background */}
       <div className="absolute -left-25 top-[20%] h-100 w-100 rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.05),transparent_70%)]" />
@@ -51,20 +47,26 @@ const Contact = () => {
       <div className="mx-auto w-full max-w-6xl px-6">
         {/* Header */}
         <div className="mx-auto mb-20 max-w-2xl text-center">
-          <span className="mb-5 inline-block rounded-full border border-sky-200 bg-sky-500/10 px-4 py-1.5 text-[13px] font-bold text-sky-500">
+          <span
+            className="mb-5 inline-block rounded-full
+            border border-blue-500/25
+            bg-blue-500/10
+            px-4 py-1.5
+            text-[13px] font-bold text-blue-300"
+          >
             Kontak
           </span>
 
-          <h2 className="mb-4 text-4xl font-black leading-tight tracking-[-0.8px] text-slate-900 md:text-5xl">
+          <h2 className="mb-4 text-4xl font-black leading-tight tracking-[-0.8px] text-slate-200 md:text-5xl">
             Ada{" "}
             <span className="bg-linear-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent">
               Pertanyaan?
             </span>
           </h2>
 
-          <p className="text-[16px] leading-7 text-slate-500">
-            Kami senang mendengar masukan, pertanyaan, atau laporan bug
-            dari kamu.
+          <p className="text-[16px] leading-7 text-slate-400">
+            Kami senang mendengar masukan, pertanyaan, atau laporan bug dari
+            kamu.
           </p>
         </div>
 
@@ -106,7 +108,7 @@ const Contact = () => {
                     {c.label}
                   </p>
 
-                  <p className="text-[15px] font-bold text-slate-900">
+                  <p className="text-[15px] font-bold text-slate-200">
                     {c.value}
                   </p>
                 </div>
@@ -124,8 +126,8 @@ const Contact = () => {
               </div>
 
               <p className="text-[13.5px] leading-6 text-slate-500">
-                Tim kami aktif Senin–Jumat (08.00–17.00 WIB). Kami
-                berusaha merespons dalam 24 jam.
+                Tim kami aktif Senin–Jumat (08.00–17.00 WIB). Kami berusaha
+                merespons dalam 24 jam.
               </p>
             </div>
           </motion.div>

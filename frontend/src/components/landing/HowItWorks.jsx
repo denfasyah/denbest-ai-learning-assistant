@@ -1,10 +1,5 @@
 import { motion } from "framer-motion";
-import {
-  Upload,
-  Layout,
-  Sparkles,
-  GraduationCap,
-} from "lucide-react";
+import { Upload, Layout, Sparkles, GraduationCap } from "lucide-react";
 
 const STEPS = [
   {
@@ -47,18 +42,21 @@ const STEPS = [
 
 const HowItWorks = () => {
   return (
-    <section
-      id="how-it-works"
-      className="relative bg-white py-24 lg:py-28"
-    >
+    <section id="how-it-works" className="relative bg-[#050816] py-24 lg:py-28">
       <div className="mx-auto max-w-6xl px-6">
         {/* Header */}
         <div className="mx-auto mb-20 max-w-2xl text-center">
-          <span className="mb-5 inline-block rounded-full border border-violet-500/15 bg-violet-500/10 px-4 py-1.5 text-xs font-bold text-violet-700">
+          <span
+            className=" mb-5 inline-block rounded-full
+            border border-blue-500/25
+            bg-blue-500/10
+            px-4 py-1.5
+            text-[13px] font-bold text-blue-300"
+          >
             Cara Kerja
           </span>
 
-          <h2 className="mb-4 text-4xl font-black leading-tight tracking-tight text-slate-900 md:text-5xl">
+          <h2 className="mb-4 text-4xl font-black leading-tight tracking-tight text-slate-200 md:text-5xl">
             Hanya{" "}
             <span className="bg-linear-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent">
               4 Langkah
@@ -66,9 +64,9 @@ const HowItWorks = () => {
             untuk Mulai
           </h2>
 
-          <p className="text-base leading-7 text-slate-500 md:text-lg">
-            Dari upload hingga siap ujian — prosesnya simpel dan
-            hanya butuh beberapa menit.
+          <p className="text-base leading-7 text-slate-400 md:text-lg">
+            Dari upload hingga siap ujian — prosesnya simpel dan hanya butuh
+            beberapa menit.
           </p>
         </div>
 
@@ -114,11 +112,11 @@ const HowItWorks = () => {
                   </div>
                 </div>
 
-                <h3 className="mb-2 text-lg font-extrabold text-slate-900">
+                <h3 className="mb-2 text-lg font-extrabold text-slate-200">
                   {step.title}
                 </h3>
 
-                <p className="max-w-50 text-sm leading-7 text-slate-500">
+                <p className="max-w-50 text-sm leading-7 text-slate-400">
                   {step.desc}
                 </p>
               </motion.div>
