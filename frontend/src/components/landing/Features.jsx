@@ -71,17 +71,10 @@ const fadeUp = {
 const Features = () => (
   <section
     id="features"
-    className="relative bg-slate-50 py-24"
+    className="relative flex min-h-screen justify-center overflow-hidden
+          bg-linear-to-b from-violet-950 to-[#050816] py-24"
   >
-    {/* Top Line */}
-    <div
-      className="
-        absolute left-[20%] right-[20%] top-0
-        h-px
-        bg-linear-to-r
-        from-transparent via-slate-200 to-transparent
-      "
-    />
+
 
     <div className="mx-auto max-w-6xl px-6">
       {/* HEADER */}
@@ -89,10 +82,10 @@ const Features = () => (
         <span
           className="
             mb-5 inline-block rounded-full
-            border border-blue-500/15
+            border border-blue-500/25
             bg-blue-500/10
             px-4 py-1.5
-            text-[13px] font-bold text-blue-500
+            text-[13px] font-bold text-blue-300
           "
         >
           Fitur Unggulan
@@ -103,7 +96,7 @@ const Features = () => (
             mb-4 text-[clamp(28px,4vw,44px)]
             font-black leading-tight
             tracking-[-0.8px]
-            text-slate-900
+            text-slate-200
           "
         >
           Semua yang Kamu Butuhkan untuk{" "}
@@ -118,7 +111,7 @@ const Features = () => (
           </span>
         </h2>
 
-        <p className="text-[17px] leading-relaxed text-slate-500">
+        <p className="text-[17px] leading-relaxed text-slate-400">
           Fitur-fitur berbasis AI yang dirancang khusus mendukung proses
           belajar mahasiswa Indonesia.
         </p>
@@ -144,12 +137,13 @@ const Features = () => (
             className="
               group relative overflow-hidden
               rounded-[20px]
-              border border-slate-100
-              bg-white
+              border border-violet-500/40
+              backdrop-blur-md
+              bg-slate-200
               p-8
-              shadow-[0_2px_12px_rgba(0,0,0,0.04)]
+              shadow-[0_8px_30px_rgb(0,0,0,0.3)]
               transition-all duration-300
-              hover:shadow-2xl
+              hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.3)]
             "
           >
             {/* Accent */}
@@ -197,7 +191,7 @@ const Features = () => (
               </span>
 
               {/* Title */}
-              <h3 className="mb-2.5 text-lg font-extrabold text-slate-900">
+              <h3 className="mb-2.5 text-lg font-extrabold text-black">
                 {f.title}
               </h3>
 

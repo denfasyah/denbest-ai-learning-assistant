@@ -49,6 +49,17 @@ const RegisterPage = () => {
         title: "Register Berhasil",
         text: "Silakan login dengan akun Anda",
         confirmButtonColor: "#3b82f6",
+        background: "#050816",
+        color: "#fff",
+        backdrop: `
+    rgba(0,0,0,0.45)
+    blur(80px)
+  `,
+        customClass: {
+          popup: "rounded-3xl border border-white/10 shadow-2xl",
+          title: "text-white",
+          htmlContainer: "text-slate-300",
+        },
       });
 
       navigate("/login");
@@ -59,6 +70,17 @@ const RegisterPage = () => {
         icon: "error",
         title: "Oops...",
         text: msg,
+        background: "#050816",
+        color: "#fff",
+        backdrop: `
+    rgba(0,0,0,0.45)
+    blur(80px)
+  `,
+        customClass: {
+          popup: "rounded-3xl border border-white/10 shadow-2xl",
+          title: "text-white",
+          htmlContainer: "text-slate-300",
+        },
       });
     } finally {
       setIsLoading(false);
@@ -120,9 +142,7 @@ const RegisterPage = () => {
         </button>
         {/* LOGO */}
         <div className="mb-8 flex flex-col items-center">
-          <h1 className="text-3xl font-black text-white mt-16">
-            Daftar{" "}
-          </h1>
+          <h1 className="text-3xl font-black text-white mt-16">Daftar </h1>
 
           <p className="mt-2 text-center text-sm leading-relaxed text-slate-400">
             Buat akun dan mulai belajar lebih cerdas dengan AI

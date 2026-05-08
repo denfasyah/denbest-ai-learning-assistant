@@ -1,10 +1,5 @@
 import { motion } from "framer-motion";
-import {
-  BrainCircuit,
-  CheckCircle2,
-  Quote,
-  ArrowRight,
-} from "lucide-react";
+import { CheckCircle2, Quote, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const ADVANTAGES = [
@@ -23,7 +18,8 @@ const STATS = [
 const About = () => (
   <section
     id="about"
-    className="relative overflow-hidden bg-slate-50 py-24 lg:py-28"
+    className="relative flex min-h-screen justify-center overflow-hidden
+          bg-linear-to-t from-violet-950 to-[#050816] py-24"
   >
     {/* Background decorative */}
     <div className="pointer-events-none absolute -right-25 top-[10%] h-100 w-100 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.06),transparent_70%)]" />
@@ -31,20 +27,26 @@ const About = () => (
     <div className="mx-auto w-full max-w-6xl px-6">
       {/* Header */}
       <div className="mx-auto mb-20 max-w-2xl text-center">
-        <span className="mb-5 inline-block rounded-full border border-blue-200 bg-blue-500/10 px-4 py-1.5 text-[13px] font-bold text-blue-500">
+        <span
+          className="mb-5 inline-block rounded-full
+            border border-blue-500/25
+            bg-blue-500/10
+            px-4 py-1.5
+            text-[13px] font-bold text-blue-300"
+        >
           Tentang Platform
         </span>
 
-        <h2 className="mb-4 text-4xl font-black leading-tight tracking-[-0.8px] text-slate-900 md:text-5xl">
+        <h2 className="mb-4 text-4xl font-black leading-tight tracking-[-0.8px] text-slate-200 md:text-5xl">
           AI yang Benar-Benar{" "}
           <span className="bg-linear-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent">
             Memahami Materimu
           </span>
         </h2>
 
-        <p className="text-[17px] leading-7 text-slate-500">
-          Bukan AI generik — ini AI yang membaca, memahami, dan
-          mengajarkan kembali isi dokumen pilihanmu.
+        <p className="text-[17px] leading-7 text-slate-400">
+          Bukan AI generik — ini AI yang membaca, memahami, dan mengajarkan
+          kembali isi dokumen pilihanmu.
         </p>
       </div>
 
@@ -62,14 +64,14 @@ const About = () => (
             <Quote className="absolute left-5 top-5 h-7 w-7 text-blue-100" />
 
             <p className="pt-2 pl-9 text-[16px] italic leading-8 text-slate-700">
-              "Berbeda dari AI biasa, sistem ini memahami isi dokumen
-              yang kamu upload sehingga memberikan jawaban yang relevan,
-              kontekstual, dan sesuai materi pembelajaran."
+              "Berbeda dari AI biasa, sistem ini memahami isi dokumen yang kamu
+              upload sehingga memberikan jawaban yang relevan, kontekstual, dan
+              sesuai materi pembelajaran."
             </p>
 
             <div className="mt-5 flex items-center gap-3 pl-9">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-blue-500 to-violet-500">
-                <BrainCircuit className="h-4.5 w-4.5 text-white" />
+               <img src="/logo.png" alt="" className="w-full rounded-2xl" />
               </div>
 
               <span className="text-[13px] font-semibold text-slate-500">
@@ -84,7 +86,7 @@ const About = () => (
               <li key={item} className="flex items-start gap-3">
                 <CheckCircle2 className="mt-0.5 h-4.5 w-4.5 shrink-0 text-emerald-500" />
 
-                <span className="text-[15px] leading-6 text-gray-700">
+                <span className="text-[15px] leading-6 text-gray-200">
                   {item}
                 </span>
               </li>
@@ -108,7 +110,7 @@ const About = () => (
 
             {/* Icon */}
             <div className="relative mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-[28px] bg-linear-to-br from-blue-500 to-violet-500 shadow-[0_20px_40px_rgba(59,130,246,0.3)]">
-              <BrainCircuit className="h-14 w-14 text-white" />
+              <img src="/logo.png" alt="" className="w-full" />
             </div>
 
             <h3 className="mb-2 text-[22px] font-extrabold text-white">
@@ -116,8 +118,8 @@ const About = () => (
             </h3>
 
             <p className="mx-auto mb-7 max-w-65 text-[14px] leading-6 text-slate-400">
-              AI yang membaca, memproses, dan memahami setiap halaman
-              dokumenmu secara mendalam.
+              AI yang membaca, memproses, dan memahami setiap halaman dokumenmu
+              secara mendalam.
             </p>
 
             {/* Stats */}
@@ -131,9 +133,7 @@ const About = () => (
                     {value}
                   </p>
 
-                  <p className="mt-0.5 text-[11px] text-blue-400">
-                    {label}
-                  </p>
+                  <p className="mt-0.5 text-[11px] text-blue-400">{label}</p>
                 </div>
               ))}
             </div>

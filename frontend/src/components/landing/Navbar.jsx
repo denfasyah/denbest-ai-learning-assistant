@@ -50,7 +50,7 @@ const Navbar = () => {
           transition-all duration-300
           ${
             scrolled
-              ? "border-b border-black/5 bg-white/90 shadow-[0_1px_20px_rgba(0,0,0,0.08)] backdrop-blur-xl"
+              ? "border-b border-black/5 shadow-2xl backdrop-blur-3xl"
               : "bg-transparent"
           }
         `}
@@ -59,7 +59,10 @@ const Navbar = () => {
           <div className="flex h-18 items-center justify-between">
             {/* LOGO */}
 
-            <Link to="/" className="mb-4 flex items-center gap-3 no-underline mt-5">
+            <Link
+              to="/"
+              className="mb-4 flex items-center gap-3 no-underline mt-5"
+            >
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-blue-500 to-violet-500">
                 <img src="/logo.png" alt="" className="w-full" />
               </div>
@@ -67,10 +70,12 @@ const Navbar = () => {
               <span
                 className={`
                   text-2xl font-extrabold tracking-[-0.4px]
-                  ${scrolled ? "text-slate-800" : "text-white"}
+                  ${scrolled ? "text-white" : "text-white"}
                 `}
               >
-                Ai<span className="text-violet-500">Den</span>
+                Ai<span className=" bg-linear-to-r
+              from-blue-500 to-violet-500
+              bg-clip-text text-transparent">Den</span>
               </span>
             </Link>
 
@@ -86,8 +91,8 @@ const Navbar = () => {
                     transition-all duration-200
                     ${
                       scrolled
-                        ? "text-slate-600 hover:bg-blue-50 hover:text-blue-500"
-                        : "text-white/80 hover:bg-white/10 hover:text-white"
+                        ? "text-slate-200 hover:bg-white/10   hover:text-slate-200"
+                        : "text-white/80 hover:bg-white/10 hover:text-slate-200"
                     }
                   `}
                 >
@@ -106,8 +111,8 @@ const Navbar = () => {
                   transition-all duration-200
                   ${
                     scrolled
-                      ? "text-slate-600 hover:text-blue-500"
-                      : "text-white/90 hover:text-white"
+                      ? "text-slate-200 hover:bg-white/10   hover:text-slate-200"
+                      : "text-white/80 hover:bg-white/10 hover:text-slate-200"
                   }
                 `}
               >
@@ -177,9 +182,9 @@ const Navbar = () => {
                       className="
                         rounded-xl px-4 py-3
                         text-left text-[15px] font-medium
-                        text-slate-700
+                        text-slate-800
                         transition-all duration-200
-                        hover:bg-blue-50 hover:text-blue-500
+                        hover:bg-linear-to-br from-blue-500 to-violet-500  hover:text-white
                       "
                     >
                       {link.label}
