@@ -5,14 +5,12 @@ import Swal from "sweetalert2";
 import {
   LayoutDashboard,
   FileText,
-  Upload,
   BrainCircuit,
   Menu,
   X,
   LogOut,
   Bell,
   Search,
-  Sparkles,
 } from "lucide-react";
 
 const DashboardPage = () => {
@@ -136,16 +134,9 @@ const DashboardPage = () => {
             },
             {
               icon: FileText,
-              label: "Dokumen",
+              label: "My Learning",
             },
-            {
-              icon: Upload,
-              label: "Upload PDF",
-            },
-            {
-              icon: Sparkles,
-              label: "AI Workspace",
-            },
+
           ].map((item) => (
             <button
               key={item.label}
@@ -346,7 +337,7 @@ const DashboardPage = () => {
           </div>
 
           {/* MAIN CARD */}
-          <div
+          {/* <div
             className="
               mt-8
               rounded-4xl
@@ -398,7 +389,7 @@ const DashboardPage = () => {
                 Upload PDF
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </main>
     </section>
