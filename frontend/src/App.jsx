@@ -59,7 +59,7 @@ function App() {
             />
 
             <Route 
-              path="/documents" 
+              path="/mylearning" 
               element={
                 <ProtectedRoute>
                   <MyLearning />
