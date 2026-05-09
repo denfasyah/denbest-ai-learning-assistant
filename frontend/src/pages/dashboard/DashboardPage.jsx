@@ -96,6 +96,8 @@ const DashboardPage = () => {
       <main className="flex flex-1 flex-col lg:ml-72">
         {/* TOPBAR */}
         <NavbarDashboard
+          title={"DashBoard"}
+          description={"Lihat progres dan lanjutkan perjalanan belajarmu."}
           setSidebarOpen={setSidebarOpen}
           user={user}
           handleLogout={handleLogout}

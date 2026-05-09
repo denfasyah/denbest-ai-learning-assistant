@@ -29,7 +29,7 @@ const WelcomeCard = ({ user }) => {
 
       {/* Right CTA */}
       <div className="flex flex-col md:items-end gap-3">
-        <Link to={"/mylearning"} className="px-5 py-2 rounded-xl bg-linear-to-r from-blue-500 to-violet-500 text-white shadow-lg font-semibold hover:bg-slate-200 transition">
+        <Link to={"/learning"} className="px-5 py-2 rounded-xl bg-linear-to-r from-blue-500 to-violet-500 text-white shadow-lg font-semibold hover:bg-slate-200 transition">
           Mulai Belajar
         </Link>
 

@@ -9,7 +9,7 @@ import LandingPage from './pages/landing/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
-import MyLearning from './pages/mylearning/MyLearning';
+import LearningPage from './pages/learning/LearningPage';
 import WorkspacePage from './pages/workspace/WorkspacePage';
 import NotFoundPage from './pages/NotFoundPage';
 
@@ -59,16 +59,16 @@ function App() {
             />
 
             <Route 
-              path="/mylearning" 
+              path="/learning" 
               element={
                 <ProtectedRoute>
-                  <MyLearning />
+                  <LearningPage />
                 </ProtectedRoute>
               } 
             />
             
             <Route 
-              path="/workspace/:id" 
+              path="/learning/workspace/:id" 
               element={
                 <ProtectedRoute>
                   <WorkspacePage />

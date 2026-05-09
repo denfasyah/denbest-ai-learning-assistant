@@ -1,4 +1,5 @@
-import { LayoutDashboard, FileText, X, User, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, X, User, LogOut, Bot } from "lucide-react";
+import { NavLink } from "react-router-dom";
 const SidebarDashboard = ({
   sidebarOpen,
   setSidebarOpen,
@@ -66,32 +67,57 @@ const SidebarDashboard = ({
             {
               icon: LayoutDashboard,
               label: "Dashboard",
+              path: "/dashboard",
               active: true,
             },
             {
               icon: FileText,
-              label: "My Learning",
+              label: "Learning",
+              path: "/learning"
+            },
+            {
+              icon: Bot,
+              label: "Assistent",
+              path: "/assistent"
             },
           ].map((item) => (
-            <button
+            <NavLink
               key={item.label}
-              className={`
-                        flex items-center gap-3
-                        rounded-2xl px-4 py-3
-                        text-sm font-semibold
-                        transition-all duration-200
-        
-                        ${
-                          item.active
-                            ? "bg-linear-to-r from-blue-500 to-violet-500 text-white shadow-lg"
-                            : "text-slate-400 hover:bg-white/5 hover:text-white"
-                        }
-                      `}
+              to={item.path}
+              onClick={() => setSidebarOpen(false)}
+              className={({ isActive }) =>
+                `
+                  group flex items-center gap-3
+                  rounded-2xl px-4 py-3
+                  text-sm font-semibold
+                  transition-all duration-200
+
+                  ${
+                    isActive
+                      ? `
+                        bg-linear-to-r
+                        from-blue-500 to-violet-500
+                        text-white shadow-lg
+                      `
+                      : `
+                        text-slate-400
+                        hover:bg-white/5
+                        hover:text-white
+                      `
+                  }
+                `
+              }
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon
+                className="
+                  h-5 w-5
+                  transition-transform duration-200
+                  group-hover:scale-110
+                "
+              />
 
               {item.label}
-            </button>
+            </NavLink>
           ))}
         </div>
 

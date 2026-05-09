@@ -1,7 +1,7 @@
 import { Menu, Bell} from "lucide-react";
 import SectionHeader from "../../shared/SectionHeader";
 import ProfileDropdown from "./ProfileDropdown";
-const NavbarDashboard = ({ setSidebarOpen, user, handleLogout }) => {
+const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, description }) => {
   return (
     <div>
       <header
@@ -33,7 +33,7 @@ const NavbarDashboard = ({ setSidebarOpen, user, handleLogout }) => {
               <Menu className="h-5 w-5 text-white" />
             </button>
 
-            <SectionHeader title={"Dashboard"} description={"Lihat progres dan lanjutkan perjalanan belajarmu."} />
+            <SectionHeader title={title} description={description} />
           </div>
 
           {/* RIGHT */}
