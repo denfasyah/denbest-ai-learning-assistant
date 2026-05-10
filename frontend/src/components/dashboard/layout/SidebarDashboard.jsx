@@ -1,4 +1,13 @@
-import { LayoutDashboard, FileText, X, User, LogOut, Bot } from "lucide-react";
+import {
+  LayoutDashboard,
+  X,
+  User,
+  LogOut,
+  Bot,
+  GraduationCap,
+  NotebookPen,
+  History,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 const SidebarDashboard = ({
   sidebarOpen,
@@ -71,14 +80,24 @@ const SidebarDashboard = ({
               active: true,
             },
             {
-              icon: FileText,
+              icon: GraduationCap,
               label: "Learning",
-              path: "/learning"
+              path: "/learning",
             },
             {
               icon: Bot,
               label: "Assistent",
-              path: "/assistent"
+              path: "/assistent",
+            },
+            {
+              icon: NotebookPen,
+              label: "Notes",
+              path: "/notes",
+            },
+            {
+              icon: History,
+              label: "History",
+              path: "/history",
             },
           ].map((item) => (
             <NavLink

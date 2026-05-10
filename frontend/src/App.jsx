@@ -14,6 +14,7 @@ import WorkspacePage from './pages/workspace/WorkspacePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import AssistantPage from './pages/asistant/AssistantPage';
+import NotesPage from './pages/notes/NotesPage';
 
 function App() {
   return (
@@ -92,6 +93,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AssistantPage />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/notes" 
+              element={
+                <ProtectedRoute>
+                  <NotesPage />
                 </ProtectedRoute>
               } 
             />
