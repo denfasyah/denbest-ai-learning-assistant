@@ -68,7 +68,7 @@ function App() {
             />
             
             <Route 
-              path="/learning/workspace/:id" 
+              path="/learning/workspace/" 
               element={
                 <ProtectedRoute>
                   <WorkspacePage />
