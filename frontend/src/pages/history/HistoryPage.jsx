@@ -289,7 +289,7 @@ const HistoryPage = () => {
               <div
                 className="
                   mb-5 mr-10 flex h-16 w-16 items-center justify-center
-                  rounded-xl shrink-0
+                  rounded-3xl shrink-0
                   bg-linear-to-br from-blue-500 to-violet-500
                 "
               >

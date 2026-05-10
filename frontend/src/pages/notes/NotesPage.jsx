@@ -237,52 +237,47 @@ const NotesPage = () => {
               backdrop-blur-xl
             "
           >
-            <div
-              className="
-                flex flex-col gap-6
-                lg:flex-row lg:items-center lg:justify-between
-              "
-            >
-              {/* LEFT */}
-              <div className="max-w-2xl">
-                <div
-                  className="
+            {/* LEFT */}
+            <div className="md:flex max-w-5xl gap-8">
+              <div
+                className="
                     mb-5 flex h-16 w-16 items-center justify-center
-                    rounded-3xl
+                    rounded-3xl shrink-0
                     bg-linear-to-br from-blue-500 to-violet-500
                   "
-                >
-                  <NotebookPen className="h-8 w-8 text-white" />
-                </div>
-
-                <h1 className="text-3xl font-bold tracking-[-1px]">
+              >
+                <NotebookPen className="h-8 w-8 text-white" />
+              </div>
+              <div className="">
+                <h1 className="md:text-3xl text-xl font-bold tracking-[-1px]">
                   Smart Learning Notes
                 </h1>
 
-                <p className="mt-4 leading-relaxed text-slate-300">
+                <p className="mt-4 leading-relaxed text-slate-300 text-sm">
                   Simpan insight pembelajaran, hasil AI summary, dan catatan
                   penting dalam satu workspace modern.
                 </p>
               </div>
-
-              {/* RIGHT */}
-              <button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="
+                  <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="
                   flex items-center justify-center gap-3
-                  rounded-2xl
+                  rounded-2xl shrink-0
                   bg-linear-to-r from-blue-500 to-violet-500
-                  px-6 py-4
+                  px-6 h-12 mt-7
                   text-sm font-semibold text-white
                   transition-all duration-300
 
                   hover:scale-[1.02]
                 "
-              >
-                <Plus className="h-5 w-5" />
-                Create New Note
-              </button>
+            >
+              <Plus className="h-5 w-5" />
+              Create Note
+            </button>
             </div>
+
+            {/* RIGHT */}
+        
           </div>
 
           {/* TOOLBAR */}
