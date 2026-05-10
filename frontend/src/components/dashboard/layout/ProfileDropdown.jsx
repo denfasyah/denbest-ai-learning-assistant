@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { LogOut, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const ProfileDropdown = ({ user, onLogout }) => {
   const [open, setOpen] = useState(false);
@@ -46,10 +47,10 @@ const ProfileDropdown = ({ user, onLogout }) => {
 
           {/* MENU */}
           <div className="p-2">
-            <button className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-300 hover:bg-white/5">
+            <Link to={"/profile"} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-300 hover:bg-white/5">
               <User className="h-4 w-4" />
               My Profile
-            </button>
+            </Link>
 
             <button
               onClick={onLogout}

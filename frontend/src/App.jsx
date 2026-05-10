@@ -12,6 +12,7 @@ import DashboardPage from './pages/dashboard/DashboardPage';
 import LearningPage from './pages/learning/LearningPage';
 import WorkspacePage from './pages/workspace/WorkspacePage';
 import NotFoundPage from './pages/NotFoundPage';
+import ProfilePage from './pages/profile/ProfilePage';
 
 function App() {
   return (
@@ -72,6 +73,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <WorkspacePage />
+                </ProtectedRoute>
+              } 
+            />
+
+             <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } 
             />
