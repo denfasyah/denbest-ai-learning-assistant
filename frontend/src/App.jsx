@@ -13,6 +13,7 @@ import LearningPage from './pages/learning/LearningPage';
 import WorkspacePage from './pages/workspace/WorkspacePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import AssistantPage from './pages/asistant/AssistantPage';
 
 function App() {
   return (
@@ -82,6 +83,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ProfilePage />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/assistent" 
+              element={
+                <ProtectedRoute>
+                  <AssistantPage />
                 </ProtectedRoute>
               } 
             />
