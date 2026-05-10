@@ -87,27 +87,67 @@ const WorkspacePage = () => {
         "Kumpulan data yang digunakan untuk training maupun testing model AI.",
     },
   ];
+// ===============================
+// STATE
+// ===============================
+const [quizSubmitted, setQuizSubmitted] = useState(false);
 
-  const quizzes = [
-    {
-      question: "Apa fungsi label pada supervised learning?",
-      options: [
-        "Sebagai output jawaban",
-        "Sebagai warna dataset",
-        "Sebagai animasi",
-        "Sebagai database",
-      ],
-    },
-    {
-      question: "Classification termasuk?",
-      options: [
-        "Supervised Learning",
-        "Unsupervised Learning",
-        "Database",
-        "Frontend",
-      ],
-    },
-  ];
+const [selectedAnswers, setSelectedAnswers] = useState({});
+
+const quizzes = [
+  {
+    question: "Apa fungsi label pada supervised learning?",
+    correctAnswer: "Sebagai output jawaban",
+    options: [
+      "Sebagai output jawaban",
+      "Sebagai warna dataset",
+      "Sebagai animasi",
+      "Sebagai database",
+    ],
+  },
+  {
+    question: "Classification termasuk?",
+    correctAnswer: "Supervised Learning",
+    options: [
+      "Supervised Learning",
+      "Unsupervised Learning",
+      "Database",
+      "Frontend",
+    ],
+  },
+];
+
+// ===============================
+// HANDLE SELECT ANSWER
+// ===============================
+const handleSelectAnswer = (questionIndex, answer) => {
+  setSelectedAnswers((prev) => ({
+    ...prev,
+    [questionIndex]: answer,
+  }));
+};
+
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+const handleSubmitQuiz = () => {
+  setQuizSubmitted(true);
+};
+
+// ===============================
+// RETRY QUIZ
+// ===============================
+const handleRetryQuiz = () => {
+  setSelectedAnswers({});
+  setQuizSubmitted(false);
+};
+
+// ===============================
+// SCORE
+// ===============================
+const score = quizzes.filter(
+  (quiz, index) => selectedAnswers[index] === quiz.correctAnswer,
+).length;
 
   return (
     <div className="flex min-h-screen bg-linear-to-b from-black via-[#050816] to-violet-950 text-white">
@@ -557,112 +597,277 @@ const WorkspacePage = () => {
           )}
 
           {/* QUIZ */}
-          {activeTab === "quiz" && (
-            <div className="space-y-5">
-              {/* TOP */}
-              <div
-                className="
-      flex flex-col gap-5
-      rounded-4xl
-      border border-white/10
-      bg-white/5
-      p-6
-      backdrop-blur-xl
+         {/* QUIZ */}
+{activeTab === "quiz" && (
+  <div className="space-y-5">
+    {!quizSubmitted ? (
+      <>
+        {/* TOP */}
+        <div
+          className="
+            flex flex-col gap-5
+            rounded-4xl
+            border border-white/10
+            bg-white/5
+            p-6
+            backdrop-blur-xl
 
-      lg:flex-row lg:items-center lg:justify-between
-    "
-              >
-                <div>
-                  <h2 className="text-2xl font-bold">AI Quiz Generator</h2>
+            lg:flex-row lg:items-center lg:justify-between
+          "
+        >
+          <div>
+            <h2 className="text-2xl font-bold">
+              AI Quiz Generator
+            </h2>
 
-                  <p className="mt-2 text-sm text-slate-400">
-                    Generate quiz otomatis berdasarkan isi dokumen.
-                  </p>
-                </div>
+            <p className="mt-2 text-sm text-slate-400">
+              Generate quiz otomatis berdasarkan isi dokumen.
+            </p>
+          </div>
 
-                <div className="flex gap-3">
-                  <select
-                    className="
-          rounded-2xl
-          border border-white/10
-          bg-[#0B1120]
-          px-4 py-3
-          text-sm text-white
-          outline-none
-        "
-                  >
-                    <option>5 Questions</option>
-                    <option>10 Questions</option>
-                  </select>
+          <div className="flex gap-3">
+            <select
+              className="
+                rounded-2xl
+                border border-white/10
+                bg-[#0B1120]
+                px-4 py-3
+                text-sm text-white
+                outline-none
+              "
+            >
+              <option>5 Questions</option>
+              <option>10 Questions</option>
+            </select>
 
+            <button
+              className="
+                rounded-2xl
+                bg-linear-to-r from-blue-500 to-violet-500
+                px-5 py-3
+                text-sm font-semibold text-white
+              "
+            >
+              Generate Quiz
+            </button>
+          </div>
+        </div>
+
+        {/* QUIZ CARD */}
+        {quizzes.map((quiz, index) => (
+          <div
+            key={index}
+            className="
+              rounded-4xl
+              border border-white/10
+              bg-white/5
+              p-6
+              backdrop-blur-xl
+            "
+          >
+            <h3 className="text-lg font-bold">
+              {index + 1}. {quiz.question}
+            </h3>
+
+            <div className="mt-5 grid gap-3">
+              {quiz.options.map((option, idx) => {
+                const isSelected =
+                  selectedAnswers[index] === option;
+
+                return (
                   <button
-                    className="
-          rounded-2xl
-          bg-linear-to-r from-blue-500 to-violet-500
-          px-5 py-3
-          text-sm font-semibold text-white
-        "
-                  >
-                    Generate Quiz
-                  </button>
-                </div>
-              </div>
+                    key={idx}
+                    onClick={() =>
+                      handleSelectAnswer(index, option)
+                    }
+                    className={`
+                      rounded-2xl
+                      border
+                      px-5 py-4
+                      text-left text-sm
+                      transition-all duration-300
 
-              {/* QUIZ CARD */}
-              {quizzes.map((quiz, index) => (
+                      ${
+                        isSelected
+                          ? "border-blue-500 bg-blue-500/20 text-white"
+                          : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+                      }
+                    `}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+
+        {/* SUBMIT */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleSubmitQuiz}
+            className="
+              rounded-2xl
+              bg-linear-to-r from-blue-500 to-violet-500
+              px-6 py-3
+              text-sm font-semibold text-white
+              transition-all duration-300
+
+              hover:scale-[1.02]
+            "
+          >
+            Submit Quiz
+          </button>
+        </div>
+      </>
+    ) : (
+      <>
+        {/* ========================= */}
+        {/* RESULT PAGE */}
+        {/* ========================= */}
+        <div
+          className="
+            rounded-4xl
+            border border-white/10
+            bg-white/5
+            p-8
+            backdrop-blur-xl
+          "
+        >
+          <div className="text-center">
+            <div
+              className="
+                mx-auto flex h-24 w-24 items-center justify-center
+                rounded-full
+                bg-linear-to-br from-blue-500/20 to-violet-500/20
+              "
+            >
+              <span className="text-3xl font-bold text-blue-400">
+                {score}/{quizzes.length}
+              </span>
+            </div>
+
+            <h2 className="mt-6 text-3xl font-bold">
+              Quiz Result
+            </h2>
+
+            <p className="mt-3 text-slate-400">
+              Berikut hasil pengerjaan quiz kamu.
+            </p>
+          </div>
+
+          {/* DETAIL RESULT */}
+          <div className="mt-10 space-y-5">
+            {quizzes.map((quiz, index) => {
+              const selected = selectedAnswers[index];
+              const isCorrect =
+                selected === quiz.correctAnswer;
+
+              return (
                 <div
                   key={index}
                   className="
-        rounded-4xl
-        border border-white/10
-        bg-white/5
-        p-6
-        backdrop-blur-xl
-      "
+                    rounded-3xl
+                    border border-white/10
+                    bg-[#0B1120]
+                    p-6
+                  "
                 >
-                  <h3 className="text-lg font-bold">
-                    {index + 1}. {quiz.question}
-                  </h3>
+                  {/* QUESTION */}
+                  <div className="flex items-start justify-between gap-5">
+                    <h3 className="text-lg font-semibold">
+                      {index + 1}. {quiz.question}
+                    </h3>
 
+                    <span
+                      className={`
+                        rounded-full px-3 py-1 text-xs font-semibold
+
+                        ${
+                          isCorrect
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-red-500/20 text-red-400"
+                        }
+                      `}
+                    >
+                      {isCorrect ? "Correct" : "Wrong"}
+                    </span>
+                  </div>
+
+                  {/* OPTIONS */}
                   <div className="mt-5 grid gap-3">
                     {quiz.options.map((option, idx) => {
+                      const isCorrectAnswer =
+                        option === quiz.correctAnswer;
+
+                      const isSelected =
+                        option === selected;
+
                       return (
-                        <button
+                        <div
                           key={idx}
                           className={`
-                rounded-2xl
-                border border-white/15
-                px-5 py-4
-                text-left text-sm
-                transition-all duration-300
-              `}
+                            rounded-2xl
+                            border
+                            px-5 py-4
+                            text-sm
+
+                            ${
+                              isCorrectAnswer
+                                ? "border-green-500/30 bg-green-500/20 text-green-300"
+                                : isSelected
+                                ? "border-red-500/30 bg-red-500/20 text-red-300"
+                                : "border-white/10 bg-white/5 text-slate-400"
+                            }
+                          `}
                         >
                           {option}
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
                 </div>
-              ))}
+              );
+            })}
+          </div>
 
-              {/* SUBMIT */}
-              <div className="flex justify-end">
-                <button
-                  className="
-        rounded-2xl
-        bg-linear-to-r from-blue-500 to-violet-500
-        px-6 py-3
-        text-sm font-semibold text-white
-        transition-all duration-300
+          {/* ACTION */}
+          <div className="mt-8 flex flex-wrap justify-end gap-3">
+            <button
+              onClick={handleRetryQuiz}
+              className="
+                rounded-2xl
+                border border-white/10
+                bg-white/5
+                px-5 py-3
+                text-sm font-semibold text-white
+                transition-all duration-300
 
-        hover:scale-[1.02]
-      "
-                >
-                  Submit Quiz
-                </button>
-              </div>
-            </div>
-          )}
+                hover:bg-white/10
+              "
+            >
+              Retry Quiz
+            </button>
+
+            <button
+              className="
+                rounded-2xl
+                bg-linear-to-r from-blue-500 to-violet-500
+                px-5 py-3
+                text-sm font-semibold text-white
+                transition-all duration-300
+
+                hover:scale-[1.02]
+              "
+            >
+              Generate New Quiz
+            </button>
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+)}
         </div>
       </main>
     </div>
