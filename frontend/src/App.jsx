@@ -15,6 +15,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import AssistantPage from './pages/asistant/AssistantPage';
 import NotesPage from './pages/notes/NotesPage';
+import HistoryPage from './pages/history/HistoryPage';
 
 function App() {
   return (
@@ -102,6 +103,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <NotesPage />
+                </ProtectedRoute>
+              } 
+            />
+
+             <Route 
+              path="/history" 
+              element={
+                <ProtectedRoute>
+                  <HistoryPage />
                 </ProtectedRoute>
               } 
             />
