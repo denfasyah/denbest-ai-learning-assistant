@@ -52,6 +52,11 @@ const ProfileDropdown = ({ user, onLogout }) => {
               My Profile
             </Link>
 
+             <Link to={"/setting"} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-300 hover:bg-white/5">
+              <User className="h-4 w-4" />
+              Setting
+            </Link>
+
             <button
               onClick={onLogout}
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-red-400 hover:bg-red-500/10"

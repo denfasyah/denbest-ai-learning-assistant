@@ -16,6 +16,8 @@ import ProfilePage from './pages/profile/ProfilePage';
 import AssistantPage from './pages/asistant/AssistantPage';
 import NotesPage from './pages/notes/NotesPage';
 import HistoryPage from './pages/history/HistoryPage';
+import SettingsPage from './pages/profile/SettingPage';
+import NotificationPage from './pages/profile/NotificationPage';
 
 function App() {
   return (
@@ -112,6 +114,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <HistoryPage />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/setting" 
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              } 
+            />
+
+            <Route 
+              path="/notification" 
+              element={
+                <ProtectedRoute>
+                  <NotificationPage />
                 </ProtectedRoute>
               } 
             />

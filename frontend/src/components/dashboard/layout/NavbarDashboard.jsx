@@ -1,6 +1,7 @@
 import { Menu, Bell} from "lucide-react";
 import SectionHeader from "../../shared/SectionHeader";
 import ProfileDropdown from "./ProfileDropdown";
+import { Link } from "react-router-dom";
 const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, description }) => {
   return (
     <div>
@@ -40,7 +41,7 @@ const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, descriptio
           <div className="flex items-center gap-3">
 
             {/* NOTIF */}
-            <button
+            <Link to={"/notification"}
               className="
                   flex h-11 w-11 items-center justify-center
                   rounded-2xl
@@ -49,7 +50,7 @@ const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, descriptio
                 "
             >
               <Bell className="h-5 w-5 text-slate-300" />
-            </button>
+            </Link>
             <ProfileDropdown user={user} onLogout={handleLogout} />
           </div>
         </div>

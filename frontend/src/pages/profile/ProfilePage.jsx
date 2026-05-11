@@ -1,23 +1,22 @@
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 import {
-  User,
-  Mail,
-  CalendarDays,
+  Flame,
   FileText,
-  BrainCircuit,
-  Layers3,
-  MessageSquare,
-  Pencil,
-  TrendingUp,
+  Sparkles,
+  Brain,
+  NotebookPen,
   Clock3,
-  Star,
   ChevronRight,
+  Trophy,
+  Star,
+  Target,
+  CalendarDays,
+  Mail,
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
-
 import useLogout from "../../hooks/useLogout";
 
 import SidebarDashboard from "../../components/dashboard/layout/SidebarDashboard";
@@ -29,60 +28,89 @@ const ProfilePage = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // DUMMY DATA
-  const statistics = [
+  const stats = [
     {
       title: "Documents",
       value: 24,
       icon: FileText,
-      color: "from-blue-500/20 to-cyan-500/20",
-      iconColor: "text-blue-400",
     },
+
     {
-      title: "AI Chats",
-      value: 128,
-      icon: MessageSquare,
-      color: "from-violet-500/20 to-pink-500/20",
-      iconColor: "text-violet-400",
+      title: "AI Summaries",
+      value: 18,
+      icon: Sparkles,
     },
+
     {
       title: "Flashcards",
-      value: 86,
-      icon: Layers3,
-      color: "from-orange-500/20 to-yellow-500/20",
-      iconColor: "text-orange-400",
+      value: 56,
+      icon: Brain,
     },
+
     {
-      title: "Quiz Completed",
-      value: 17,
-      icon: BrainCircuit,
-      color: "from-emerald-500/20 to-green-500/20",
-      iconColor: "text-emerald-400",
+      title: "Notes",
+      value: 31,
+      icon: NotebookPen,
+    },
+  ];
+
+  const learningProgress = [
+    {
+      title: "Frontend Development",
+      progress: 82,
+    },
+
+    {
+      title: "Backend Development",
+      progress: 68,
+    },
+
+    {
+      title: "Database",
+      progress: 57,
+    },
+
+    {
+      title: "AI / Machine Learning",
+      progress: 34,
     },
   ];
 
   const recentActivities = [
     {
-      title: "Completed AI Quiz",
-      description: "Machine Learning Fundamentals",
+      title: "Created note about JWT Authentication",
       time: "2 hours ago",
     },
+
     {
-      title: "Generated Flashcards",
-      description: "Database Management System",
+      title: "Completed React Authentication Quiz",
       time: "Yesterday",
     },
+
     {
-      title: "Uploaded New Document",
-      description: "Artificial Intelligence.pdf",
+      title: "Generated AI Summary from Machine Learning.pdf",
       time: "2 days ago",
     },
   ];
 
-  const favoriteDocuments = [
-    "Machine Learning Fundamentals.pdf",
-    "React Advanced Guide.pdf",
-    "Database Design System.pdf",
+  const achievements = [
+    {
+      title: "7 Days Streak",
+      description: "Consistent learning for 7 days.",
+      icon: Flame,
+    },
+
+    {
+      title: "Quiz Master",
+      description: "Completed 20 quizzes successfully.",
+      icon: Trophy,
+    },
+
+    {
+      title: "Fast Learner",
+      description: "Generated 50+ flashcards.",
+      icon: Star,
+    },
   ];
 
   return (
@@ -107,123 +135,141 @@ const ProfilePage = () => {
       <main className="flex flex-1 flex-col lg:ml-72">
         {/* NAVBAR */}
         <NavbarDashboard
-          title={"My Profile"}
-          description={"Kelola informasi akun dan progress pembelajaran."}
+          title={"Profile"}
+          description={"Manage your account and learning progress."}
           setSidebarOpen={setSidebarOpen}
           user={user}
           handleLogout={handleLogout}
         />
 
         {/* CONTENT */}
-        <div className="space-y-6 px-5 py-5 lg:px-8">
-          {/* PROFILE HERO */}
+        <div className="px-5 py-5 lg:px-8">
+          {/* HERO */}
           <div
             className="
-              overflow-hidden
+              mb-8 overflow-hidden
               rounded-4xl
               border border-white/10
-              bg-white/5
+              bg-linear-to-br from-violet-500/10 via-blue-500/10 to-transparent
+              p-7
               backdrop-blur-xl
             "
           >
-            {/* TOP BACKGROUND */}
             <div
               className="
-                h-36
-                bg-linear-to-r
-                from-blue-500/20
-                via-violet-500/20
-                to-pink-500/20
+                flex flex-col gap-8
+                lg:flex-row lg:items-center lg:justify-between
               "
-            />
-
-            {/* CONTENT */}
-            <div className="relative px-6 pb-6">
-              {/* AVATAR */}
-              <div
-                className="
-                  absolute -top-14
-                  flex h-28 w-28 items-center justify-center
-                  rounded-[30px]
-                  border-4 border-[#050816]
-                  bg-linear-to-br from-blue-500 to-violet-500
-                  shadow-2xl shadow-blue-500/20
-                "
-              >
-                <User className="h-12 w-12 text-white" />
-              </div>
-
-              {/* ACTION */}
-              <div className="flex justify-end pt-5">
-                <button
+            >
+              {/* LEFT */}
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+                {/* AVATAR */}
+                <div
                   className="
-                    flex items-center gap-2
-                    rounded-2xl
-                    border border-white/10
-                    bg-white/5
-                    px-5 py-3
-                    text-sm font-semibold text-white
-                    transition-all duration-300
-
-                    hover:bg-white/10
+                    flex h-28 w-28 items-center justify-center
+                    rounded-4xl
+                    bg-linear-to-br from-violet-500 to-blue-500
+                    text-4xl font-bold text-white
+                    shadow-2xl
                   "
                 >
-                  <Pencil className="h-4 w-4" />
-                  Edit Profile
-                </button>
-              </div>
+                  {user?.displayName?.charAt(0) || "A"}
+                </div>
 
-              {/* INFO */}
-              <div className="mt-16">
-                <h1 className="text-3xl font-bold tracking-[-0.5px]">
-                  {user?.displayName || "Adent Fallah"}
-                </h1>
-
-                <div className="mt-5 flex flex-wrap gap-4 text-sm text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    {user?.email || "adent@example.com"}
+                {/* INFO */}
+                <div>
+                  <div
+                    className="
+                      inline-flex items-center gap-2
+                      rounded-full
+                      border border-violet-500/20
+                      bg-violet-500/10
+                      px-4 py-2
+                      text-sm text-violet-300
+                    "
+                  >
+                    <Flame className="h-4 w-4" />
+                    7 Days Learning Streak
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4" />
-                    Joined May 2026
+                  <h1 className="mt-5 text-4xl font-bold tracking-[-1px]">
+                    {user?.displayName || "Adent Fallah"}
+                  </h1>
+
+                  <p className="mt-3 text-lg text-slate-300">
+                    AI Learning Explorer
+                  </p>
+
+                  <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-slate-400">
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      {user?.email || "adent@gmail.com"}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <CalendarDays className="h-4 w-4" />
+                      Joined April 2026
+                    </div>
                   </div>
                 </div>
+              </div>
+
+              {/* RIGHT */}
+              <div
+                className="
+                  rounded-3xl
+                  border border-white/10
+                  bg-white/5
+                  px-6 py-5
+                  backdrop-blur-xl
+                "
+              >
+                <div className="flex items-center gap-3">
+                  <Target className="h-5 w-5 text-blue-400" />
+
+                  <p className="text-sm text-slate-300">
+                    Current Learning Goal
+                  </p>
+                </div>
+
+                <h3 className="mt-4 text-xl font-bold">
+                  Become MERN Stack Engineer
+                </h3>
+
+                <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-400">
+                  Fokus memperdalam React, Node.js, MongoDB, dan AI Integration.
+                </p>
               </div>
             </div>
           </div>
 
           {/* STATS */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {statistics.map((item, index) => {
+            {stats.map((item, index) => {
               const Icon = item.icon;
 
               return (
                 <div
                   key={index}
                   className="
-                    rounded-[28px]
+                    rounded-4xl
                     border border-white/10
                     bg-white/5
-                    p-5
+                    p-6
                     backdrop-blur-xl
-                    transition-all duration-300
-
-                    hover:-translate-y-1
-                    hover:border-blue-500/20
                   "
                 >
                   <div
-                    className={`
-                      mb-5 flex h-14 w-14 items-center justify-center
-                      rounded-2xl bg-linear-to-br ${item.color}
-                    `}
+                    className="
+                      flex h-14 w-14 items-center justify-center
+                      rounded-2xl
+                      bg-linear-to-br from-blue-500/15 to-violet-500/15
+                    "
                   >
-                    <Icon className={`h-7 w-7 ${item.iconColor}`} />
+                    <Icon className="h-6 w-6 text-blue-300" />
                   </div>
 
-                  <h2 className="text-3xl font-bold">
+                  <h2 className="mt-5 text-4xl font-bold">
                     {item.value}
                   </h2>
 
@@ -236,141 +282,164 @@ const ProfilePage = () => {
           </div>
 
           {/* GRID */}
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            {/* ACTIVITY */}
+          <div className="mt-8 grid grid-cols-1 gap-5 xl:grid-cols-3">
+            {/* LEARNING PROGRESS */}
             <div
               className="
-                xl:col-span-2
-                rounded-[28px]
+                rounded-4xl
                 border border-white/10
                 bg-white/5
                 p-6
                 backdrop-blur-xl
+                xl:col-span-2
               "
             >
-              {/* HEADER */}
-              <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-bold">
-                    Recent Activity
+                  <h2 className="text-2xl font-bold">
+                    Learning Progress
                   </h2>
 
-                  <p className="mt-1 text-sm text-slate-400">
-                    Aktivitas pembelajaran terbaru.
+                  <p className="mt-2 text-sm text-slate-400">
+                    Track your current skill development.
                   </p>
                 </div>
-
-                <TrendingUp className="h-6 w-6 text-blue-400" />
               </div>
 
-              {/* LIST */}
-              <div className="space-y-4">
-                {recentActivities.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="
-                      flex items-center justify-between
-                      rounded-2xl
-                      border border-white/10
-                      bg-[#0B1120]
-                      p-5
-                    "
-                  >
-                    <div>
-                      <h3 className="font-semibold text-white">
-                        {activity.title}
+              <div className="mt-8 space-y-6">
+                {learningProgress.map((item, index) => (
+                  <div key={index}>
+                    <div className="mb-3 flex items-center justify-between">
+                      <h3 className="font-medium text-slate-300">
+                        {item.title}
                       </h3>
 
-                      <p className="mt-1 text-sm text-slate-400">
-                        {activity.description}
-                      </p>
+                      <span className="text-sm text-slate-400">
+                        {item.progress}%
+                      </span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
-                      <Clock3 className="h-4 w-4" />
-                      {activity.time}
+                    <div
+                      className="
+                        h-3 overflow-hidden
+                        rounded-full
+                        bg-white/5
+                      "
+                    >
+                      <div
+                        style={{ width: `${item.progress}%` }}
+                        className="
+                          h-full rounded-full
+                          bg-linear-to-r from-blue-500 to-violet-500
+                        "
+                      />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* FAVORITE */}
+            {/* RECENT ACTIVITY */}
             <div
               className="
-                rounded-[28px]
+                rounded-4xl
                 border border-white/10
                 bg-white/5
                 p-6
                 backdrop-blur-xl
               "
             >
-              {/* HEADER */}
-              <div className="mb-6 flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold">
-                    Favorite Documents
-                  </h2>
+              <h2 className="text-2xl font-bold">
+                Recent Activity
+              </h2>
 
-                  <p className="mt-1 text-sm text-slate-400">
-                    Dokumen favorit yang sering dipelajari.
-                  </p>
-                </div>
+              <p className="mt-2 text-sm text-slate-400">
+                Your latest learning activity.
+              </p>
 
-                <Star className="h-6 w-6 text-yellow-400" />
-              </div>
-
-              {/* LIST */}
-              <div className="space-y-4">
-                {favoriteDocuments.map((doc, index) => (
+              <div className="mt-8 space-y-5">
+                {recentActivities.map((item, index) => (
                   <div
                     key={index}
                     className="
-                      flex items-center justify-between
-                      rounded-2xl
+                      rounded-3xl
                       border border-white/10
-                      bg-[#0B1120]
-                      px-4 py-4
+                      bg-white/3
+                      p-4
                     "
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="
-                          flex h-10 w-10 items-center justify-center
-                          rounded-xl
-                          bg-linear-to-br from-blue-500/20 to-violet-500/20
-                        "
-                      >
-                        <FileText className="h-5 w-5 text-blue-400" />
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="text-sm leading-relaxed text-slate-300">
+                          {item.title}
+                        </h3>
+
+                        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                          <Clock3 className="h-3.5 w-3.5" />
+                          {item.time}
+                        </div>
                       </div>
 
-                      <p className="line-clamp-1 text-sm text-slate-300">
-                        {doc}
-                      </p>
+                      <ChevronRight className="h-4 w-4 text-slate-500" />
                     </div>
-
-                    <ChevronRight className="h-4 w-4 text-slate-500" />
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
 
-              {/* BUTTON */}
-              <Link
-                to="/learning"
-                className="
-                  mt-6 flex items-center justify-center gap-2
-                  rounded-2xl
-                  bg-linear-to-r from-blue-500 to-violet-500
-                  px-5 py-3
-                  text-sm font-semibold text-white
-                  transition-all duration-300
+          {/* ACHIEVEMENTS */}
+          <div
+            className="
+              mt-8 rounded-4xl
+              border border-white/10
+              bg-white/5
+              p-6
+              backdrop-blur-xl
+            "
+          >
+            <h2 className="text-2xl font-bold">
+              Achievements
+            </h2>
 
-                  hover:scale-[1.02]
-                "
-              >
-                Open Learning
-                <ChevronRight className="h-4 w-4" />
-              </Link>
+            <p className="mt-2 text-sm text-slate-400">
+              Milestones and learning accomplishments.
+            </p>
+
+            <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {achievements.map((item, index) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={index}
+                    className="
+                      rounded-4xl
+                      border border-white/10
+                      bg-linear-to-br from-blue-500/5 to-violet-500/5
+                      p-6
+                    "
+                  >
+                    <div
+                      className="
+                        flex h-14 w-14 items-center justify-center
+                        rounded-2xl
+                        bg-linear-to-br from-blue-500 to-violet-500
+                      "
+                    >
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+
+                    <h3 className="mt-5 text-xl font-bold">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-relaxed text-slate-400">
+                      {item.description}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
