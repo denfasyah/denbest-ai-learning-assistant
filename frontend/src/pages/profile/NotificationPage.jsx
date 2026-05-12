@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import {
   Bell,
-  Check,
   Trash2,
   Sparkles,
   FileText,
@@ -14,12 +13,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import Card from "../../components/ui/Card";
-import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
 
 const NotificationPage = () => {
+  // eslint-disable-next-line no-unused-vars
   const { user } = useAuth();
 
   const [search, setSearch] = useState("");
@@ -146,7 +145,7 @@ const NotificationPage = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-5 p-6 rounded-[2rem] bg-white/[0.03] border border-white/[0.05]">
+          <div className="flex items-center gap-5 p-6 rounded-4xl bg-white/3 border border-white/5">
             <div className="text-right">
               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Unread Alerts</p>
               <h2 className="mt-1 text-3xl font-black text-white italic">{unreadCount}</h2>
@@ -203,14 +202,14 @@ const NotificationPage = () => {
             <Card
               key={item.id}
               className={`group relative overflow-hidden transition-all duration-300 ${
-                item.read ? "bg-white/[0.01] border-white/[0.03]" : "bg-indigo-500/[0.02] border-indigo-500/20"
+                item.read ? "bg-white/1 border-white/3" : "bg-indigo-500/2 border-indigo-500/20"
               }`}
             >
               {!item.read && <div className="absolute right-6 top-6 h-3 w-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]" />}
               
               <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex gap-5">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/[0.03] border border-white/[0.05] group-hover:bg-indigo-500/10 transition-colors">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/3 border border-white/5 group-hover:bg-indigo-500/10 transition-colors">
                     {getNotificationIcon(item.type)}
                   </div>
 

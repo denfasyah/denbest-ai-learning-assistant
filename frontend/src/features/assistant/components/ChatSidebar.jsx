@@ -1,8 +1,6 @@
-import React from 'react';
 import { Plus, Search, MoreHorizontal, Clock3, Pencil, Trash2 } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
-import Card from '../../../components/ui/Card';
 
 const ChatSidebar = ({ 
   conversations, 
@@ -43,7 +41,7 @@ const ChatSidebar = ({
                 group relative rounded-2xl border p-4 transition-all duration-300 cursor-pointer
                 ${chat.active 
                   ? 'border-indigo-500/30 bg-indigo-500/10' 
-                  : 'border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/10'}
+                  : 'border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/10'}
               `}
               onClick={() => onSelect(chat.id)}
             >

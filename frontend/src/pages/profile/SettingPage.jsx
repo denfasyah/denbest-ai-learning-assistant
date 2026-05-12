@@ -87,7 +87,7 @@ const SettingsPage = () => {
                 { label: "Update Password", desc: "Modify your access credentials", icon: Lock },
                 { label: "Active Sessions", desc: "Manage logged in devices", icon: LogOut },
               ].map((item, idx) => (
-                <button key={idx} className="w-full flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-all group">
+                <button key={idx} className="w-full flex items-center justify-between p-5 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-all group">
                   <div className="flex items-center gap-5">
                     <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-white/5">
                       <item.icon className="h-5 w-5 text-slate-400 group-hover:text-white transition-colors" />
@@ -104,7 +104,7 @@ const SettingsPage = () => {
           </Card>
 
           {/* DANGER ZONE */}
-          <Card className="p-8 border-rose-500/20 bg-rose-500/[0.02]">
+          <Card className="p-8 border-rose-500/20 bg-rose-500/2">
              <h2 className="text-xl font-black text-rose-500 tracking-tight mb-2 uppercase">Destructive Zone</h2>
              <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
                Irreversible actions. Deleting your account will purge all documents, summaries, and AI history permanently.
@@ -153,7 +153,7 @@ const SettingsPage = () => {
           <Card className="p-8">
              <h2 className="text-xl font-black text-white tracking-tight mb-8">Integrations</h2>
              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5">
                    <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">G</div>
                       <div>
@@ -162,7 +162,7 @@ const SettingsPage = () => {
                       </div>
                    </div>
                 </div>
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5">
                    <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">GH</div>
                       <div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, FileText, Clock3 } from 'lucide-react';
 import Card from '../../../components/ui/Card';
@@ -25,7 +24,7 @@ const WorkspaceHeader = ({ title, uploadTime, size }) => {
               {title}
             </h1>
 
-            <div className="mt-3 flex flex-wrap items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.1em]">
+            <div className="mt-3 flex flex-wrap items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
               <div className="flex items-center gap-1.5">
                 <Clock3 className="h-3.5 w-3.5 text-indigo-400" />
                 Uploaded {uploadTime}

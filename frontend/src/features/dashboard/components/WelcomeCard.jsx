@@ -1,4 +1,3 @@
-import React from 'react';
 import { Sparkles, BadgeCheck } from 'lucide-react';
 import Card from '../../../components/ui/Card';
 import Badge from '../../../components/ui/Badge';

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Clock3 } from "lucide-react";
 import { HISTORY_ACTIVITIES } from "../../features/history/constants/historyData";
 import HistoryCard from "../../features/history/components/HistoryCard";

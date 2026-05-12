@@ -1,5 +1,3 @@
-import React from 'react';
-import { Clock3, FileText, Sparkles, Brain, Layers3 } from 'lucide-react';
 import Card from '../../../components/ui/Card';
 
 const RecentActivity = ({ activities }) => {
@@ -14,7 +12,7 @@ const RecentActivity = ({ activities }) => {
         {activities.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between gap-5 rounded-3xl border border-white/[0.03] bg-white/[0.02] p-5 transition-all duration-300 hover:bg-white/[0.05] group cursor-default"
+            className="flex items-center justify-between gap-5 rounded-3xl border border-white/3 bg-white/2 p-5 transition-all duration-300 hover:bg-white/5 group cursor-default"
           >
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 group-hover:scale-110 transition-transform">

@@ -1,4 +1,3 @@
-import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { DASHBOARD_STATS, QUICK_ACTIONS, RECENT_ACTIVITIES } from "../../features/dashboard/constants/dashboardData";
 import WelcomeCard from "../../features/dashboard/components/WelcomeCard";
@@ -52,7 +51,7 @@ const DashboardPage = () => {
               </div>
             </div>
 
-            <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/[0.03] border border-white/[0.05]">
+            <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/3 border border-white/5">
               <div 
                 className="h-full rounded-full bg-linear-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-[0_0_20px_rgba(79,70,229,0.4)]"
                 style={{ width: '78%' }}
@@ -60,7 +59,7 @@ const DashboardPage = () => {
             </div>
 
             <div className="mt-10 space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-colors cursor-default group">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
                 <div className="flex items-center gap-4">
                   <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform">
                     <FileText className="h-5 w-5" />
@@ -72,7 +71,7 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-colors cursor-default group">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
                 <div className="flex items-center gap-4">
                   <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform">
                     <Sparkles className="h-5 w-5" />
@@ -84,7 +83,7 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-colors cursor-default group">
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
                 <div className="flex items-center gap-4">
                   <div className="p-2.5 rounded-xl bg-pink-500/10 text-pink-400 group-hover:scale-110 transition-transform">
                     <Layers3 className="h-5 w-5" />

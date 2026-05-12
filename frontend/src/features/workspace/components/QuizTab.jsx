@@ -1,4 +1,3 @@
-import React from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
@@ -46,7 +45,7 @@ const QuizTab = ({
             const isCorrect = selected === quiz.correctAnswer;
 
             return (
-              <div key={index} className="rounded-3xl border border-white/[0.03] bg-white/[0.02] p-8 hover:bg-white/[0.04] transition-all">
+              <div key={index} className="rounded-3xl border border-white/3 bg-white/2 p-8 hover:bg-white/4 transition-all">
                 <div className="flex items-start justify-between gap-6 mb-6">
                   <h3 className="text-lg font-bold text-white leading-tight">
                     <span className="text-indigo-500 mr-2">#{index + 1}</span> {quiz.question}
@@ -128,7 +127,7 @@ const QuizTab = ({
                       rounded-2xl border px-6 py-4 text-left text-sm font-bold transition-all duration-300
                       ${isSelected
                         ? "border-indigo-500 bg-indigo-500/10 text-white shadow-lg shadow-indigo-500/10"
-                        : "border-white/[0.05] bg-white/[0.02] text-slate-500 hover:bg-white/[0.05] hover:text-slate-300"
+                        : "border-white/5 bg-white/2 text-slate-500 hover:bg-white/5 hover:text-slate-300"
                       }
                     `}
                   >

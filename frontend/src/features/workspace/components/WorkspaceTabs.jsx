@@ -1,4 +1,3 @@
-import React from 'react';
 
 const WorkspaceTabs = ({ tabs, activeTab, onTabChange }) => {
   return (
@@ -15,7 +14,7 @@ const WorkspaceTabs = ({ tabs, activeTab, onTabChange }) => {
               flex items-center gap-2.5 rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-widest transition-all duration-300
               ${isActive
                 ? "bg-linear-to-r from-indigo-500 to-violet-500 text-white shadow-xl shadow-indigo-500/20 scale-105"
-                : "border border-white/5 bg-white/[0.02] text-slate-500 hover:bg-white/[0.05] hover:text-white"
+                : "border border-white/5 bg-white/2 text-slate-500 hover:bg-white/5 hover:text-white"
               }
             `}
           >

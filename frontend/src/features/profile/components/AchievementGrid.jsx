@@ -1,4 +1,3 @@
-import React from 'react';
 import Card from '../../../components/ui/Card';
 
 const AchievementGrid = ({ achievements }) => {
@@ -16,7 +15,7 @@ const AchievementGrid = ({ achievements }) => {
           return (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-[2rem] border border-white/[0.05] bg-white/[0.01] p-7 transition-all hover:bg-white/[0.03] hover:border-indigo-500/20"
+              className="group relative overflow-hidden rounded-4xl border border-white/5 bg-white/1 p-7 transition-all hover:bg-white/3 hover:border-indigo-500/20"
             >
               <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500 to-violet-500 text-white shadow-xl shadow-indigo-500/20 group-hover:scale-110 transition-transform">
                 <Icon className="h-7 w-7" />

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 
 const AuthContext = createContext();
@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     
     if (storedUser && token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
@@ -60,4 +61,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

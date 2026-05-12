@@ -1,4 +1,3 @@
-import React from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
@@ -47,7 +46,7 @@ const FlashcardTab = ({ flashcards }) => {
                 {card.question}
              </h3>
 
-             <div className="pt-6 border-t border-white/[0.03]">
+             <div className="pt-6 border-t border-white/3">
                 <p className="text-sm font-medium leading-relaxed text-slate-400">
                   {card.answer}
                 </p>

@@ -1,12 +1,11 @@
-import React from 'react';
-import { Bot, User, Send, Paperclip, Mic } from 'lucide-react';
+import { Bot, User, Send, Paperclip,} from 'lucide-react';
 import Card from '../../../components/ui/Card';
 
 const ChatTab = ({ messages }) => {
   return (
     <Card className="flex flex-col h-full overflow-hidden p-0 border-white/10 bg-white/5 backdrop-blur-xl">
       {/* CHAT HEADER */}
-      <div className="border-b border-white/[0.03] p-6 flex items-center gap-4">
+      <div className="border-b border-white/3 p-6 flex items-center gap-4">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
           <Bot className="h-6 w-6 text-indigo-400" />
         </div>
@@ -17,7 +16,7 @@ const ChatTab = ({ messages }) => {
       </div>
 
       {/* CHAT BODY */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 min-h-[400px]">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 min-h-100">
         {messages.map((message, index) => (
           <div
             key={index}
@@ -26,7 +25,7 @@ const ChatTab = ({ messages }) => {
             <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-all ${
               message.role === "assistant" 
                 ? "bg-indigo-500/10 border-indigo-500/20" 
-                : "bg-white/[0.02] border-white/5"
+                : "bg-white/2 border-white/5"
             }`}>
               {message.role === "assistant" 
                 ? <Bot className="h-5 w-5 text-indigo-400" /> 
@@ -34,10 +33,10 @@ const ChatTab = ({ messages }) => {
               }
             </div>
 
-            <div className={`max-w-[80%] rounded-[2rem] border px-6 py-4 ${
+            <div className={`max-w-[80%] rounded-4xl border px-6 py-4 ${
               message.role === "assistant"
-                ? "border-white/[0.03] bg-white/[0.02] text-slate-200"
-                : "border-indigo-500/10 bg-indigo-500/[0.03] text-white"
+                ? "border-white/3 bg-white/2 text-slate-200"
+                : "border-indigo-500/10 bg-indigo-500/3 text-white"
             }`}>
               <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">
                 {message.text}
@@ -48,8 +47,8 @@ const ChatTab = ({ messages }) => {
       </div>
 
       {/* INPUT */}
-      <div className="p-6 border-t border-white/[0.03]">
-        <div className="flex items-end gap-3 rounded-[2.5rem] border border-white/[0.05] bg-white/[0.01] p-2.5 focus-within:border-indigo-500/30 transition-all">
+      <div className="p-6 border-t border-white/3">
+        <div className="flex items-end gap-3 rounded-[2.5rem] border border-white/5 bg-white/1 p-2.5 focus-within:border-indigo-500/30 transition-all">
           <button className="h-11 w-11 rounded-full flex items-center justify-center text-slate-600 hover:text-indigo-400 hover:bg-white/5 transition-all shrink-0">
             <Paperclip className="h-5 w-5" />
           </button>

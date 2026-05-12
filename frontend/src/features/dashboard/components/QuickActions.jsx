@@ -1,6 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Sparkles, Layers3, Bot, ChevronRight, Plus } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 
@@ -39,7 +38,7 @@ const QuickActions = ({ actions }) => {
           <button
             key={item.id}
             onClick={() => handleAction(item.title)}
-            className="group flex items-center justify-between rounded-3xl border border-white/[0.03] bg-white/[0.02] p-5 text-left transition-all duration-300 hover:border-indigo-500/30 hover:bg-white/[0.05] shadow-2xl"
+            className="group flex items-center justify-between rounded-3xl border border-white/3 bg-white/2 p-5 text-left transition-all duration-300 hover:border-indigo-500/30 hover:bg-white/5 shadow-2xl"
           >
             <div className="flex items-center gap-4">
               <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-${item.color || 'indigo'}-500/10 text-${item.color || 'indigo'}-400 group-hover:scale-110 transition-transform`}>

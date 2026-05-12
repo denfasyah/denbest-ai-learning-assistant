@@ -16,7 +16,7 @@ const NoteCard = ({
   return (
     <Card 
       hover 
-      className="p-8 cursor-pointer relative group h-full flex flex-col border-white/[0.03] transition-all duration-500"
+      className="p-8 cursor-pointer relative group h-full flex flex-col border-white/3 transition-all duration-500"
       onClick={() => onSelect(note)}
     >
       {/* PIN & MENU */}
@@ -78,7 +78,7 @@ const NoteCard = ({
         {note.content}
       </p>
 
-      <div className="mt-8 flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest pt-4 border-t border-white/[0.02]">
+      <div className="mt-8 flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest pt-4 border-t border-white/2">
         <Clock3 className="h-3.5 w-3.5" />
         {note.updatedAt}
       </div>

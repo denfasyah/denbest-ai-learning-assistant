@@ -4,7 +4,6 @@ import {
   Bot, CalendarDays, AlertTriangle, ExternalLink 
 } from 'lucide-react';
 import Card from '../../../components/ui/Card';
-import Badge from '../../../components/ui/Badge';
 
 const getActivityConfig = (type) => {
   const configs = {
@@ -23,7 +22,7 @@ const HistoryCard = ({ activity }) => {
   const { icon: Icon, color } = getActivityConfig(activity.type);
 
   return (
-    <Card hover className="p-8 group border-white/[0.03] transition-all duration-500 overflow-hidden relative">
+    <Card hover className="p-8 group border-white/3 transition-all duration-500 overflow-hidden relative">
       <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
          <Icon className={`h-24 w-24 ${color}`} />
       </div>
@@ -31,7 +30,7 @@ const HistoryCard = ({ activity }) => {
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 relative z-10">
         <div className="flex flex-1 gap-6">
           {/* ICON */}
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[2rem] bg-white/[0.02] border border-white/5 group-hover:border-indigo-500/20 transition-all duration-500 shadow-2xl">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-4xl bg-white/2 border border-white/5 group-hover:border-indigo-500/20 transition-all duration-500 shadow-2xl">
             <Icon className={`h-7 w-7 ${color}`} />
           </div>
 
@@ -62,7 +61,7 @@ const HistoryCard = ({ activity }) => {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-4">
-              <div className="inline-flex items-center gap-3 rounded-2xl border border-white/[0.05] bg-white/[0.02] px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <div className="inline-flex items-center gap-3 rounded-2xl border border-white/5 bg-white/2 px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 <FileText className="h-4 w-4 text-indigo-500" />
                 {activity.file}
               </div>
@@ -76,7 +75,7 @@ const HistoryCard = ({ activity }) => {
             </div>
 
             {!activity.resourceAvailable && (
-              <div className="mt-6 rounded-2xl bg-rose-500/[0.02] border border-rose-500/10 p-5 animate-in slide-in-from-top-2 duration-700">
+              <div className="mt-6 rounded-2xl bg-rose-500/2 border border-rose-500/10 p-5 animate-in slide-in-from-top-2 duration-700">
                 <p className="text-[11px] text-rose-500/60 leading-loose font-bold uppercase tracking-widest">
                   NOTE: Target resource has been archived or removed from active workspace. 
                   Reference record preserved for learning audit.
@@ -94,7 +93,7 @@ const HistoryCard = ({ activity }) => {
             className={`h-14 px-8 rounded-2xl flex items-center gap-3 text-xs font-black italic tracking-tighter transition-all duration-500 ${
                activity.resourceAvailable 
                ? 'bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 hover:scale-105 active:scale-95' 
-               : 'bg-white/[0.03] border border-white/5 text-slate-700 cursor-not-allowed opacity-50'
+               : 'bg-white/3 border border-white/5 text-slate-700 cursor-not-allowed opacity-50'
             }`}
           >
             {activity.resourceAvailable ? 'RESTORE CONTEXT' : 'ARCHIVED'}

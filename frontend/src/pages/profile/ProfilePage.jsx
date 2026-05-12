@@ -1,4 +1,3 @@
-import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { PROFILE_STATS, SKILL_PROGRESS, RECENT_LEARNING, ACHIEVEMENTS } from "../../features/profile/constants/profileData";
 import ProfileHeader from "../../features/profile/components/ProfileHeader";
