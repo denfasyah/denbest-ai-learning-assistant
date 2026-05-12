@@ -205,6 +205,9 @@ Frontend Dashboard:
 - Batasi chat history (max 10 message)
 - Validasi ownership: `Document.userId === req.user.id`
 - Gunakan loading state di setiap AI action
+- Gunakan status document (processing | ready | failed)
+- Gunakan loading & retry mechanism untuk AI request
+
 ## 6. Global Rules & Error Handling Strategy
 
 ### Centralized Error Handling

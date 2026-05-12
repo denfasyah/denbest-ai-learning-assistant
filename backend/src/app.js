@@ -2,8 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
+const workspaceRoutes = require("./routes/workspaceRoutes");
+const documentRoutes = require("./routes/documentRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+const summaryRoutes = require("./routes/summaryRoutes");
+const flashcardRoutes = require("./routes/flashcardRoutes");
+const quizRoutes = require("./routes/quizRoutes");
+const historyRoutes = require("./routes/historyRoutes");
 
 dotenv.config();
+
 
 const app = express();
 
@@ -13,6 +21,41 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+
+app.use(
+  "/api/v1/workspaces",
+  workspaceRoutes
+);
+
+app.use(
+  "/api/v1/documents",
+  documentRoutes
+);
+
+app.use(
+  "/api/v1/history",
+  historyRoutes
+);
+
+app.use(
+  "/api/v1/workspaces/:workspaceId/chat",
+  chatRoutes
+);
+
+app.use(
+  "/api/v1/workspaces/:workspaceId/summary",
+  summaryRoutes
+);
+
+app.use(
+  "/api/v1/workspaces/:workspaceId/flashcards",
+  flashcardRoutes
+);
+
+app.use(
+  "/api/v1/workspaces/:workspaceId/quizzes",
+  quizRoutes
+);
 
 // Health Check
 app.get('/api', (req, res) => {

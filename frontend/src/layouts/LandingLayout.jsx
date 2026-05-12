@@ -1,5 +1,5 @@
-import Navbar from '../components/landing/Navbar';
-import Footer from '../components/landing/Footer';
+import Navbar from '../layouts/components/NavbarLanding';
+import Footer from '../layouts/components/FooterLanding';
 
 const LandingLayout = ({ children }) => {
   return (
