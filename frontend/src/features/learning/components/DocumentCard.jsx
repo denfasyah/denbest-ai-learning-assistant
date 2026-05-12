@@ -19,10 +19,14 @@ const DocumentCard = ({
   return (
     <Card hover className="p-8 flex flex-col group h-full transition-all duration-500">
       {/* TOP HEADER */}
-      <div className="flex items-start justify-between mb-8">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:bg-indigo-500/20 transition-all">
+      <div className="flex items-start justify-between mb-5">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:bg-indigo-500/20 transition-all shrink-0">
           <FileText className="h-7 w-7 text-indigo-400" />
         </div>
+
+         <h3 className="text-lg line-clamp-2 mr-8 font-black text-white leading-snug transition-colors">
+          {document.title}
+        </h3>
 
 
         <div className="relative">
@@ -64,9 +68,9 @@ const DocumentCard = ({
           <span className="text-[10px] text-slate-600 uppercase tracking-widest font-black">PDF Document</span>
         </div>
 
-        <h3 className="text-xl font-black text-white leading-snug group-hover:text-indigo-400 transition-colors">
+        {/* <h3 className="text-xl font-black text-white leading-snug group-hover:text-indigo-400 transition-colors">
           {document.title}
-        </h3>
+        </h3> */}
 
         <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
           <Calendar className="h-3 w-3" />
@@ -82,7 +86,7 @@ const DocumentCard = ({
           onClick={() => navigate(`/learning/workspace/${document.id}`)}
           icon={Play}
         >
-          START
+          Start Learning
         </Button>
         <button
           onClick={(e) => { e.stopPropagation(); onFavorite(document.id); }}
