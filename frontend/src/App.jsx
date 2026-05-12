@@ -4,6 +4,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
+// Layouts
+import DashboardLayout from './layouts/DashboardLayout';
+
 // Pages
 import LandingPage from './pages/landing/LandingPage';
 import LoginPage from './pages/auth/LoginPage';
@@ -13,7 +16,7 @@ import LearningPage from './pages/learning/LearningPage';
 import WorkspacePage from './pages/workspace/WorkspacePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/profile/ProfilePage';
-import AssistantPage from './pages/asistant/AssistantPage';
+import AssistantPage from './pages/assistant/AssistantPage';
 import NotesPage from './pages/notes/NotesPage';
 import HistoryPage from './pages/history/HistoryPage';
 import SettingsPage from './pages/profile/SettingPage';
@@ -25,7 +28,7 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Public Routes (Guard: Redirect to dashboard if logged in) */}
+            {/* Public Routes */}
             <Route 
               path="/" 
               element={
@@ -54,89 +57,27 @@ function App() {
             {/* Action Routes */}
             <Route path="/logout" element={<Navigate to="/login" replace />} />
             
-            {/* Protected Routes (Guard: Redirect to login if not logged in) */}
+            {/* Protected Routes Wrapper */}
             <Route 
-              path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <DashboardPage />
+                  <DashboardLayout />
                 </ProtectedRoute>
-              } 
-            />
+              }
+            >
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/learning" element={<LearningPage />} />
+              <Route path="/learning/workspace/:id" element={<WorkspacePage />} />
+              <Route path="/learning/workspace/:id/:tab" element={<WorkspacePage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/assistant" element={<AssistantPage />} />
+              <Route path="/notes" element={<NotesPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/setting" element={<SettingsPage />} />
+              <Route path="/notification" element={<NotificationPage />} />
+            </Route>
 
-            <Route 
-              path="/learning" 
-              element={
-                <ProtectedRoute>
-                  <LearningPage />
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/learning/workspace/" 
-              element={
-                <ProtectedRoute>
-                  <WorkspacePage />
-                </ProtectedRoute>
-              } 
-            />
-
-             <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              } 
-            />
-
-            <Route 
-              path="/assistent" 
-              element={
-                <ProtectedRoute>
-                  <AssistantPage />
-                </ProtectedRoute>
-              } 
-            />
-
-            <Route 
-              path="/notes" 
-              element={
-                <ProtectedRoute>
-                  <NotesPage />
-                </ProtectedRoute>
-              } 
-            />
-
-             <Route 
-              path="/history" 
-              element={
-                <ProtectedRoute>
-                  <HistoryPage />
-                </ProtectedRoute>
-              } 
-            />
-
-            <Route 
-              path="/setting" 
-              element={
-                <ProtectedRoute>
-                  <SettingsPage />
-                </ProtectedRoute>
-              } 
-            />
-
-            <Route 
-              path="/notification" 
-              element={
-                <ProtectedRoute>
-                  <NotificationPage />
-                </ProtectedRoute>
-              } 
-            />
-
-            {/* Fallback for invalid URLs */}
+            {/* Fallback */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
@@ -146,3 +87,4 @@ function App() {
 }
 
 export default App;
+

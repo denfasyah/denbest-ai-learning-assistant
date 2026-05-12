@@ -1,6 +1,4 @@
-
 import { useState } from "react";
-
 import {
   Settings,
   Bell,
@@ -14,593 +12,170 @@ import {
   Mail,
   Save,
 } from "lucide-react";
-
 import { useAuth } from "../../context/AuthContext";
-import useLogout from "../../hooks/useLogout";
-
-import SidebarDashboard from "../../components/dashboard/layout/SidebarDashboard";
-import NavbarDashboard from "../../components/dashboard/layout/NavbarDashboard";
+import Card from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+import Input from "../../components/ui/Input";
+import Badge from "../../components/ui/Badge";
 
 const SettingsPage = () => {
   const { user } = useAuth();
-  const { handleLogout } = useLogout();
-
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [darkMode, setDarkMode] = useState(true);
   const [emailNotification, setEmailNotification] = useState(true);
   const [aiAutoSave, setAiAutoSave] = useState(true);
 
   return (
-    <div className="flex min-h-screen bg-linear-to-b from-black via-[#050816] to-violet-950 text-white">
-      {/* OVERLAY */}
-      {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
-        />
-      )}
-
-      {/* SIDEBAR */}
-      <SidebarDashboard
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        handleLogout={handleLogout}
-        user={user}
-      />
-
-      {/* MAIN */}
-      <main className="flex flex-1 flex-col lg:ml-72">
-        {/* NAVBAR */}
-        <NavbarDashboard
-          title={"Settings"}
-          description={"Manage your account preferences."}
-          setSidebarOpen={setSidebarOpen}
-          user={user}
-          handleLogout={handleLogout}
-        />
-
-        {/* CONTENT */}
-        <div className="px-5 py-5 lg:px-8">
-          {/* HERO */}
-          <div
-            className="
-              mb-8 overflow-hidden
-              rounded-4xl
-              border border-white/10
-              bg-linear-to-br from-violet-500/10 via-blue-500/10 to-transparent
-              p-7
-              backdrop-blur-xl
-            "
-          >
-            <div className="max-w-2xl">
-              <div
-                className="
-                  mb-5 flex h-16 w-16 items-center justify-center
-                  rounded-3xl
-                  bg-linear-to-br from-violet-500 to-blue-500
-                "
-              >
-                <Settings className="h-8 w-8 text-white" />
-              </div>
-
-              <h1 className="text-3xl font-bold tracking-[-1px]">
-                Workspace Settings
-              </h1>
-
-              <p className="mt-4 leading-relaxed text-slate-300">
-                Kelola account, preferences, security, dan pengaturan AI
-                Learning Workspace.
-              </p>
-            </div>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* HERO SECTION */}
+      <Card variant="glass" className="p-7">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-linear-to-br from-indigo-500 to-violet-500 shadow-lg shadow-indigo-500/20">
+            <Settings className="h-8 w-8 text-white" />
           </div>
-
-          {/* GRID */}
-          <div className="grid grid-cols-1 gap-5 xl:grid-cols-3">
-            {/* LEFT */}
-            <div className="space-y-5 xl:col-span-2">
-              {/* ACCOUNT SETTINGS */}
-              <div
-                className="
-                  rounded-4xl
-                  border border-white/10
-                  bg-white/5
-                  p-6
-                  backdrop-blur-xl
-                "
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="
-                      flex h-12 w-12 items-center justify-center
-                      rounded-2xl
-                      bg-linear-to-br from-blue-500/20 to-violet-500/20
-                    "
-                  >
-                    <User className="h-5 w-5 text-blue-300" />
-                  </div>
-
-                  <div>
-                    <h2 className="text-2xl font-bold">
-                      Account Settings
-                    </h2>
-
-                    <p className="mt-1 text-sm text-slate-400">
-                      Update your personal information.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
-                  <div>
-                    <label className="text-sm text-slate-400">
-                      Full Name
-                    </label>
-
-                    <input
-                      type="text"
-                      defaultValue={user?.displayName || "Adent Fallah"}
-                      className="
-                        mt-3 w-full
-                        rounded-2xl
-                        border border-white/10
-                        bg-white/5
-                        px-5 py-4
-                        text-white
-                        outline-none
-                      "
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm text-slate-400">
-                      Email Address
-                    </label>
-
-                    <input
-                      type="email"
-                      defaultValue={user?.email || "adent@gmail.com"}
-                      className="
-                        mt-3 w-full
-                        rounded-2xl
-                        border border-white/10
-                        bg-white/5
-                        px-5 py-4
-                        text-white
-                        outline-none
-                      "
-                    />
-                  </div>
-                </div>
-
-                <button
-                  className="
-                    mt-6 flex items-center gap-2
-                    rounded-2xl
-                    bg-linear-to-r from-blue-500 to-violet-500
-                    px-5 py-3
-                    text-sm font-semibold text-white
-                    transition-all duration-300
-
-                    hover:scale-[1.02]
-                  "
-                >
-                  <Save className="h-4 w-4" />
-                  Save Changes
-                </button>
-              </div>
-
-              {/* SECURITY */}
-              <div
-                className="
-                  rounded-4xl
-                  border border-white/10
-                  bg-white/5
-                  p-6
-                  backdrop-blur-xl
-                "
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="
-                      flex h-12 w-12 items-center justify-center
-                      rounded-2xl
-                      bg-linear-to-br from-emerald-500/20 to-cyan-500/20
-                    "
-                  >
-                    <Shield className="h-5 w-5 text-emerald-300" />
-                  </div>
-
-                  <div>
-                    <h2 className="text-2xl font-bold">
-                      Security
-                    </h2>
-
-                    <p className="mt-1 text-sm text-slate-400">
-                      Protect your workspace account.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-8 space-y-4">
-                  <button
-                    className="
-                      flex w-full items-center justify-between
-                      rounded-3xl
-                      border border-white/10
-                      bg-white/[0.03]
-                      px-5 py-5
-                      transition-all duration-300
-
-                      hover:bg-white/[0.05]
-                    "
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="
-                          flex h-12 w-12 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                        <Lock className="h-5 w-5 text-slate-300" />
-                      </div>
-
-                      <div className="text-left">
-                        <h3 className="font-semibold">
-                          Change Password
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-400">
-                          Update your account password.
-                        </p>
-                      </div>
-                    </div>
-
-                    <ChevronRight className="h-5 w-5 text-slate-500" />
-                  </button>
-
-                  <button
-                    className="
-                      flex w-full items-center justify-between
-                      rounded-3xl
-                      border border-white/10
-                      bg-white/[0.03]
-                      px-5 py-5
-                      transition-all duration-300
-
-                      hover:bg-white/[0.05]
-                    "
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="
-                          flex h-12 w-12 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                        <LogOut className="h-5 w-5 text-slate-300" />
-                      </div>
-
-                      <div className="text-left">
-                        <h3 className="font-semibold">
-                          Logout All Devices
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-400">
-                          Sign out from all active sessions.
-                        </p>
-                      </div>
-                    </div>
-
-                    <ChevronRight className="h-5 w-5 text-slate-500" />
-                  </button>
-                </div>
-              </div>
-
-              {/* DANGER ZONE */}
-              <div
-                className="
-                  rounded-4xl
-                  border border-red-500/20
-                  bg-red-500/[0.03]
-                  p-6
-                  backdrop-blur-xl
-                "
-              >
-                <h2 className="text-2xl font-bold text-red-400">
-                  Danger Zone
-                </h2>
-
-                <p className="mt-2 text-sm text-slate-400">
-                  Permanent and destructive account actions.
-                </p>
-
-                <button
-                  className="
-                    mt-6 flex items-center gap-2
-                    rounded-2xl
-                    bg-red-500/10
-                    px-5 py-3
-                    text-sm font-semibold text-red-400
-                    transition-all duration-300
-
-                    hover:bg-red-500/20
-                  "
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete Account
-                </button>
-              </div>
-            </div>
-
-            {/* RIGHT */}
-            <div className="space-y-5">
-              {/* PREFERENCES */}
-              <div
-                className="
-                  rounded-4xl
-                  border border-white/10
-                  bg-white/5
-                  p-6
-                  backdrop-blur-xl
-                "
-              >
-                <h2 className="text-2xl font-bold">
-                  Preferences
-                </h2>
-
-                <p className="mt-2 text-sm text-slate-400">
-                  Customize your workspace experience.
-                </p>
-
-                <div className="mt-8 space-y-5">
-                  {/* DARK MODE */}
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="
-                          flex h-11 w-11 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                        <Moon className="h-5 w-5 text-slate-300" />
-                      </div>
-
-                      <div>
-                        <h3 className="font-medium">
-                          Dark Mode
-                        </h3>
-
-                        <p className="mt-1 text-xs text-slate-400">
-                          Enable dark appearance.
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => setDarkMode(!darkMode)}
-                      className={`
-                        relative h-7 w-14 rounded-full
-                        transition-all duration-300
-
-                        ${
-                          darkMode
-                            ? "bg-linear-to-r from-blue-500 to-violet-500"
-                            : "bg-white/10"
-                        }
-                      `}
-                    >
-                      <div
-                        className={`
-                          absolute top-1 h-5 w-5 rounded-full bg-white
-                          transition-all duration-300
-
-                          ${darkMode ? "left-8" : "left-1"}
-                        `}
-                      />
-                    </button>
-                  </div>
-
-                  {/* EMAIL NOTIFICATION */}
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="
-                          flex h-11 w-11 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                        <Bell className="h-5 w-5 text-slate-300" />
-                      </div>
-
-                      <div>
-                        <h3 className="font-medium">
-                          Notifications
-                        </h3>
-
-                        <p className="mt-1 text-xs text-slate-400">
-                          Receive activity alerts.
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        setEmailNotification(!emailNotification)
-                      }
-                      className={`
-                        relative h-7 w-14 rounded-full
-                        transition-all duration-300
-
-                        ${
-                          emailNotification
-                            ? "bg-linear-to-r from-blue-500 to-violet-500"
-                            : "bg-white/10"
-                        }
-                      `}
-                    >
-                      <div
-                        className={`
-                          absolute top-1 h-5 w-5 rounded-full bg-white
-                          transition-all duration-300
-
-                          ${emailNotification ? "left-8" : "left-1"}
-                        `}
-                      />
-                    </button>
-                  </div>
-
-                  {/* AI AUTO SAVE */}
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="
-                          flex h-11 w-11 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                        <Mail className="h-5 w-5 text-slate-300" />
-                      </div>
-
-                      <div>
-                        <h3 className="font-medium">
-                          AI Auto Save
-                        </h3>
-
-                        <p className="mt-1 text-xs text-slate-400">
-                          Save AI summary automatically.
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => setAiAutoSave(!aiAutoSave)}
-                      className={`
-                        relative h-7 w-14 rounded-full
-                        transition-all duration-300
-
-                        ${
-                          aiAutoSave
-                            ? "bg-linear-to-r from-blue-500 to-violet-500"
-                            : "bg-white/10"
-                        }
-                      `}
-                    >
-                      <div
-                        className={`
-                          absolute top-1 h-5 w-5 rounded-full bg-white
-                          transition-all duration-300
-
-                          ${aiAutoSave ? "left-8" : "left-1"}
-                        `}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* CONNECTED ACCOUNT */}
-              <div
-                className="
-                  rounded-4xl
-                  border border-white/10
-                  bg-white/5
-                  p-6
-                  backdrop-blur-xl
-                "
-              >
-                <h2 className="text-2xl font-bold">
-                  Connected Accounts
-                </h2>
-
-                <p className="mt-2 text-sm text-slate-400">
-                  Manage third-party integrations.
-                </p>
-
-                <div className="mt-8 space-y-4">
-                  <button
-                    className="
-                      flex w-full items-center justify-between
-                      rounded-3xl
-                      border border-white/10
-                      bg-white/[0.03]
-                      px-5 py-5
-                    "
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="
-                          flex h-12 w-12 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                      </div>
-
-                      <div className="text-left">
-                        <h3 className="font-semibold">
-                          Google Account
-                        </h3>
-
-                        <p className="mt-1 text-sm text-emerald-400">
-                          Connected
-                        </p>
-                      </div>
-                    </div>
-                  </button>
-
-                  <button
-                    className="
-                      flex w-full items-center justify-between
-                      rounded-3xl
-                      border border-white/10
-                      bg-white/[0.03]
-                      px-5 py-5
-                    "
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="
-                          flex h-12 w-12 items-center justify-center
-                          rounded-2xl
-                          bg-white/5
-                        "
-                      >
-                      </div>
-
-                      <div className="text-left">
-                        <h3 className="font-semibold">
-                          Github Account
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                          Not Connected
-                        </p>
-                      </div>
-                    </div>
-
-                    <button
-                      className="
-                        rounded-2xl
-                        bg-linear-to-r from-blue-500 to-violet-500
-                        px-4 py-2
-                        text-sm font-semibold text-white
-                      "
-                    >
-                      Connect
-                    </button>
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div className="max-w-3xl">
+            <Badge variant="indigo" className="mb-3">System Control</Badge>
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight text-white">
+              Workspace Settings
+            </h1>
+            <p className="mt-4 leading-relaxed text-slate-400 font-medium">
+              Manage your profile, security preferences, and AI learning engine configuration.
+            </p>
           </div>
         </div>
-      </main>
+      </Card>
+
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
+        {/* LEFT COLUMN */}
+        <div className="space-y-8 xl:col-span-2">
+          {/* ACCOUNT SETTINGS */}
+          <Card className="p-8">
+            <div className="flex items-center gap-4 mb-10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+                <User className="h-6 w-6 text-indigo-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-white tracking-tight leading-none">Account Identity</h2>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-2">Public Profile Information</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <Input label="Full Name" defaultValue={user?.displayName || "Research Fellow"} />
+              <Input label="Email Address" defaultValue={user?.email || "user@example.com"} />
+            </div>
+
+            <Button variant="primary" icon={Save} className="mt-10 rounded-2xl h-14 px-8 font-black italic tracking-tight">
+              SAVE CHANGES
+            </Button>
+          </Card>
+
+          {/* SECURITY */}
+          <Card className="p-8">
+            <div className="flex items-center gap-4 mb-10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+                <Shield className="h-6 w-6 text-emerald-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-black text-white tracking-tight leading-none">Security Access</h2>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-2">Account Protection Layers</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                { label: "Update Password", desc: "Modify your access credentials", icon: Lock },
+                { label: "Active Sessions", desc: "Manage logged in devices", icon: LogOut },
+              ].map((item, idx) => (
+                <button key={idx} className="w-full flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-all group">
+                  <div className="flex items-center gap-5">
+                    <div className="h-12 w-12 flex items-center justify-center rounded-xl bg-white/5">
+                      <item.icon className="h-5 w-5 text-slate-400 group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="text-left">
+                      <h3 className="text-sm font-black text-white uppercase tracking-tight">{item.label}</h3>
+                      <p className="text-xs font-medium text-slate-500 mt-1">{item.desc}</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-slate-700 group-hover:translate-x-1 transition-all" />
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          {/* DANGER ZONE */}
+          <Card className="p-8 border-rose-500/20 bg-rose-500/[0.02]">
+             <h2 className="text-xl font-black text-rose-500 tracking-tight mb-2 uppercase">Destructive Zone</h2>
+             <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
+               Irreversible actions. Deleting your account will purge all documents, summaries, and AI history permanently.
+             </p>
+             <Button variant="secondary" icon={Trash2} className="rounded-xl h-12 px-6 font-black text-rose-500 border-rose-500/20 hover:bg-rose-500/10">
+               DELETE ACCOUNT
+             </Button>
+          </Card>
+        </div>
+
+        {/* RIGHT COLUMN */}
+        <div className="space-y-8">
+          {/* PREFERENCES */}
+          <Card className="p-8">
+            <h2 className="text-xl font-black text-white tracking-tight mb-8">Preferences</h2>
+            
+            <div className="space-y-6">
+              {[
+                { label: "Dark Mode", desc: "OLED optimized display", icon: Moon, state: darkMode, setState: setDarkMode },
+                { label: "AI Notifications", desc: "Smart alert frequency", icon: Bell, state: emailNotification, setState: setEmailNotification },
+                { label: "AI Auto Save", desc: "Commit insights to notes", icon: Mail, state: aiAutoSave, setState: setAiAutoSave },
+              ].map((pref, idx) => (
+                <div key={idx} className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white/5">
+                      <pref.icon className="h-4 w-4 text-slate-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-black text-white uppercase tracking-tight">{pref.label}</h3>
+                      <p className="text-[10px] font-bold text-slate-500 mt-1">{pref.desc}</p>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => pref.setState(!pref.state)}
+                    className={`relative h-6 w-11 rounded-full transition-all duration-300 ${pref.state ? 'bg-indigo-500' : 'bg-white/10'}`}
+                  >
+                    <div className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all duration-300 ${pref.state ? 'left-6' : 'left-1'}`} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* CONNECTED SERVICES */}
+          <Card className="p-8">
+             <h2 className="text-xl font-black text-white tracking-tight mb-8">Integrations</h2>
+             <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+                   <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">G</div>
+                      <div>
+                         <h3 className="text-xs font-black text-white uppercase tracking-tight">Google</h3>
+                         <p className="text-[10px] font-bold text-emerald-500 mt-0.5">Connected</p>
+                      </div>
+                   </div>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+                   <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center">GH</div>
+                      <div>
+                         <h3 className="text-xs font-black text-white uppercase tracking-tight">Github</h3>
+                         <p className="text-[10px] font-bold text-slate-500 mt-0.5">Disconnected</p>
+                      </div>
+                   </div>
+                   <button className="text-[10px] font-black text-indigo-400 hover:text-indigo-300 uppercase tracking-widest px-3">Connect</button>
+                </div>
+             </div>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
