@@ -1,9 +1,9 @@
 import LandingLayout from '../../layouts/LandingLayout';
-import Hero from '../../components/landing/Hero';
-import Features from '../../components/landing/Features';
-import HowItWorks from '../../components/landing/HowItWorks';
-import About from '../../components/landing/About';
-import Contact from '../../components/landing/Contact';
+import Hero from '../../features/landing/components/Hero';
+import Features from '../../features/landing/components/Features';
+import HowItWorks from '../../features/landing/components/HowItWorks';
+import About from '../../features/landing/components/About';
+import Contact from '../../features/landing/components/Contact';
 
 const LandingPage = () => {
   return (
