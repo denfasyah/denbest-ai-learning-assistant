@@ -3,8 +3,10 @@ import {
   getWorkspaces,
   createWorkspace,
   uploadDocument,
+  uploadWorkspaceAndDocument,
   deleteWorkspace,
   renameWorkspace,
+  toggleFavorite,
 } from "../services/learningApi";
 
 export const useLearningStore = create((set, get) => ({
@@ -21,19 +23,17 @@ export const useLearningStore = create((set, get) => ({
   // store re-create fungsi fetchWorkspaces setiap saat
 
   fetchWorkspaces: async (page = 1, limit = 10) => {
-    // Tambah guard: jangan fetch kalau sudah loading
-
     try {
       set({ isLoading: true, error: null });
       const response = await getWorkspaces(page, limit);
 
+      // response is { success, data, pagination, message }
       set({
         workspaces: response.data || [],
         currentPage: response.pagination?.page || 1,
         totalPages: response.pagination?.totalPages || 1,
       });
     } catch (error) {
-      console.error(error);
       set({
         error: error.response?.data?.message || "Failed to fetch workspaces",
       });
@@ -42,89 +42,78 @@ export const useLearningStore = create((set, get) => ({
     }
   },
 
- uploadAndCreateWorkspace: async (file) => {
-  let workspace = null; // ← tambah ini di luar try
+  uploadAndCreateWorkspace: async (file) => {
+    try {
+      set({ isUploading: true, uploadProgress: 0, error: null });
 
-  try {
-    set({ isUploading: true, uploadProgress: 0, error: null });
+      const response = await uploadWorkspaceAndDocument(file, (progressEvent) => {
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        set({ uploadProgress: percent });
+      });
 
-    const workspaceResponse = await createWorkspace({
-      title: file.name.replace(/\.[^/.]+$/, ""),
-    });
+      // response is { success, data: { workspace, document }, message }
+      const newWorkspace = response.data.workspace;
 
-    workspace = workspaceResponse.data; // ← simpan ke variable luar
+      set((state) => ({
+        workspaces: [newWorkspace, ...state.workspaces],
+        // Kita tidak refetch semua supaya instan, 
+        // tapi jika perlu sinkronisasi pagination bisa fetchWorkspaces()
+      }));
 
-    await uploadDocument(workspace._id, file, (progressEvent) => {
-      const percent = Math.round(
-        (progressEvent.loaded * 100) / progressEvent.total,
-      );
-      set({ uploadProgress: percent });
-    });
-
-    await get().fetchWorkspaces();
-    return workspace;
-
-  } catch (error) {
-    console.error(error);
-
-    // ← TAMBAHKAN INI: rollback workspace kalau upload gagal
-    if (workspace?._id) {
-      try {
-        await deleteWorkspace(workspace._id);
-      } catch (deleteError) {
-        console.error("Rollback failed:", deleteError);
-      }
+      return newWorkspace;
+    } catch (error) {
+      const message = error.response?.data?.message || "Upload failed";
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isUploading: false, uploadProgress: 0 });
     }
-
-    const message =
-      error.response?.status === 409
-        ? error.response.data.message
-        : error.response?.data?.message || "Upload failed";
-
-    set({ error: message });
-    throw error;
-
-  } finally {
-    set({ isUploading: false, uploadProgress: 0 });
-  }
-},
+  },
 
   removeWorkspace: async (workspaceId) => {
     try {
+      // Optimistic update bisa di sini, tapi kita hapus setelah sukses sesuai permintaan stabilisasi
       await deleteWorkspace(workspaceId);
 
       set((state) => ({
-        workspaces: state.workspaces.filter(
-          (workspace) => workspace._id !== workspaceId,
-        ),
+        workspaces: state.workspaces.filter((w) => w._id !== workspaceId),
       }));
     } catch (error) {
-      console.error(error);
-
-      set({
-        error: error.response?.data?.message || "Delete failed",
-      });
+      set({ error: error.response?.data?.message || "Delete failed" });
+      throw error;
     }
   },
 
   updateWorkspaceTitle: async (workspaceId, title) => {
     try {
       const response = await renameWorkspace(workspaceId, title);
-
       const updatedWorkspace = response.data;
 
       set((state) => ({
-        workspaces: state.workspaces.map((workspace) =>
-          workspace._id === workspaceId ? updatedWorkspace : workspace,
+        workspaces: state.workspaces.map((w) =>
+          w._id === workspaceId ? { ...w, ...updatedWorkspace } : w
         ),
       }));
     } catch (error) {
-      console.error(error);
-
-      set({
-        error: error.response?.data?.message || "Rename failed",
-      });
+      set({ error: error.response?.data?.message || "Rename failed" });
+      throw error;
     }
   },
-  clearError: () => set({ error: null })
+
+  toggleFavoriteAction: async (workspaceId) => {
+    try {
+      const response = await toggleFavorite(workspaceId);
+      const updatedWorkspace = response.data;
+
+      set((state) => ({
+        workspaces: state.workspaces.map((w) =>
+          w._id === workspaceId ? { ...w, ...updatedWorkspace } : w
+        ),
+      }));
+    } catch (error) {
+      set({ error: error.response?.data?.message || "Favorite failed" });
+    }
+  },
+
+  clearError: () => set({ error: null }),
 }));

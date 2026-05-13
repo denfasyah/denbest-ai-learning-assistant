@@ -104,11 +104,11 @@ exports.uploadDocument = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
+      message: "Document uploaded successfully",
       data: {
         workspaceId: document.workspaceId,
         documentId: document._id,
       },
-      message: "Document uploaded and workspace created",
     });
   } catch (error) {
     next(error);
@@ -133,8 +133,8 @@ exports.getWorkspaceDocuments = async (req, res, next) => {
     const documents = await Document.find({ workspaceId });
     res.status(200).json({
       success: true,
-      data: documents,
       message: "Documents retrieved successfully",
+      data: documents,
     });
   } catch (error) {
     next(error);

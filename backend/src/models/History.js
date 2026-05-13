@@ -23,6 +23,8 @@ const historySchema = new mongoose.Schema(
       type: String,
       enum: [
         "workspace_created",
+        "workspace_deleted",
+        "workspace_renamed",
         "document_uploaded",
         "chat_sent",
         "summary_generated",

@@ -34,19 +34,24 @@ const LearningPage = () => {
 
 
   const renderContent = () => {
-    // ✅ Tampilkan loading saat fetch atau upload
-    // if (isLoading || isUploading) {
-    //   return (
-    //     <div className="flex items-center justify-center py-24">
-    //       <div className="flex flex-col items-center gap-4">
-    //         <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
-    //         <p className="text-slate-400 font-medium">
-    //           {isUploading ? "Uploading document..." : "Loading workspaces..."}
-    //         </p>
-    //       </div>
-    //     </div>
-    //   );
-    // }
+    if (isLoading) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-64 w-full animate-pulse rounded-3xl bg-white/5 border border-white/10" />
+          ))}
+        </div>
+      );
+    }
+
+    if (isUploading) {
+      return (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
+          <p className="text-slate-400 font-medium">Processing your document...</p>
+        </div>
+      );
+    }
 
     // ✅ Tidak ada dokumen sama sekali
     if (documents.length === 0) {
@@ -70,10 +75,6 @@ const LearningPage = () => {
       );
     }
 
-    // Tambah tepat sebelum return
-console.log("isLoading:", isLoading);
-console.log("isUploading:", isUploading);
-console.log("documents.length:", documents.length);
     // ✅ Tampilkan grid normal
     return (
       <div className="space-y-10">

@@ -22,6 +22,27 @@ export const createWorkspace = async (
   return response.data;
 };
 
+export const uploadWorkspaceAndDocument = async (
+  file,
+  onUploadProgress
+) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await axiosInstance.post(
+    "/workspaces/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
+    }
+  );
+
+  return response.data;
+};
+
 export const uploadDocument = async (
   workspaceId,
   file,
