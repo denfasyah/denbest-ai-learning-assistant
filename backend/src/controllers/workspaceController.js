@@ -186,6 +186,17 @@ exports.getUserWorkspaces = async (req, res, next) => {
       .skip((page - 1) * limit)
       .limit(limit);
 
+    const workspacesWithFileType = await Promise.all(
+      workspaces.map(async (ws) => {
+        const doc = await Document.findOne({ workspaceId: ws._id });
+        return {
+          ...ws.toObject(),
+          fileType: doc?.fileType || "pdf",
+        };
+      })
+    );
+
+
     const total = await Workspace.countDocuments({ userId });
 
     res.status(200).json({
@@ -306,7 +317,7 @@ exports.deleteWorkspace = async (req, res, next) => {
     await Flashcard.deleteMany({ workspaceId });
     await Quiz.deleteMany({ workspaceId });
     await Summary.deleteMany({ workspaceId });
-    
+
     // Untuk Message, kita butuh conversationId. 
     // Tapi karena kita hapus workspace, kita bisa hapus message berdasarkan userId & workspaceId jika ada field itu, 
     // atau fetch conversationIds dulu.
