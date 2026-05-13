@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const workspaceRoutes = require("./routes/workspaceRoutes");
 const documentRoutes = require("./routes/documentRoutes");
@@ -13,12 +15,32 @@ const { verifyToken } = require("./middlewares/authMiddleware");
 
 dotenv.config();
 
-
 const app = express();
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Middleware verifikasi token query param untuk static files
+const staticAuthMiddleware = (req, res, next) => {
+  const token = req.query.token;
+  if (!token) return res.status(401).json({ message: 'Unauthorized' });
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+// ✅ FIX: Mount static file serving for BOTH /uploads and /api/v1/uploads
+// This ensures manual tests (direct root access) and frontend (API prefixed access) both work.
+// It is mounted BEFORE any API routes and the 404 handler.
+app.use(
+  ['/uploads', '/api/v1/uploads'],
+  staticAuthMiddleware,
+  express.static(path.join(__dirname, '../uploads'))
+);
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
@@ -78,7 +100,7 @@ app.use((req, res, next) => {
   });
 });
 
-// ← Multer error handler
+// Multer error handler
 app.use((err, req, res, next) => {
   if (err.code === "LIMIT_FILE_SIZE") {
     return res.status(400).json({
@@ -89,7 +111,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-// Centralized Error Handler (Standardized Format)
+// Centralized Error Handler
 app.use((err, req, res, next) => {
   console.error('Error Stack:', err.stack);
   const statusCode = err.status || 500;

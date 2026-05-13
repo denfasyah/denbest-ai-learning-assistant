@@ -4,9 +4,9 @@ import { FileText, MessagesSquare, Sparkles, Layers3, BrainCircuit } from "lucid
 const WorkspaceTabs = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const tabs = [
-    { id: 'content', label: 'Content', path: 'content', icon: FileText },
+    { id: 'content', label: 'kon', path: 'content', icon: FileText },
     { id: 'chat', label: 'Chat AI', path: 'chat', icon: MessagesSquare },
     { id: 'action', label: 'AI Action', path: 'action', icon: Sparkles },
     { id: 'flashcards', label: 'Flashcard', path: 'flashcards', icon: Layers3 },
@@ -14,7 +14,7 @@ const WorkspaceTabs = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-row gap-4">
       <div className="flex items-center gap-1 overflow-x-auto custom-scrollbar-hide whitespace-nowrap p-1 bg-white/2 rounded-2xl border border-white/5 w-fit max-w-full">
         {tabs.map((tab) => {
           const Icon = tab.icon;
