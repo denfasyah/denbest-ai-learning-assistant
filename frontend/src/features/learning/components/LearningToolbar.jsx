@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Search, Upload } from "lucide-react";
 import Button from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -11,8 +10,6 @@ const LearningToolbar = ({
   onFilterChange,
   onUpload,
 }) => {
-  const fileInputRef = useRef(null);
-
   const filterOptions = [
     { label: "Newest Upload", value: "new-upload" },
     { label: "Oldest Upload", value: "latest-upload" },
@@ -41,25 +38,11 @@ const LearningToolbar = ({
           />
         </div>
       </div>
-
-      {/* UPLOAD */}
       <div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          multiple
-          accept=".pdf,.txt,.md"
-          onChange={(e) => {
-            if (e.target.files.length > 0) {
-              onUpload(e.target.files);
-            }
-          }}
-        />
         <Button
           variant="primary"
           icon={Upload}
-          onClick={() => fileInputRef.current.click()}
+          onClick={onUpload}
           className="w-full md:w-auto px-8"
         >
           Upload Document

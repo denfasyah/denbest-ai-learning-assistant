@@ -65,6 +65,9 @@ exports.uploadWorkspaceAndDocument = async (req, res, next) => {
           success: false,
           message: "File with this name already exists in another workspace",
         });
+      } else {
+        // Cleanup orphan document if it exists but workspace is gone
+        await Document.deleteOne({ _id: existingDocument._id });
       }
     }
 

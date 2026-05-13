@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { GraduationCap, Upload } from "lucide-react";
 import useLearningDocuments from "../../features/learning/hooks/useLearningDocuments";
 import LearningToolbar from "../../features/learning/components/LearningToolbar";
@@ -10,6 +10,7 @@ import Badge from "../../components/ui/Badge";
 
 
 const LearningPage = () => {
+  const fileInputRef = useRef(null);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const {
@@ -106,9 +107,8 @@ const LearningPage = () => {
     if (documents.length === 0) {
       return (
         <EmptyState
-          title="No Documents Yet"
-          description="Upload your first material to start learning with AI."
-          onAction={handleUpload}
+          type="documents"
+          onAction={() => fileInputRef.current?.click()}
         />
       );
     }
@@ -226,7 +226,22 @@ const LearningPage = () => {
           setSearch(val);
           setCurrentPage(1);
         }}
-        onUpload={handleUpload}
+        onUpload={() => fileInputRef.current?.click()}
+      />
+
+      {/* HIDDEN FILE INPUT */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        multiple
+        accept=".pdf,.txt,.md"
+        onChange={(e) => {
+          if (e.target.files.length > 0) {
+            handleUpload(e.target.files);
+            e.target.value = ""; // Reset value so same file can be selected again
+          }
+        }}
       />
 
       {/* CONTENT AREA */}
