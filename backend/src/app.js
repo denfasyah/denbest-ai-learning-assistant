@@ -9,7 +9,7 @@ const summaryRoutes = require("./routes/summaryRoutes");
 const flashcardRoutes = require("./routes/flashcardRoutes");
 const quizRoutes = require("./routes/quizRoutes");
 const historyRoutes = require("./routes/historyRoutes");
-const {verifyToken} = require("./middlewares/authMiddleware");
+const { verifyToken } = require("./middlewares/authMiddleware");
 
 dotenv.config();
 
@@ -76,6 +76,17 @@ app.use((req, res, next) => {
     success: false,
     message: `Route not found: ${req.method} ${req.originalUrl}`,
   });
+});
+
+// ← Multer error handler
+app.use((err, req, res, next) => {
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({
+      success: false,
+      message: "File terlalu besar. Maksimal ukuran file adalah 10MB.",
+    });
+  }
+  next(err);
 });
 
 // Centralized Error Handler (Standardized Format)

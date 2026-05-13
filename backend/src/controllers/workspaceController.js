@@ -134,7 +134,10 @@ exports.uploadWorkspaceAndDocument = async (req, res, next) => {
       success: true,
       message: "Workspace and document created successfully",
       data: {
-        workspace,
+        workspace: {
+          ...workspace.toObject(),
+          fileType: document.fileType,
+        },
         document,
       },
     });
@@ -188,7 +191,7 @@ exports.getUserWorkspaces = async (req, res, next) => {
 
     const workspacesWithFileType = await Promise.all(
       workspaces.map(async (ws) => {
-        const doc = await Document.findOne({ workspaceId: ws._id });
+        const doc = await Document.findOne({ workspaceId: ws._id }, { fileType: 1 });
         return {
           ...ws.toObject(),
           fileType: doc?.fileType || "pdf",
@@ -202,7 +205,7 @@ exports.getUserWorkspaces = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Workspaces retrieved successfully",
-      data: workspaces,
+      data: workspacesWithFileType,
       pagination: {
         page,
         limit,

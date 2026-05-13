@@ -65,12 +65,13 @@ const DocumentCard = ({
           <Badge variant={document.favorite ? "amber" : "indigo"}>
             {document.favorite ? "Favorite" : "Workspace"}
           </Badge>
-          <span className="text-[10px] text-slate-600 uppercase tracking-widest font-black">PDF Document</span>
+          <span className="text-[10px] text-slate-600 uppercase tracking-widest font-black">
+            {document.fileType
+              ? `${document.fileType.toUpperCase()} Document`
+              : "PDF Document"}
+          </span>
         </div>
 
-        {/* <h3 className="text-xl font-black text-white leading-snug group-hover:text-indigo-400 transition-colors">
-          {document.title}
-        </h3> */}
 
         <div className="flex items-center gap-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
           <Calendar className="h-3 w-3" />
