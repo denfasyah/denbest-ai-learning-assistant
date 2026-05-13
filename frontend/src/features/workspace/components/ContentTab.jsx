@@ -1,33 +1,36 @@
-import { BookOpen, FileText } from 'lucide-react';
-import Card from '../../../components/ui/Card';
+import { FileText } from 'lucide-react';
+import useWorkspace from '../hooks/useWorkspace';
 
 const ContentTab = () => {
-  return (
-    <Card className="overflow-hidden border-white/10 bg-white/5 backdrop-blur-xl p-0">
-      <div className="border-b border-white/3 p-6 flex items-center gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
-          <BookOpen className="h-6 w-6 text-indigo-400" />
-        </div>
-        <div>
-          <h2 className="text-lg font-black text-white tracking-tight leading-none">Document Preview</h2>
-          <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Interactive Viewer</p>
-        </div>
-      </div>
+  const { document } = useWorkspace();
 
-      <div className="p-8">
-        <div className="flex h-150 items-center justify-center rounded-[2.5rem] border border-dashed border-white/10 bg-[#020204] group hover:border-indigo-500/30 transition-all cursor-default">
-          <div className="text-center animate-in fade-in zoom-in duration-700">
-            <div className="relative mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-4xl bg-indigo-500/5 group-hover:scale-110 transition-transform">
-              <FileText className="h-12 w-12 text-indigo-500/50" />
+  return (
+    <div className="w-full">
+      {/* Document Viewer - Full width */}
+      <div className="rounded-[32px] bg-[#050816]/40 border border-white/5 backdrop-blur-xl overflow-hidden relative group">
+        {/* Viewer Header */}
+        <div className="h-12 bg-white/5 border-b border-white/5 flex items-center px-6 justify-between">
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Interactive View Engine</span>
+          </div>
+        </div>
+
+        <div className="min-h-[600px] flex items-center justify-center p-12">
+          <div className="text-center space-y-4">
+            <div className="h-20 w-20 mx-auto rounded-3xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform duration-500">
+              <FileText className="h-10 w-10 text-indigo-400" />
             </div>
-            <h3 className="text-2xl font-black text-white tracking-tight">Quantum View Engine</h3>
-            <p className="mt-3 text-sm text-slate-500 font-medium max-w-62.5 mx-auto">
-              Dynamic PDF rendering and text extraction will be initialized here.
-            </p>
+            <div className="space-y-1">
+              <h3 className="text-xl font-black text-white tracking-tight">Quantum View Engine</h3>
+              <p className="text-slate-500 text-[13px] font-medium max-w-sm mx-auto">
+                High-fidelity document rendering and text extraction initialized for <span className="text-slate-300 italic">"{document?.originalName || "document"}"</span>.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
