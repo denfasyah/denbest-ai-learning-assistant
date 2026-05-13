@@ -16,7 +16,7 @@ const ContentTab = () => {
           </div>
         </div>
 
-        <div className="min-h-[600px] flex items-center justify-center p-12">
+        <div className="min-h-[400px] md:min-h-[600px] flex items-center justify-center p-8 md:p-12">
           <div className="text-center space-y-4">
             <div className="h-20 w-20 mx-auto rounded-3xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform duration-500">
               <FileText className="h-10 w-10 text-indigo-400" />

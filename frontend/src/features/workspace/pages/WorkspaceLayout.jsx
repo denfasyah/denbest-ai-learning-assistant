@@ -24,15 +24,15 @@ const WorkspaceLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setActiveWorkspace } = useWorkspaceStore();
-  
+
   const [workspace, setWorkspace] = useState(null);
   const [document, setDocument] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const isRootPath = location.pathname === `/learning/workspace/${workspaceId}` 
-                    || location.pathname === `/learning/workspace/${workspaceId}/`;
+    const isRootPath = location.pathname === `/learning/workspace/${workspaceId}`
+      || location.pathname === `/learning/workspace/${workspaceId}/`;
     if (isRootPath) {
       navigate('content', { replace: true });
     }
@@ -44,7 +44,7 @@ const WorkspaceLayout = () => {
     try {
       const workspaceRes = await getWorkspaceById(workspaceId);
       const docsRes = await getWorkspaceDocuments(workspaceId);
-      
+
       setWorkspace(workspaceRes.data);
       setDocument(docsRes.data[0] || null);
       setActiveWorkspace(workspaceId);
@@ -130,7 +130,7 @@ const WorkspaceLayout = () => {
 
   return (
     <WorkspaceContext.Provider value={contextValue}>
-      <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="space-y-8 max-w-5xl animate-in fade-in duration-700">
         {/* Header Section */}
         <WorkspaceHeader />
 
