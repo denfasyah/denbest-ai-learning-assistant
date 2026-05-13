@@ -183,13 +183,15 @@ const LearningPage = () => {
     >
       {/* DRAG OVERLAY */}
       {isDragging && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050816]/80 backdrop-blur-md border-4 border-dashed border-indigo-500/50 m-4 rounded-[40px] pointer-events-none animate-in fade-in zoom-in duration-300">
-          <div className="flex flex-col items-center gap-4">
-            <div className="h-20 w-20 rounded-3xl bg-indigo-500 flex items-center justify-center shadow-[0_0_50px_rgba(99,102,241,0.4)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050816]/60 backdrop-blur-sm p-6 pointer-events-none animate-in fade-in duration-300">
+          <div className="flex flex-col items-center justify-center gap-6 w-full max-w-lg aspect-video rounded-[40px] border-4 border-dashed border-indigo-500/40 bg-[#0f111a]/80 shadow-2xl animate-in zoom-in duration-300">
+            <div className="h-20 w-20 rounded-3xl bg-indigo-500 flex items-center justify-center shadow-[0_0_40px_rgba(99,102,241,0.4)]">
               <Upload className="h-10 w-10 text-white animate-bounce" />
             </div>
-            <h2 className="text-2xl font-black text-white">Drop files to upload</h2>
-            <p className="text-slate-400">Support PDF, TXT, and Markdown</p>
+            <div className="text-center">
+              <h2 className="text-2xl font-black text-white tracking-tight">Drop files to upload</h2>
+              <p className="text-slate-400 font-medium mt-1">Support PDF, TXT, and Markdown</p>
+            </div>
           </div>
         </div>
       )}

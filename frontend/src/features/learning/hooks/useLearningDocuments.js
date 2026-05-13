@@ -118,22 +118,39 @@ const useLearningDocuments = () => {
     setUploadStatus(null);
 
     // Show Summary Modal
+    let modalTitle = "Upload Selesai";
+    let modalIcon = "info";
+
+    if (results.success === files.length) {
+      modalTitle = "Upload Berhasil";
+      modalIcon = "success";
+    } else if (results.success === 0) {
+      modalTitle = "Gagal Upload";
+      modalIcon = "error";
+    }
+
     const failedText = results.failed
       .map((f) => `• <b>${f.name}</b>: ${f.reason}`)
       .join("<br/>");
 
     Swal.fire({
       ...swalConfig,
-      icon: results.failed.length === 0 ? "success" : "info",
-      title: "Upload Selesai",
+      icon: modalIcon,
+      title: modalTitle,
       html: `
-        <div class="text-left space-y-2">
-          <p>Berhasil: <span class="text-emerald-400 font-bold">${results.success}</span> file</p>
+        <div class="text-left space-y-3">
+          ${
+            results.success > 0
+              ? `<p class="text-slate-300 font-medium">Berhasil: <span class="text-emerald-400 font-black">${results.success}</span> file</p>`
+              : ""
+          }
           ${
             results.failed.length > 0
-              ? `<p>Gagal: <span class="text-rose-400 font-bold">${results.failed.length}</span> file</p>
-                 <div class="mt-2 text-xs text-slate-400 max-h-32 overflow-y-auto border border-white/5 p-2 rounded-lg bg-black/20">
-                   ${failedText}
+              ? `<div>
+                   <p class="text-slate-300 font-medium">Gagal: <span class="text-rose-400 font-black">${results.failed.length}</span> file</p>
+                   <div class="mt-3 text-xs text-slate-400 max-h-40 overflow-y-auto border border-white/10 p-3 rounded-2xl bg-black/40 leading-relaxed">
+                     ${failedText}
+                   </div>
                  </div>`
               : ""
           }

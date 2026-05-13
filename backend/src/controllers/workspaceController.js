@@ -243,7 +243,7 @@ exports.updateWorkspace = async (req, res, next) => {
 
     const existingWorkspace = await Workspace.findOne({
       userId,
-      title,
+      title: { $regex: new RegExp(`^${title.trim()}$`, "i") },
       _id: { $ne: workspaceId },
     });
     if (existingWorkspace) {
