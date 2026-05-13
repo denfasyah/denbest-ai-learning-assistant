@@ -13,7 +13,7 @@ const DocumentGrid = ({
     <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {documents.map((doc) => (
         <DocumentCard
-          key={doc.id}
+          key={doc._id}
           document={doc}
           onFavorite={onFavorite}
           onRename={onRename}

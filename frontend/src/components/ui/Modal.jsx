@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import Button from './Button';
 
@@ -40,7 +40,7 @@ const Modal = ({
 
         {/* FOOTER */}
         {footer && (
-          <div className="px-6 py-5 border-t border-white/5 bg-white/[0.02] flex justify-end gap-3">
+          <div className="px-6 py-5 border-t border-white/5 bg-white/2 flex justify-end gap-3">
             {footer}
           </div>
         )}

@@ -7,12 +7,11 @@ import {
   Pencil,
   Clock3,
   NotebookPen,
-  LayoutGrid,
+
   Sparkles,
   MoreHorizontal,
   X,
 } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
@@ -21,10 +20,10 @@ import Badge from "../../components/ui/Badge";
 import Pagination from "../../features/learning/components/Pagination";
 
 const NotesPage = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
 
   const [search, setSearch] = useState("");
-  const [viewMode, setViewMode] = useState("grid");
+  // const [viewMode, setViewMode] = useState("grid");
   const [filter, setFilter] = useState("newest");
   const [openMenuId, setOpenMenuId] = useState(null);
   const [selectedNote, setSelectedNote] = useState(null);
@@ -240,7 +239,7 @@ const NotesPage = () => {
               key={note.id}
               hover
               onClick={() => setSelectedNote(note)}
-              className="group relative flex flex-col p-7 border-white/[0.03] overflow-visible"
+              className="group relative flex flex-col p-7 border-white/3 overflow-visible"
             >
               <div className="absolute top-6 right-6 flex items-center gap-2">
                 {note.pinned && (
@@ -298,7 +297,7 @@ const NotesPage = () => {
                 {note.content}
               </p>
 
-              <div className="mt-auto pt-6 border-t border-white/[0.03] flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-widest">
+              <div className="mt-auto pt-6 border-t border-white/3 flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-widest">
                 <Clock3 className="h-3.5 w-3.5" />
                 Updated {note.updatedAt}
               </div>
@@ -354,7 +353,7 @@ const NotesPage = () => {
                   <div className="space-y-6">
                     <Badge variant="indigo">{selectedNote.tag}</Badge>
                     <h3 className="text-3xl font-black text-white">{selectedNote.title}</h3>
-                    <div className="bg-white/[0.02] rounded-3xl p-6 border border-white/[0.05] max-h-96 overflow-y-auto">
+                    <div className="bg-white/2 rounded-3xl p-6 border border-white/5 max-h-96 overflow-y-auto">
                       <p className="text-slate-300 leading-loose">{selectedNote.content}</p>
                     </div>
                   </div>

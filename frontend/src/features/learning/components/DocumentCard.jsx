@@ -14,7 +14,7 @@ const DocumentCard = ({
   setOpenMenuId
 }) => {
   const navigate = useNavigate();
-  const isMenuOpen = openMenuId === document.id;
+  const isMenuOpen = openMenuId === document._id;
 
   return (
     <Card hover className="p-8 flex flex-col group h-full transition-all duration-500">
@@ -33,7 +33,7 @@ const DocumentCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setOpenMenuId(isMenuOpen ? null : document.id);
+              setOpenMenuId(isMenuOpen ? null : document._id);
             }}
             className="p-2 hover:bg-white/5 rounded-xl transition-colors text-slate-500 hover:text-white"
           >
@@ -43,13 +43,13 @@ const DocumentCard = ({
           {isMenuOpen && (
             <div className="absolute right-0 mt-3 w-52 rounded-2xl border border-white/10 bg-[#0f111a] p-2 shadow-2xl z-20 animate-in fade-in zoom-in duration-200">
               <button
-                onClick={(e) => { e.stopPropagation(); onRename(document.id, document.title); setOpenMenuId(null); }}
+                onClick={(e) => { e.stopPropagation(); onRename(document._id, document.title); setOpenMenuId(null); }}
                 className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-300 hover:bg-white/5 hover:text-indigo-400 transition-all"
               >
                 <Edit2 className="h-4 w-4" /> Rename File
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); onDelete(document.id); setOpenMenuId(null); }}
+                onClick={(e) => { e.stopPropagation(); onDelete(document._id); setOpenMenuId(null); }}
                 className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-rose-500/80 hover:bg-rose-500/10 transition-all"
               >
                 <Trash2 className="h-4 w-4" /> Delete File
@@ -83,13 +83,13 @@ const DocumentCard = ({
         <Button
           variant="primary"
           className="flex-1 h-12 rounded-2xl font-black italic tracking-tight"
-          onClick={() => navigate(`/learning/workspace/${document.id}`)}
+          onClick={() => navigate(`/learning/workspace/${document._id}`)}
           icon={Play}
         >
           Start Learning
         </Button>
         <button
-          onClick={(e) => { e.stopPropagation(); onFavorite(document.id); }}
+          onClick={(e) => { e.stopPropagation(); onFavorite(document._id); }}
           className={`h-12 w-12 flex items-center justify-center rounded-2xl border transition-all duration-300 ${document.favorite
               ? "bg-amber-500/10 border-amber-500/30 text-amber-500"
               : "bg-white/5 border-white/5 text-slate-500 hover:text-white hover:border-white/10"

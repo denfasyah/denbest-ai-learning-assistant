@@ -1,23 +1,14 @@
 const express = require("express");
-
 const router = express.Router();
 
-const {
-createWorkspace,
-getUserWorkspaces,
-getWorkspaceDetail,
-updateWorkspace,
-deleteWorkspace,
-} = require("../controllers/workspaceController");
+const workspaceController = require("../controllers/workspaceController");
 
-router.post("/", createWorkspace);
+const { verifyToken } = require("../middlewares/authMiddleware");
 
-router.get("/", getUserWorkspaces);
-
-router.get("/", getWorkspaceDetail);
-
-router.patch("/", updateWorkspace);
-
-router.delete("/", deleteWorkspace);
-
+router.post("/", verifyToken, workspaceController.createWorkspace);
+router.get("/", verifyToken, workspaceController.getUserWorkspaces);
+router.get("/:id", verifyToken, workspaceController.getWorkspaceDetail);
+router.patch("/:id", verifyToken, workspaceController.updateWorkspace);
+router.delete("/:id", verifyToken, workspaceController.deleteWorkspace);
+router.delete("/:id", verifyToken, workspaceController.deleteWorkspace);
 module.exports = router;

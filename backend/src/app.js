@@ -9,6 +9,7 @@ const summaryRoutes = require("./routes/summaryRoutes");
 const flashcardRoutes = require("./routes/flashcardRoutes");
 const quizRoutes = require("./routes/quizRoutes");
 const historyRoutes = require("./routes/historyRoutes");
+const {verifyToken} = require("./middlewares/authMiddleware");
 
 dotenv.config();
 
@@ -20,40 +21,47 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 app.use(
   "/api/v1/workspaces",
+  verifyToken,
   workspaceRoutes
 );
 
 app.use(
-  "/api/v1/documents",
+  "/api/v1/workspaces/:workspaceId/documents",
+  verifyToken,
   documentRoutes
 );
 
 app.use(
   "/api/v1/history",
+  verifyToken,
   historyRoutes
 );
 
 app.use(
   "/api/v1/workspaces/:workspaceId/chat",
+  verifyToken,
   chatRoutes
 );
 
 app.use(
   "/api/v1/workspaces/:workspaceId/summary",
+  verifyToken,
   summaryRoutes
 );
 
 app.use(
   "/api/v1/workspaces/:workspaceId/flashcards",
+  verifyToken,
   flashcardRoutes
 );
 
 app.use(
   "/api/v1/workspaces/:workspaceId/quizzes",
+  verifyToken,
   quizRoutes
 );
 
@@ -64,9 +72,10 @@ app.get('/api', (req, res) => {
 
 // 404 Handler
 app.use((req, res, next) => {
-  const error = new Error('Not Found');
-  error.status = 404;
-  next(error);
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
+  });
 });
 
 // Centralized Error Handler (Standardized Format)

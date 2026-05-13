@@ -1,20 +1,16 @@
 const express = require("express");
+const router = express.Router({ mergeParams: true });
 
-const router = express.Router();
+const { verifyToken } = require("../middlewares/authMiddleware");
+const upload = require("../middlewares/uploadMiddleware");
 
 const {
-uploadDocument,
-getWorkspaceDocuments,
+  uploadDocument,
+  getWorkspaceDocuments,
 } = require("../controllers/documentController");
 
-router.post(
-"/workspaces/:workspaceId/documents",
-uploadDocument
-);
+router.post("/", verifyToken, upload.single("file"), uploadDocument);
 
-router.get(
-"/workspaces/:workspaceId/documents",
-getWorkspaceDocuments
-);
+router.get("/", verifyToken, getWorkspaceDocuments);
 
 module.exports = router;

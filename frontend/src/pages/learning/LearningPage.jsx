@@ -8,6 +8,7 @@ import Pagination from "../../features/learning/components/Pagination";
 import Card from "../../components/ui/Card";
 import Badge from "../../components/ui/Badge";
 
+
 const LearningPage = () => {
   const [openMenuId, setOpenMenuId] = useState(null);
 
@@ -22,12 +23,82 @@ const LearningPage = () => {
     totalPages,
     filteredDocuments,
     paginatedDocuments,
+    isLoading,      // ✅ tambah ini
+    isUploading,    // ✅ tambah ini
     handleUpload,
     handleDelete,
     handleRename,
     handleFavorite,
     formatTime,
   } = useLearningDocuments();
+
+
+  const renderContent = () => {
+    // ✅ Tampilkan loading saat fetch atau upload
+    // if (isLoading || isUploading) {
+    //   return (
+    //     <div className="flex items-center justify-center py-24">
+    //       <div className="flex flex-col items-center gap-4">
+    //         <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
+    //         <p className="text-slate-400 font-medium">
+    //           {isUploading ? "Uploading document..." : "Loading workspaces..."}
+    //         </p>
+    //       </div>
+    //     </div>
+    //   );
+    // }
+
+    // ✅ Tidak ada dokumen sama sekali
+    if (documents.length === 0) {
+      return (
+        <EmptyState
+          title="No Documents Yet"
+          description="Upload your first material to start learning with AI."
+          onAction={handleUpload}
+        />
+      );
+    }
+
+    // ✅ Ada dokumen tapi search tidak cocok
+    if (filteredDocuments.length === 0) {
+      return (
+        <EmptyState
+          title="No Matches Found"
+          description="Try adjusting your search or filters."
+          showAction={false}
+        />
+      );
+    }
+
+    // Tambah tepat sebelum return
+console.log("isLoading:", isLoading);
+console.log("isUploading:", isUploading);
+console.log("documents.length:", documents.length);
+    // ✅ Tampilkan grid normal
+    return (
+      <div className="space-y-10">
+        <DocumentGrid
+          documents={paginatedDocuments}
+          onFavorite={handleFavorite}
+          onRename={handleRename}
+          onDelete={handleDelete}
+          formatTime={formatTime}
+          openMenuId={openMenuId}
+          setOpenMenuId={setOpenMenuId}
+        />
+
+        {totalPages > 1 && (
+          <div className="flex justify-center pt-4">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
@@ -65,41 +136,7 @@ const LearningPage = () => {
       />
 
       {/* CONTENT AREA */}
-      {documents.length === 0 ? (
-        <EmptyState 
-          title="No Documents Yet" 
-          description="Upload your first material to start learning with AI."
-          onAction={handleUpload} 
-        />
-      ) : filteredDocuments.length === 0 ? (
-        <EmptyState 
-          title="No Matches Found" 
-          description="Try adjusting your search or filters."
-          showAction={false}
-        />
-      ) : (
-        <div className="space-y-10">
-          <DocumentGrid
-            documents={paginatedDocuments}
-            onFavorite={handleFavorite}
-            onRename={handleRename}
-            onDelete={handleDelete}
-            formatTime={formatTime}
-            openMenuId={openMenuId}
-            setOpenMenuId={setOpenMenuId}
-          />
-
-          {totalPages > 1 && (
-            <div className="flex justify-center pt-4">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
-          )}
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 };
