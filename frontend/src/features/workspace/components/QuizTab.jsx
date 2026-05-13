@@ -1,18 +1,45 @@
+import { useState } from 'react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Badge from '../../../components/ui/Badge';
 import { BrainCircuit, Sparkles, CheckCircle2, XCircle, RotateCcw } from 'lucide-react';
+import useWorkspace from '../hooks/useWorkspace';
 
-const QuizTab = ({ 
-  quizzes, 
-  submitted, 
-  selectedAnswers, 
-  onSelectAnswer, 
-  onSubmit, 
-  onRetry,
-  score 
-}) => {
+const QuizTab = () => {
+  const { workspace } = useWorkspace();
+  
+  // Local state for stub functionality
+  const [submitted, setSubmitted] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
+  
+  // Placeholder data
+  const quizzes = [
+    {
+      question: `Apa fokus utama dari ${workspace?.title || "dokumen ini"}?`,
+      correctAnswer: "Pembelajaran AI",
+      options: [
+        "Pembelajaran AI",
+        "Pemrograman Web",
+        "Desain Grafis",
+        "Manajemen Proyek",
+      ],
+    }
+  ];
+
+  const handleSelectAnswer = (index, option) => {
+    setSelectedAnswers(prev => ({ ...prev, [index]: option }));
+  };
+
+  const handleRetry = () => {
+    setSubmitted(false);
+    setSelectedAnswers({});
+  };
+
+  const score = quizzes.filter(
+    (quiz, index) => selectedAnswers[index] === quiz.correctAnswer
+  ).length;
+
   if (submitted) {
     return (
       <Card className="p-10 border-white/10 bg-white/5 backdrop-blur-xl animate-in zoom-in duration-500">
@@ -29,14 +56,13 @@ const QuizTab = ({
             Great effort! Review your answers below to understand the concepts better and master the material.
           </p>
 
-          <Button 
-            variant="secondary" 
-            icon={RotateCcw} 
-            onClick={onRetry}
-            className="mt-10 rounded-2xl h-12 px-8 font-black uppercase tracking-widest text-xs"
+          <button 
+            onClick={handleRetry}
+            className="mt-10 flex items-center gap-2 mx-auto px-8 h-12 rounded-2xl bg-white/5 text-white font-black uppercase tracking-widest text-xs border border-white/10 hover:bg-white/10 transition-all"
           >
+            <RotateCcw className="h-4 w-4" />
             Retry Quiz Session
-          </Button>
+          </button>
         </div>
 
         <div className="mt-16 space-y-6">
@@ -122,7 +148,7 @@ const QuizTab = ({
                 return (
                   <button
                     key={idx}
-                    onClick={() => onSelectAnswer(index, option)}
+                    onClick={() => handleSelectAnswer(index, option)}
                     className={`
                       rounded-2xl border px-6 py-4 text-left text-sm font-bold transition-all duration-300
                       ${isSelected
@@ -142,7 +168,7 @@ const QuizTab = ({
         <div className="flex justify-end pt-4">
           <Button 
             variant="primary" 
-            onClick={onSubmit}
+            onClick={() => setSubmitted(true)}
             className="rounded-2xl h-14 px-10 font-black italic tracking-tight"
           >
             SUBMIT ASSESSMENT

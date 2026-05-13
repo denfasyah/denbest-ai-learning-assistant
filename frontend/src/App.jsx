@@ -13,7 +13,12 @@ import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import LearningPage from './pages/learning/LearningPage';
-import WorkspacePage from './pages/workspace/WorkspacePage';
+import WorkspaceLayout from './features/workspace/pages/WorkspaceLayout';
+import ContentTab from './features/workspace/components/ContentTab';
+import ChatTab from './features/workspace/components/ChatTab';
+import ActionTab from './features/workspace/components/ActionTab';
+import FlashcardTab from './features/workspace/components/FlashcardTab';
+import QuizTab from './features/workspace/components/QuizTab';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import AssistantPage from './pages/assistant/AssistantPage';
@@ -67,8 +72,13 @@ function App() {
             >
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/learning" element={<LearningPage />} />
-              <Route path="/learning/workspace/:id" element={<WorkspacePage />} />
-              <Route path="/learning/workspace/:id/:tab" element={<WorkspacePage />} />
+              <Route path="/learning/workspace/:workspaceId" element={<WorkspaceLayout />}>
+                <Route path="content" element={<ContentTab />} />
+                <Route path="chat" element={<ChatTab />} />
+                <Route path="action" element={<ActionTab />} />
+                <Route path="flashcards" element={<FlashcardTab />} />
+                <Route path="quiz" element={<QuizTab />} />
+              </Route>
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/assistant" element={<AssistantPage />} />
               <Route path="/notes" element={<NotesPage />} />

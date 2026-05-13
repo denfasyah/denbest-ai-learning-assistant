@@ -3,8 +3,19 @@ import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Badge from '../../../components/ui/Badge';
 import { Layers3, Sparkles } from 'lucide-react';
+import useWorkspace from '../hooks/useWorkspace';
 
-const FlashcardTab = ({ flashcards }) => {
+const FlashcardTab = () => {
+  const { workspace } = useWorkspace();
+  
+  // Placeholder data
+  const flashcards = [
+    {
+      question: `Apa inti dari ${workspace?.title || "dokumen ini"}?`,
+      answer: "Inti dokumen ini akan diekstrak oleh AI pada task berikutnya.",
+    }
+  ];
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* CONTROL PANEL */}

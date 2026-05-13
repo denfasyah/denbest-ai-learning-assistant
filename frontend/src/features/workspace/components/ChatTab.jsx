@@ -1,7 +1,18 @@
-import { Bot, User, Send, Paperclip,} from 'lucide-react';
+import { Bot, User, Send, Paperclip } from 'lucide-react';
 import Card from '../../../components/ui/Card';
+import useWorkspace from '../hooks/useWorkspace';
 
-const ChatTab = ({ messages }) => {
+const ChatTab = () => {
+  const { workspace } = useWorkspace();
+  
+  // Placeholder messages for now
+  const messages = [
+    {
+      role: "assistant",
+      text: `Halo 👋 Saya sudah memahami isi dokumen ${workspace?.title || "ini"}. Ada bagian yang ingin dipelajari?`,
+    }
+  ];
+
   return (
     <Card className="flex flex-col h-full overflow-hidden p-0 border-white/10 bg-white/5 backdrop-blur-xl">
       {/* CHAT HEADER */}
