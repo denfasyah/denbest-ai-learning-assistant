@@ -14,7 +14,7 @@ const ChatTab = () => {
 
   return (
     <div className="w-full max-w-5xl mx-auto pb-12">
-      <Card className="flex flex-col p-0 border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden h-[600px]">
+      <Card className="flex flex-col p-0 border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden min-h-[500px] max-h-[70vh]">
         {/* CHAT HEADER */}
         <div className="border-b border-white/3 p-4 md:p-5 flex items-center gap-3 bg-white/2 shrink-0">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/20">
@@ -44,7 +44,7 @@ const ChatTab = () => {
                 }
               </div>
 
-              <div className={`max-w-[85%] rounded-2xl md:rounded-3xl border px-4 md:px-6 py-3 md:py-4 ${
+              <div className={`max-w-[85%] min-w-0 rounded-2xl md:rounded-3xl border px-4 md:px-6 py-3 md:py-4 ${
                 message.role === "assistant"
                   ? "border-white/5 bg-white/2 text-slate-200"
                   : "border-indigo-500/10 bg-indigo-500/5 text-white"
