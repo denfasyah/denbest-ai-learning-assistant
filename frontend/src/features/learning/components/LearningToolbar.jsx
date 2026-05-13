@@ -51,10 +51,8 @@ const LearningToolbar = ({
           multiple
           accept=".pdf,.txt,.md"
           onChange={(e) => {
-            const file = e.target.files[0];
-
-            if (file) {
-              onUpload(file);
+            if (e.target.files.length > 0) {
+              onUpload(e.target.files);
             }
           }}
         />

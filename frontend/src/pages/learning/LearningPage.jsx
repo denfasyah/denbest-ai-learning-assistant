@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Upload } from "lucide-react";
 import useLearningDocuments from "../../features/learning/hooks/useLearningDocuments";
 import LearningToolbar from "../../features/learning/components/LearningToolbar";
 import DocumentGrid from "../../features/learning/components/DocumentGrid";
@@ -11,7 +11,7 @@ import Badge from "../../components/ui/Badge";
 
 const LearningPage = () => {
   const [openMenuId, setOpenMenuId] = useState(null);
-
+  const [isDragging, setIsDragging] = useState(false);
   const {
     documents,
     search,
@@ -23,14 +23,39 @@ const LearningPage = () => {
     totalPages,
     filteredDocuments,
     paginatedDocuments,
-    isLoading,      // ✅ tambah ini
-    isUploading,    // ✅ tambah ini
+    isLoading,
+    isUploading,
+    uploadProgress,
+    uploadStatus,
     handleUpload,
     handleDelete,
     handleRename,
     handleFavorite,
     formatTime,
   } = useLearningDocuments();
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleUpload(files);
+    }
+  };
 
 
   const renderContent = () => {
@@ -46,9 +71,33 @@ const LearningPage = () => {
 
     if (isUploading) {
       return (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent" />
-          <p className="text-slate-400 font-medium">Processing your document...</p>
+        <div className="flex flex-col items-center justify-center py-24 gap-6 bg-white/5 border border-white/10 rounded-[40px] animate-pulse">
+          <div className="relative">
+            <div className="h-20 w-20 animate-spin rounded-full border-4 border-indigo-500/20 border-t-indigo-500" />
+            {uploadStatus && (
+              <div className="absolute inset-0 flex items-center justify-center text-xs font-black text-indigo-400">
+                {uploadProgress}%
+              </div>
+            )}
+          </div>
+          <div className="text-center space-y-2">
+            <h3 className="text-xl font-bold text-white">
+              {uploadStatus 
+                ? `Mengupload (${uploadStatus.current}/${uploadStatus.total})` 
+                : "Memproses Dokumen..."}
+            </h3>
+            <p className="text-slate-400 font-medium max-w-xs truncate">
+              {uploadStatus?.name || "Mohon tunggu sebentar..."}
+            </p>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="w-64 h-2 bg-white/10 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-indigo-500 transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.5)]" 
+              style={{ width: `${uploadProgress}%` }}
+            />
+          </div>
         </div>
       );
     }
@@ -64,8 +113,32 @@ const LearningPage = () => {
       );
     }
 
-    // ✅ Ada dokumen tapi search tidak cocok
+    // ✅ Ada dokumen tapi filter tidak cocok
     if (filteredDocuments.length === 0) {
+      if (filter === "favorite") {
+        return (
+          <EmptyState
+            type="favorites"
+            onAction={() => {
+              setFilter("new-upload");
+              setCurrentPage(1);
+            }}
+          />
+        );
+      }
+
+      if (search) {
+        return (
+          <EmptyState
+            type="search"
+            onAction={() => {
+              setSearch("");
+              setCurrentPage(1);
+            }}
+          />
+        );
+      }
+
       return (
         <EmptyState
           title="No Matches Found"
@@ -102,7 +175,25 @@ const LearningPage = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
+    <div 
+      className="relative space-y-8 animate-in fade-in duration-700 min-h-[600px]"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* DRAG OVERLAY */}
+      {isDragging && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050816]/80 backdrop-blur-md border-4 border-dashed border-indigo-500/50 m-4 rounded-[40px] pointer-events-none animate-in fade-in zoom-in duration-300">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-20 w-20 rounded-3xl bg-indigo-500 flex items-center justify-center shadow-[0_0_50px_rgba(99,102,241,0.4)]">
+              <Upload className="h-10 w-10 text-white animate-bounce" />
+            </div>
+            <h2 className="text-2xl font-black text-white">Drop files to upload</h2>
+            <p className="text-slate-400">Support PDF, TXT, and Markdown</p>
+          </div>
+        </div>
+      )}
+
       {/* HERO SECTION */}
       <Card variant="glass" className="p-7">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center">

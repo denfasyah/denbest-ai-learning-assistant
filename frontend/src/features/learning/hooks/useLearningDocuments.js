@@ -21,6 +21,7 @@ const useLearningDocuments = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("new-upload");
   const [currentPage, setCurrentPage] = useState(1);
+  const [uploadStatus, setUploadStatus] = useState(null); // { current, total, name }
 
   const ITEMS_PER_PAGE = 6;
 
@@ -79,44 +80,71 @@ const useLearningDocuments = () => {
     currentPage * ITEMS_PER_PAGE,
   );
 
- const handleUpload = async (eventOrFile) => {
-  try {
-    let file;
-    if (eventOrFile?.target?.files) {
-      file = eventOrFile.target.files[0];
-    } else {
-      file = eventOrFile;
+  const handleUpload = async (eventOrFiles) => {
+    let files = [];
+    if (eventOrFiles?.target?.files) {
+      files = Array.from(eventOrFiles.target.files);
+    } else if (eventOrFiles instanceof FileList || eventOrFiles instanceof Array) {
+      files = Array.from(eventOrFiles);
+    } else if (eventOrFiles instanceof File) {
+      files = [eventOrFiles];
     }
-    if (!file) return;
 
-    await uploadAndCreateWorkspace(file);
-    // await fetchWorkspaces();
+    if (files.length === 0) return;
+
+    const results = {
+      success: 0,
+      failed: [],
+    };
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      setUploadStatus({ current: i + 1, total: files.length, name: file.name });
+
+      try {
+        await uploadAndCreateWorkspace(file);
+        results.success++;
+      } catch (error) {
+        let reason = "Terjadi kesalahan";
+        if (error.response?.status === 409) {
+          reason = "File sudah pernah diupload";
+        } else if (error.response?.data?.message) {
+          reason = error.response.data.message;
+        }
+        results.failed.push({ name: file.name, reason });
+      }
+    }
+
+    setUploadStatus(null);
+
+    // Show Summary Modal
+    const failedText = results.failed
+      .map((f) => `• <b>${f.name}</b>: ${f.reason}`)
+      .join("<br/>");
 
     Swal.fire({
       ...swalConfig,
-      icon: "success",
-      title: "Upload Berhasil",
-      text: `"${file.name}" berhasil diupload!`,
+      icon: results.failed.length === 0 ? "success" : "info",
+      title: "Upload Selesai",
+      html: `
+        <div class="text-left space-y-2">
+          <p>Berhasil: <span class="text-emerald-400 font-bold">${results.success}</span> file</p>
+          ${
+            results.failed.length > 0
+              ? `<p>Gagal: <span class="text-rose-400 font-bold">${results.failed.length}</span> file</p>
+                 <div class="mt-2 text-xs text-slate-400 max-h-32 overflow-y-auto border border-white/5 p-2 rounded-lg bg-black/20">
+                   ${failedText}
+                 </div>`
+              : ""
+          }
+        </div>
+      `,
     });
-    navigate("/learning");
-  } catch (error) {
-    if (error.response?.status === 409) {
-      Swal.fire({
-        ...swalConfig,
-        icon: "error",
-        title: "File sudah pernah diupload",
-        text: "File ini sudah ada di workspace lain.",
-      });
-    } else {
-      Swal.fire({
-        ...swalConfig,
-        icon: "error",
-        title: "Upload Gagal",
-        text: error.response?.data?.message || "Terjadi kesalahan saat upload.",
-      });
+
+    if (results.success > 0) {
+      navigate("/learning");
     }
-  }
-};
+  };
 
   const handleDelete = async (workspaceId) => {
     const result = await Swal.fire({
@@ -172,7 +200,32 @@ const useLearningDocuments = () => {
 
     if (!result.isConfirmed) return;
 
-    await updateWorkspaceTitle(workspaceId, result.value.trim());
+    const newTitle = result.value.trim();
+    try {
+      await updateWorkspaceTitle(workspaceId, newTitle);
+      Swal.fire({
+        ...swalConfig,
+        icon: "success",
+        title: "Berhasil!",
+        text: `Nama workspace berhasil diubah menjadi "${newTitle}"`,
+      });
+    } catch (error) {
+      if (error.response?.status === 409) {
+        Swal.fire({
+          ...swalConfig,
+          icon: "error",
+          title: "Gagal Rename",
+          text: "Nama workspace sudah digunakan oleh workspace lain.",
+        });
+      } else {
+        Swal.fire({
+          ...swalConfig,
+          icon: "error",
+          title: "Terjadi Kesalahan",
+          text: error.response?.data?.message || "Gagal mengubah nama workspace.",
+        });
+      }
+    }
   };
 
   const handleFavorite = (workspaceId) => {
@@ -211,6 +264,7 @@ const useLearningDocuments = () => {
     isLoading,
     isUploading,
     uploadProgress,
+    uploadStatus,
     error,
 
     handleUpload,

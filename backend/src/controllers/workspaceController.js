@@ -256,14 +256,6 @@ exports.updateWorkspace = async (req, res, next) => {
     workspace.title = title;
     await workspace.save();
 
-    // Synchronize document titles (originalName)
-    // Assuming 1-to-1 or that user wants all documents in workspace to reflect the workspace name
-    // The user mentioned "Prevent stale document titles"
-    await Document.updateMany(
-      { workspaceId },
-      { $set: { originalName: title } }
-    );
-
     await historyService.logActivity(
       userId,
       workspaceId,
