@@ -12,6 +12,7 @@ import useWorkspace from '../hooks/useWorkspace';
 import useSummary from '../hooks/useSummary';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
+import { Swal } from 'sweetalert2';
 
 const SummaryTab = () => {
   const { workspaceId } = useWorkspace();
