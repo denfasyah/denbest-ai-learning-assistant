@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import {
   getWorkspaces,
+  // eslint-disable-next-line no-unused-vars
   createWorkspace,
+  // eslint-disable-next-line no-unused-vars
   uploadDocument,
   uploadWorkspaceAndDocument,
   deleteWorkspace,
@@ -9,6 +11,7 @@ import {
   toggleFavorite,
 } from "../services/learningApi";
 
+// eslint-disable-next-line no-unused-vars
 export const useLearningStore = create((set, get) => ({
   workspaces: [],
   isLoading: false,

@@ -176,7 +176,7 @@ const LearningPage = () => {
 
   return (
     <div 
-      className="relative space-y-8 animate-in fade-in duration-700 min-h-[600px]"
+      className="relative space-y-8 animate-in fade-in duration-700 min-h-150"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}

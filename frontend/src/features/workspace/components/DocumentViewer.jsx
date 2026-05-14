@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 
 const ProcessingState = () => (
-  <div className="flex flex-col items-center justify-center py-32 gap-6 bg-white/5 border border-white/10 rounded-[32px] animate-in fade-in duration-500">
+  <div className="flex flex-col items-center justify-center py-32 gap-6 bg-white/5 border border-white/10 rounded-4xl animate-in fade-in duration-500">
     <div className="h-16 w-16 flex items-center justify-center rounded-3xl bg-indigo-500/10 border border-indigo-500/20 shadow-lg shadow-indigo-500/5">
       <Loader2 className="h-8 w-8 text-indigo-400 animate-spin" />
     </div>
@@ -19,7 +19,7 @@ const ProcessingState = () => (
 const FailedState = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col items-center justify-center py-32 gap-8 bg-white/5 border border-white/10 rounded-[32px] animate-in zoom-in duration-500">
+    <div className="flex flex-col items-center justify-center py-32 gap-8 bg-white/5 border border-white/10 rounded-4xl animate-in zoom-in duration-500">
       <div className="h-20 w-20 flex items-center justify-center rounded-3xl bg-rose-500/10 border border-rose-500/20 text-rose-400 shadow-lg shadow-rose-500/5">
         <AlertTriangle className="h-10 w-10" />
       </div>
@@ -52,7 +52,7 @@ const DocumentViewer = ({ fileUrl, fileType, title, processingStatus }) => {
   if (processingStatus === 'completed') {
     return (
       <div className="w-full min-w-0">
-        <div className="rounded-[32px] bg-[#050816]/40 border border-white/5 backdrop-blur-xl overflow-hidden relative group w-full min-w-0 shadow-2xl">
+        <div className="rounded-4xl bg-[#050816]/40 border border-white/5 backdrop-blur-xl overflow-hidden relative group w-full min-w-0 shadow-2xl">
           {/* Viewer Header */}
           <div className="h-12 bg-white/5 border-b border-white/5 flex items-center px-6 justify-between w-full">
             <div className="flex items-center gap-2">
@@ -63,16 +63,16 @@ const DocumentViewer = ({ fileUrl, fileType, title, processingStatus }) => {
             </div>
           </div>
 
-          <div className="w-full min-h-[600px] flex">
+          <div className="w-full min-h-150 flex">
             {fileType === 'pdf' ? (
               <iframe
                 src={fileUrl}
                 title={title}
-                className="w-full h-full min-h-[700px] border-none"
+                className="w-full h-full min-h-175 border-none"
               />
             ) : (
-              <div className="w-full p-8 md:p-12 overflow-y-auto max-h-[800px] custom-scrollbar bg-[#050816]/20">
-                <pre className="text-slate-300 text-sm md:text-base leading-relaxed whitespace-pre-wrap font-medium font-sans break-words">
+              <div className="w-full p-8 md:p-12 overflow-y-auto max-h-200 custom-scrollbar bg-[#050816]/20">
+                <pre className="text-slate-300 text-sm md:text-base leading-relaxed whitespace-pre-wrap font-medium font-sans wrap-break-word">
                   {/* Content would be fetched separately if it's text, but for now we show the viewer wrapper */}
                   <div className="flex flex-col items-center justify-center py-20 text-center gap-4">
                     <FileText className="h-12 w-12 text-indigo-500/40" />

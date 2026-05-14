@@ -49,7 +49,7 @@ const FlashcardTab = () => {
       {/* GRID - 3 columns desktop, 2 tablet, 1 mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {flashcards.map((card, index) => (
-          <Card key={index} hover className="p-6 group relative overflow-hidden bg-white/2 border-white/5 rounded-3xl flex flex-col min-h-[220px]">
+          <Card key={index} hover className="p-6 group relative overflow-hidden bg-white/2 border-white/5 rounded-3xl flex flex-col min-h-55">
              <div className="flex items-center gap-2 mb-6">
                 <Badge variant="indigo" className="px-2 py-1 text-[9px] font-black uppercase">Card #{index + 1}</Badge>
                 <Layers3 className="h-3 w-3 text-slate-700" />

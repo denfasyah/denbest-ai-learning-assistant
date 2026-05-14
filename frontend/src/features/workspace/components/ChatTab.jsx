@@ -41,7 +41,7 @@ const ChatTab = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto pb-12 h-[calc(100vh-280px)] min-h-[600px]">
+    <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto pb-12 h-[calc(100vh-280px)] min-h-150">
       <Card className="flex-1 flex flex-col p-0 border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden relative shadow-2xl">
         {/* CHAT HEADER */}
         <div className="border-b border-white/3 p-4 md:p-5 flex items-center justify-between bg-white/2 shrink-0">
@@ -153,7 +153,7 @@ const ChatTab = () => {
                 placeholder="Tanya sesuatu tentang dokumen ini..."
                 disabled={isLoading}
                 rows={1}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl py-4 pl-6 pr-14 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/50 transition-all resize-none min-h-[56px] max-h-32 custom-scrollbar disabled:opacity-50"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl md:rounded-3xl py-4 pl-6 pr-14 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/50 transition-all resize-none min-h-14 max-h-32 custom-scrollbar disabled:opacity-50"
               />
               <div className="absolute right-3 bottom-2 md:bottom-2.5">
                 <button

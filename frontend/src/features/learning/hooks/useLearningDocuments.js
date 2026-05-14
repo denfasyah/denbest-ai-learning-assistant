@@ -43,6 +43,7 @@ const useLearningDocuments = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const documents = workspaces || [];
 
   // Map and filter documents

@@ -68,6 +68,7 @@ const WorkspaceLayout = () => {
   }, [workspaceId, navigate, setActiveWorkspace]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
   }, [fetchData]);
 
@@ -87,7 +88,7 @@ const WorkspaceLayout = () => {
           <div className="h-96 w-full rounded-[2.5rem] bg-white/5 border border-white/10" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-48 w-full rounded-[2rem] bg-white/5 border border-white/10" />
+              <div key={i} className="h-48 w-full rounded-4xl bg-white/5 border border-white/10" />
             ))}
           </div>
         </div>

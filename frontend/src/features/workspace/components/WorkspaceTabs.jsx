@@ -6,7 +6,7 @@ const WorkspaceTabs = () => {
   const location = useLocation();
 
   const tabs = [
-    { id: 'content', label: 'kon', path: 'content', icon: FileText },
+    { id: 'content', label: 'Content', path: 'content', icon: FileText },
     { id: 'chat', label: 'Chat AI', path: 'chat', icon: MessagesSquare },
     { id: 'action', label: 'AI Action', path: 'action', icon: Sparkles },
     { id: 'flashcards', label: 'Flashcard', path: 'flashcards', icon: Layers3 },
@@ -14,8 +14,8 @@ const WorkspaceTabs = () => {
   ];
 
   return (
-    <div className="flex flex-row gap-4">
-      <div className="flex items-center gap-1 overflow-x-auto custom-scrollbar-hide whitespace-nowrap p-1 bg-white/2 rounded-2xl border border-white/5 w-fit max-w-full">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-3 sm:flex items-center gap-5 p-1  rounded-2xl border border-white/5">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = location.pathname.endsWith(tab.path);
@@ -25,7 +25,7 @@ const WorkspaceTabs = () => {
               key={tab.id}
               onClick={() => navigate(tab.path)}
               className={`
-                flex items-center gap-2 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all duration-300 shrink-0
+                flex items-center gap-2 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase bg-white/2 tracking-widest transition-all duration-300 shrink-0
                 ${isActive
                   ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
                   : "text-slate-500 hover:bg-white/5 hover:text-slate-300"

@@ -1,4 +1,4 @@
-import { FileText, Sparkles, Layers3, Brain, Bot, Clock3 } from "lucide-react";
+import { FileText, Sparkles, Layers3, Brain, Bot } from "lucide-react";
 
 export const DASHBOARD_STATS = [
   {

@@ -5,6 +5,7 @@ import DocumentViewer from './DocumentViewer';
 
 const ContentTab = () => {
   const { document, isLoading, refetch } = useWorkspace();
+  // eslint-disable-next-line no-unused-vars
   const { user } = useAuth();
   const token = localStorage.getItem('token');
 
@@ -28,7 +29,7 @@ const ContentTab = () => {
     return (
       <div className="w-full space-y-6 animate-pulse">
         <div className="h-12 w-full max-w-2xl rounded-2xl bg-white/5 border border-white/10" />
-        <div className="h-[600px] w-full rounded-[32px] bg-white/5 border border-white/10" />
+        <div className="h-150 w-full rounded-4xl bg-white/5 border border-white/10" />
       </div>
     );
   }

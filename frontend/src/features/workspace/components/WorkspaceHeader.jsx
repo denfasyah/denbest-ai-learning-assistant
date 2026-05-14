@@ -74,7 +74,7 @@ const WorkspaceHeader = () => {
                 <div className="h-1 w-1 rounded-full bg-slate-800" />
                 <span 
                   title={document?.originalName || document?.fileName}
-                  className="truncate italic normal-case font-medium text-slate-400 max-w-[200px] md:max-w-[400px]"
+                  className="truncate italic normal-case font-medium text-slate-400 max-w-50 md:max-w-100"
                 >
                   {document?.originalName || document?.fileName}
                 </span>
