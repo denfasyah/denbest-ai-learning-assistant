@@ -1,7 +1,5 @@
-import React from 'react';
 import {
   Sparkles,
-  BrainCircuit,
   RefreshCw,
   Copy,
   Save,
@@ -15,7 +13,7 @@ import useSummary from '../hooks/useSummary';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 
-const ActionTab = () => {
+const SummaryTab = () => {
   const { workspaceId } = useWorkspace();
   const {
     summary,
@@ -108,7 +106,7 @@ const ActionTab = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <FileText className="h-5 w-5 text-indigo-400" />
-                <h2 className="text-xl font-black text-white tracking-tight">📋 Ringkasan Dokumen</h2>
+                <h2 className="text-xl font-black text-white tracking-tight">Ringkasan Dokumen</h2>
               </div>
               <p className="text-xs font-medium text-slate-500">
                 Terakhir diperbarui: {new Date(summary.generatedAt).toLocaleString('id-ID', {
@@ -125,7 +123,7 @@ const ActionTab = () => {
               size="sm"
               icon={RefreshCw}
               onClick={handleRegenerate}
-              className="text-xs font-bold rounded-xl"
+              className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]"
             >
               Regenerate
             </Button>
@@ -182,8 +180,8 @@ const ActionTab = () => {
         <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/[0.02]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-5 w-5 text-indigo-400" />
-              <h2 className="text-xl font-black text-white tracking-tight">✨ Generate Summary</h2>
+              <FileText className="h-5 w-5 text-indigo-400" />
+              <h2 className="text-xl font-black text-white tracking-tight">Generate Summary</h2>
             </div>
             <p className="text-xs font-medium text-slate-500">
               Belum ada ringkasan untuk dokumen ini
@@ -195,7 +193,7 @@ const ActionTab = () => {
             icon={Sparkles}
             onClick={generateSummary}
             disabled={isGenerating}
-            className="text-xs font-bold rounded-xl"
+            className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]"
           >
             Generate
           </Button>
@@ -225,6 +223,6 @@ const ActionTab = () => {
   );
 };
 
-export default ActionTab;
+export default SummaryTab;
 
 

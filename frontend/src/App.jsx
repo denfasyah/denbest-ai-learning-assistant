@@ -16,7 +16,7 @@ import LearningPage from './pages/learning/LearningPage';
 import WorkspaceLayout from './features/workspace/pages/WorkspaceLayout';
 import ContentTab from './features/workspace/components/ContentTab';
 import ChatTab from './features/workspace/components/ChatTab';
-import ActionTab from './features/workspace/components/ActionTab';
+import SummaryTab from './features/workspace/components/SummaryTab';
 import FlashcardTab from './features/workspace/components/FlashcardTab';
 import QuizTab from './features/workspace/components/QuizTab';
 import NotFoundPage from './pages/NotFoundPage';
@@ -34,36 +34,36 @@ function App() {
         <Router>
           <Routes>
             {/* Public Routes */}
-            <Route 
-              path="/" 
+            <Route
+              path="/"
               element={
                 <PublicRoute>
                   <LandingPage />
                 </PublicRoute>
-              } 
+              }
             />
-            <Route 
-              path="/login" 
+            <Route
+              path="/login"
               element={
                 <PublicRoute>
                   <LoginPage />
                 </PublicRoute>
-              } 
+              }
             />
-            <Route 
-              path="/register" 
+            <Route
+              path="/register"
               element={
                 <PublicRoute>
                   <RegisterPage />
                 </PublicRoute>
-              } 
+              }
             />
-            
+
             {/* Action Routes */}
             <Route path="/logout" element={<Navigate to="/login" replace />} />
-            
+
             {/* Protected Routes Wrapper */}
-            <Route 
+            <Route
               element={
                 <ProtectedRoute>
                   <DashboardLayout />
@@ -75,7 +75,7 @@ function App() {
               <Route path="/learning/workspace/:workspaceId" element={<WorkspaceLayout />}>
                 <Route path="content" element={<ContentTab />} />
                 <Route path="chat" element={<ChatTab />} />
-                <Route path="action" element={<ActionTab />} />
+                <Route path="summary" element={<SummaryTab />} />
                 <Route path="flashcards" element={<FlashcardTab />} />
                 <Route path="quiz" element={<QuizTab />} />
               </Route>

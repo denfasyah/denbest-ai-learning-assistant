@@ -8,7 +8,7 @@ const WorkspaceTabs = () => {
   const tabs = [
     { id: 'content', label: 'Content', path: 'content', icon: FileText },
     { id: 'chat', label: 'Chat AI', path: 'chat', icon: MessagesSquare },
-    { id: 'action', label: 'AI Action', path: 'action', icon: Sparkles },
+    { id: 'summary', label: 'Summary', path: 'summary', icon: Sparkles },
     { id: 'flashcards', label: 'Flashcard', path: 'flashcards', icon: Layers3 },
     { id: 'quiz', label: 'Quiz', path: 'quiz', icon: BrainCircuit },
   ];
