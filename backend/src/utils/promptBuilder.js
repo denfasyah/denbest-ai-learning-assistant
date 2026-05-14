@@ -108,6 +108,52 @@ Untuk jawaban panjang, tambahkan satu baris penutup seperti:
 Jangan selalu menambahkan penutup — hanya jika relevan dan natural.`;
 };
 
-module.exports = {
-  buildSystemPrompt
+/**
+ * Builds the summary prompt for the document.
+ * @param {string} extractedText - Text content extracted from the document.
+ * @returns {string} Fully constructed summary prompt.
+ */
+const buildSummaryPrompt = (extractedText) => {
+  let contextText = extractedText || '';
+  let isTruncated = false;
+
+  if (contextText.length > 30000) {
+    const lastSpace = contextText.lastIndexOf(' ', 30000);
+    contextText = contextText.substring(0, lastSpace !== -1 ? lastSpace : 30000);
+    isTruncated = true;
+  }
+
+  const truncationNote = isTruncated
+    ? "\n\n[Catatan: Dokumen terlalu panjang, hanya sebagian yang ditampilkan untuk ringkasan]"
+    : "";
+
+  return `Kamu adalah AI Learning Assistant. Buat ringkasan komprehensif dari dokumen berikut. 
+Tujuanmu adalah membantu user memahami inti materi dengan cepat namun tetap mendalam.
+
+FORMAT OUTPUT (gunakan Markdown):
+## 📌 Ringkasan Utama
+[1-2 paragraf ringkasan keseluruhan yang menjelaskan apa dokumen ini dan apa pesan utamanya]
+
+## 🎯 Poin-Poin Kunci
+- [poin kunci 1]
+- [poin kunci 2]
+- [dst, minimal 5 poin yang mewakili argumen atau data penting]
+
+## 💡 Konsep Penting
+**[Konsep 1]:** [penjelasan singkat tentang konsep ini dalam konteks materi]
+**[Konsep 2]:** [penjelasan singkat]
+[dst, sertakan 3-5 konsep penting]
+
+## 📖 Kesimpulan
+[1 paragraf kesimpulan atau 'takeaway' utama untuk user]
+
+=== DOKUMEN ===
+${contextText}${truncationNote}
+`;
 };
+
+module.exports = {
+  buildSystemPrompt,
+  buildSummaryPrompt
+};
+

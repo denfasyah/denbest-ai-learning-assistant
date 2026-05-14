@@ -1,0 +1,126 @@
+import { useState, useEffect, useCallback } from 'react';
+import summaryApi from '../services/summaryApi';
+import Swal from 'sweetalert2';
+
+/**
+ * Hook to manage summary state and actions
+ */
+const useSummary = (workspaceId) => {
+  const [summary, setSummary] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState(null);
+
+  /**
+   * Load existing summary
+   */
+  const loadSummary = useCallback(async () => {
+    if (!workspaceId) return;
+    
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await summaryApi.getSummary(workspaceId);
+      if (response.success) {
+        setSummary(response.data);
+      }
+    } catch (err) {
+      console.error('Failed to load summary:', err);
+      setError('Gagal memuat ringkasan. Silakan coba lagi.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [workspaceId]);
+
+  /**
+   * Generate summary
+   */
+  const generateSummary = async () => {
+    if (!workspaceId || isGenerating) return;
+
+    setIsGenerating(true);
+    setError(null);
+    try {
+      const response = await summaryApi.generateSummary(workspaceId);
+      if (response.success) {
+        setSummary(response.data);
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Ringkasan berhasil dibuat.',
+          timer: 1500,
+          showConfirmButton: false,
+          background: '#1e293b',
+          color: '#fff',
+        });
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Gagal membuat ringkasan.';
+      setError(msg);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: msg,
+        background: '#1e293b',
+        color: '#fff',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  /**
+   * Regenerate summary
+   */
+  const regenerateSummary = async () => {
+    if (!workspaceId || isGenerating) return;
+
+    setIsGenerating(true);
+    setError(null);
+    try {
+      const response = await summaryApi.regenerateSummary(workspaceId);
+      if (response.success) {
+        setSummary(response.data);
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil!',
+          text: 'Ringkasan berhasil diperbarui.',
+          timer: 1500,
+          showConfirmButton: false,
+          background: '#1e293b',
+          color: '#fff',
+        });
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Gagal memperbarui ringkasan.';
+      setError(msg);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: msg,
+        background: '#1e293b',
+        color: '#fff',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    loadSummary();
+  }, [loadSummary]);
+
+  return {
+    summary,
+    isLoading,
+    isGenerating,
+    error,
+    hasExisting: !!summary,
+    loadSummary,
+    generateSummary,
+    regenerateSummary
+  };
+};
+
+export default useSummary;

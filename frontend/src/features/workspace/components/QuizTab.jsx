@@ -43,7 +43,7 @@ const QuizTab = () => {
       <div className="w-full max-w-4xl mx-auto pb-12 animate-in zoom-in duration-500">
         <Card className="p-8 border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl">
           <div className="text-center max-w-2xl mx-auto">
-            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-[2rem] bg-indigo-500/10 border border-indigo-500/20 shadow-xl mb-8">
+            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-4xl bg-indigo-500/10 border border-indigo-500/20 shadow-xl mb-8">
               <div className="text-center">
                 <span className="block text-3xl font-black text-white italic">{score}</span>
                 <span className="block text-[10px] font-black text-indigo-400 uppercase tracking-widest mt-1">OF {quizzes.length}</span>
