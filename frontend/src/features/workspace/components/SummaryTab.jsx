@@ -12,7 +12,7 @@ import useWorkspace from '../hooks/useWorkspace';
 import useSummary from '../hooks/useSummary';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
-import { Swal } from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 const SummaryTab = () => {
   const { workspaceId } = useWorkspace();
@@ -107,7 +107,7 @@ const SummaryTab = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <FileText className="h-5 w-5 text-indigo-400" />
-                <h2 className="text-xl font-black text-white tracking-tight">Ringkasan Dokumen</h2>
+                <h2 className="text-xl font-black text-white tracking-tight">Summary</h2>
               </div>
               <p className="text-xs font-medium text-slate-500">
                 Terakhir diperbarui: {new Date(summary.generatedAt).toLocaleString('id-ID', {
@@ -182,7 +182,7 @@ const SummaryTab = () => {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <FileText className="h-5 w-5 text-indigo-400" />
-              <h2 className="text-xl font-black text-white tracking-tight">Generate Summary</h2>
+              <h2 className="text-xl font-black text-white tracking-tight">Summary</h2>
             </div>
             <p className="text-xs font-medium text-slate-500">
               Belum ada ringkasan untuk dokumen ini
@@ -207,7 +207,7 @@ const SummaryTab = () => {
             Belum ada ringkasan
           </h3>
           <p className="text-sm font-medium text-slate-500 max-w-xs leading-relaxed">
-            Klik <span className="text-indigo-400 font-bold">Generate Summary</span> di
+            Klik <span className="text-indigo-400 font-bold">Generate</span> di
             atas untuk membuat ringkasan otomatis dari dokumen ini menggunakan AI.
           </p>
         </div>

@@ -2,6 +2,18 @@ import { useState, useEffect, useCallback } from 'react';
 import summaryApi from '../services/summaryApi';
 import Swal from 'sweetalert2';
 
+const swalConfig = {
+  background: "#050816",
+  color: "#fff",
+  confirmButtonColor: "#3b82f6",
+  backdrop: `rgba(0,0,0,0.45) blur(80px)`,
+  customClass: {
+    popup: "rounded-3xl border border-white/10 shadow-2xl",
+    title: "text-white",
+    htmlContainer: "text-slate-300",
+  },
+};
+
 /**
  * Hook to manage summary state and actions
  */
@@ -55,15 +67,26 @@ const useSummary = (workspaceId) => {
         });
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Gagal membuat ringkasan.';
-      setError(msg);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: msg,
-        background: '#1e293b',
-        color: '#fff',
-      });
+      const status = err.response?.status;
+      let msg = err.response?.data?.message || 'Gagal membuat ringkasan.';
+      if (status === 429 || msg === 'RATE_LIMIT') {
+        Swal.fire({
+          ...swalConfig,
+          icon: 'error',
+          title: 'Oops! Rate Limit',
+          text: 'Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!',
+        });
+        setError('Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!');
+      } else {
+        setError(msg);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: msg,
+          background: '#1e293b',
+          color: '#fff',
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -92,15 +115,26 @@ const useSummary = (workspaceId) => {
         });
       }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Gagal memperbarui ringkasan.';
-      setError(msg);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: msg,
-        background: '#1e293b',
-        color: '#fff',
-      });
+      const status = err.response?.status;
+      let msg = err.response?.data?.message || 'Gagal memperbarui ringkasan.';
+      if (status === 429 || msg === 'RATE_LIMIT') {
+        Swal.fire({
+          ...swalConfig,
+          icon: 'error',
+          title: 'Oops! Rate Limit',
+          text: 'Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!',
+        });
+        setError('Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!');
+      } else {
+        setError(msg);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: msg,
+          background: '#1e293b',
+          color: '#fff',
+        });
+      }
     } finally {
       setIsGenerating(false);
     }

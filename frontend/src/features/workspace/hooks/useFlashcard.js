@@ -1,5 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
+import Swal from 'sweetalert2';
+
+const swalConfig = {
+  background: "#050816",
+  color: "#fff",
+  confirmButtonColor: "#3b82f6",
+  backdrop: `rgba(0,0,0,0.45) blur(80px)`,
+  customClass: {
+    popup: "rounded-3xl border border-white/10 shadow-2xl",
+    title: "text-white",
+    htmlContainer: "text-slate-300",
+  },
+};
 import { flashcardApi } from '../services/flashcardApi';
 import useWorkspace from './useWorkspace';
 
@@ -137,8 +150,18 @@ const useFlashcard = () => {
       }
     } catch (err) {
       console.error('Error generating flashcards:', err);
-      const msg = err.response?.data?.message || 'Gagal generate flashcards';
-      toast.error(msg);
+      const status = err.response?.status;
+      let msg = err.response?.data?.message || 'Gagal generate flashcards';
+      if (status === 429 || msg === 'RATE_LIMIT') {
+        Swal.fire({
+          ...swalConfig,
+          icon: 'error',
+          title: 'Oops! Rate Limit',
+          text: 'Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!',
+        });
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -172,9 +195,19 @@ const useFlashcard = () => {
       }
     } catch (err) {
       console.error('Error regenerating flashcards:', err);
-      const msg = err.response?.data?.message || 'Gagal generate ulang flashcards';
+      const status = err.response?.status;
+      let msg = err.response?.data?.message || 'Gagal generate ulang flashcards';
+      if (status === 429 || msg === 'RATE_LIMIT') {
+        Swal.fire({
+          ...swalConfig,
+          icon: 'error',
+          title: 'Oops! Rate Limit',
+          text: 'Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!',
+        });
+      } else {
+        toast.error(msg);
+      }
       setError(msg);
-      toast.error(msg);
     } finally {
       setIsGenerating(false);
     }

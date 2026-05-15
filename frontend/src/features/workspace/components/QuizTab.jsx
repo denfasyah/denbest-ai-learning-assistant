@@ -8,10 +8,10 @@ import useWorkspace from '../hooks/useWorkspace';
 
 const QuizTab = () => {
   const { workspace } = useWorkspace();
-  
+
   const [submitted, setSubmitted] = useState(false);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  
+
   const quizzes = [
     {
       question: `Apa aspek terpenting yang dibahas dalam dokumen "${workspace?.title || "ini"}"?`,
@@ -55,7 +55,7 @@ const QuizTab = () => {
               Review your answers below to master the material in <span className="text-slate-300 italic">"{workspace?.title}"</span>.
             </p>
 
-            <button 
+            <button
               onClick={handleRetry}
               className="mt-8 flex items-center gap-2 mx-auto px-6 h-11 rounded-xl bg-white/5 text-white font-black uppercase tracking-widest text-[10px] border border-white/10 hover:bg-white/10 transition-all"
             >
@@ -84,7 +84,7 @@ const QuizTab = () => {
                     {quiz.options.map((option, idx) => {
                       const isSelected = selected === option;
                       const isCorrectAnswer = option === quiz.correctAnswer;
-                      
+
                       let stateClass = "border-white/5 bg-white/5 text-slate-600";
                       if (isCorrectAnswer) stateClass = "border-emerald-500/30 bg-emerald-500/10 text-emerald-400";
                       else if (isSelected && !isCorrect) stateClass = "border-rose-500/30 bg-rose-500/10 text-rose-400";
@@ -110,25 +110,25 @@ const QuizTab = () => {
       <Card className="p-6 border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-4">
-             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
-                <BrainCircuit className="h-6 w-6 text-indigo-400" />
-             </div>
-             <div>
-                <h2 className="text-base font-black text-white tracking-tight leading-none">Intelligence Quiz</h2>
-                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Validate Knowledge</p>
-             </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+              <BrainCircuit className="h-6 w-6 text-indigo-400" />
+            </div>
+            <div>
+              <h2 className="text-base font-black text-white tracking-tight leading-none">Intelligence Quiz</h2>
+              <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Validasi Pengetahuan</p>
+            </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <Select 
+            <Select
               className="w-32"
               options={[
-                { label: "5 Q's", value: "5" },
-                { label: "10 Q's", value: "10" },
+                { label: "5 Questions", value: "5" },
+                { label: "10 Questions (Best)", value: "10" },
               ]}
             />
             <Button variant="primary" icon={Sparkles} className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]">
-              Start Assessment
+              Generate
             </Button>
           </div>
         </div>
@@ -138,7 +138,7 @@ const QuizTab = () => {
         {quizzes.map((quiz, index) => (
           <Card key={index} className="p-8 bg-white/2 border-white/5 rounded-3xl">
             <h3 className="text-lg font-black text-white leading-tight mb-8">
-               <span className="text-indigo-500 italic mr-2">Q{index + 1}.</span> {quiz.question}
+              <span className="text-indigo-500 italic mr-2">Q{index + 1}.</span> {quiz.question}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,8 +166,8 @@ const QuizTab = () => {
         ))}
 
         <div className="flex justify-end pt-4">
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => setSubmitted(true)}
             className="rounded-xl h-12 px-10 font-black italic tracking-tight text-xs"
           >

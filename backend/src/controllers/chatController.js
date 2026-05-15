@@ -37,8 +37,8 @@ const sendMessage = async (req, res) => {
     if (error.message === 'TIMEOUT') {
       return res.status(504).json({ success: false, message: 'AI response timeout. Please try again.' });
     }
-    if (error.message === 'RATE_LIMIT') {
-      return res.status(429).json({ success: false, message: 'Too many requests. Please wait.' });
+    if (error.message === 'RATE_LIMIT_EXCEEDED' || error.message === 'RATE_LIMIT') {
+      return res.status(429).json({ success: false, message: 'RATE_LIMIT' });
     }
     if (error.message === 'CONFIG_ERROR') {
       return res.status(500).json({ success: false, message: 'AI service error.' });

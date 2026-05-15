@@ -40,6 +40,9 @@ const generateSummary = async (req, res, next) => {
       }
     });
   } catch (error) {
+    if (error.message === 'RATE_LIMIT_EXCEEDED') {
+      return res.status(429).json({ success: false, message: 'RATE_LIMIT' });
+    }
     // Check if it's a known error status
     if (error.status) {
       return res.status(error.status).json({
@@ -69,6 +72,9 @@ const regenerateSummary = async (req, res, next) => {
       }
     });
   } catch (error) {
+    if (error.message === 'RATE_LIMIT_EXCEEDED') {
+      return res.status(429).json({ success: false, message: 'RATE_LIMIT' });
+    }
     if (error.status) {
       return res.status(error.status).json({
         success: false,

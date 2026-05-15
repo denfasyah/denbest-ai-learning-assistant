@@ -1,5 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as chatApi from '../services/chatApi';
+import Swal from 'sweetalert2';
+
+const swalConfig = {
+  background: "#050816",
+  color: "#fff",
+  confirmButtonColor: "#3b82f6",
+  backdrop: `rgba(0,0,0,0.45) blur(80px)`,
+  customClass: {
+    popup: "rounded-3xl border border-white/10 shadow-2xl",
+    title: "text-white",
+    htmlContainer: "text-slate-300",
+  },
+};
 
 const useChat = (workspaceId) => {
   const [messages, setMessages] = useState([]);
@@ -71,7 +84,17 @@ const useChat = (workspaceId) => {
       // 3. Remove placeholder on error
       setMessages(prev => prev.filter(m => m.id !== 'thinking'));
       
-      const errorMessage = err.response?.data?.message || 'Maaf, terjadi kesalahan saat menghubungi AI.';
+      const status = err.response?.status;
+      let errorMessage = err.response?.data?.message || 'Maaf, terjadi kesalahan saat menghubungi AI.';
+      if (status === 429) {
+        errorMessage = 'Oops! Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok.';
+        Swal.fire({
+          ...swalConfig,
+          icon: 'error',
+          title: 'Oops! Rate Limit',
+          text: 'Kuota harian aplikasi sedang habis. Silakan coba lagi nanti atau besok ya!',
+        });
+      }
       setError(errorMessage);
     } finally {
       setIsLoading(false);

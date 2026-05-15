@@ -44,7 +44,18 @@ const generateResponse = async (systemPrompt, history, userMessage) => {
     if (error.message === 'TIMEOUT') throw error;
 
     const status = error.status || (error.response && error.response.status);
-    if (status === 429) throw new Error('RATE_LIMIT');
+    const statusText = error.statusText || (error.response && error.response.statusText) || '';
+    const message = error.message || '';
+
+    if (
+      status === 429 ||
+      message.includes('429') ||
+      statusText.toLowerCase().includes('too many requests') ||
+      message.toLowerCase().includes('quota')
+    ) {
+      throw new Error('RATE_LIMIT_EXCEEDED');
+    }
+
     if (status === 401 || status === 403) throw new Error('CONFIG_ERROR');
 
     throw error;

@@ -144,7 +144,7 @@ const FlashcardTab = () => {
   // State C — Generating
   if (isGenerating) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center py-20 bg-white/5 border border-white/10 rounded-3xl">
+      <div className="w-full h-full flex flex-col items-center justify-center py-20 bg-white/5">
         <div className="relative mb-12">
           <div className="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-full animate-pulse"></div>
           <div className="h-24 w-24 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center relative z-10">
@@ -183,7 +183,7 @@ const FlashcardTab = () => {
               </div>
               <div>
                 <h2 className="text-base font-black text-white tracking-tight leading-none">Flashcard</h2>
-                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Validate Knowledge</p>
+                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Asah Ingatan Cepat</p>
               </div>
             </div>
 
@@ -193,14 +193,12 @@ const FlashcardTab = () => {
                 onChange={(e) => setCountSelect(e.target.value)}
                 className="w-full md:w-40 bg-black/20 border-white/10 rounded-2xl h-12"
                 options={[
-                  { label: "5 Kartu", value: "5" },
-                  { label: "10 Kartu (Best)", value: "10" },
-                  { label: "15 Kartu", value: "15" },
-                  { label: "20 Kartu", value: "20" },
+                  { label: "5 Cards", value: "5" },
+                  { label: "10 Cards (Best)", value: "10" },
                 ]}
               />
               <Button variant="primary" icon={Sparkles} onClick={() => generateFlashcards(parseInt(countSelect))} className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]">
-                Generate Flashcard
+                Generate
               </Button>
             </div>
           </div>
@@ -213,8 +211,8 @@ const FlashcardTab = () => {
               Belum ada flashcard
             </h3>
             <p className="text-sm font-medium text-slate-500 max-w-xs leading-relaxed">
-              Klik <span className="text-indigo-400 font-bold">Generate Flashcard</span> di
-              atas untuk membuat ringkasan otomatis dari dokumen ini menggunakan AI.
+              Klik <span className="text-indigo-400 font-bold">Generate </span> di
+              atas untuk membuat flashcard otomatis dari dokumen ini menggunakan AI.
             </p>
           </div>
 
@@ -437,8 +435,8 @@ const FlashcardTab = () => {
             disabled={currentIndex === 0}
             onClick={() => { setToastMsg(''); prevCard(); }}
             className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${currentIndex === 0
-                ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500'
-                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 active:scale-90 shadow-xl'
+              ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500'
+              : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 active:scale-90 shadow-xl'
               }`}
           >
             <ChevronLeft className="h-6 w-6" />

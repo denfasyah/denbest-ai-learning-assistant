@@ -72,7 +72,7 @@ const WorkspaceHeader = () => {
               </div>
               <div className="flex items-center gap-2 min-w-0">
                 <div className="h-1 w-1 rounded-full bg-slate-800" />
-                <span 
+                <span
                   title={document?.originalName || document?.fileName}
                   className="truncate italic normal-case font-medium text-slate-400 max-w-50 md:max-w-100"
                 >

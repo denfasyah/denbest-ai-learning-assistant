@@ -24,6 +24,9 @@ const generateFlashcards = async (req, res, next) => {
       message: 'Flashcards generated successfully'
     });
   } catch (error) {
+    if (error.message === 'RATE_LIMIT_EXCEEDED') {
+      return res.status(429).json({ success: false, message: 'RATE_LIMIT' });
+    }
     next(error);
   }
 };
@@ -99,6 +102,9 @@ const regenerateFlashcards = async (req, res, next) => {
       message: 'Flashcards regenerated successfully'
     });
   } catch (error) {
+    if (error.message === 'RATE_LIMIT_EXCEEDED') {
+      return res.status(429).json({ success: false, message: 'RATE_LIMIT' });
+    }
     next(error);
   }
 };
