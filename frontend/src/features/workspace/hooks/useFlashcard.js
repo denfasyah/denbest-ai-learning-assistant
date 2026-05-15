@@ -188,7 +188,7 @@ const useFlashcard = () => {
     setIsFlipped(prev => !prev);
   };
 
-  const nextCard = useCallback((force = false) => {
+  const nextCard = useCallback((force = false, justRatedId = null) => {
     const currentCard = flashcards[currentIndex];
     const cardId = currentCard ? String(currentCard._id) : null;
     const alreadyReviewed = cardId ? reviewedMap.has(cardId) : false;
@@ -223,7 +223,12 @@ const useFlashcard = () => {
     if (currentIndex + 1 >= flashcards.length) {
       const allUnreviewed = flashcards
         .map((card, idx) => ({ card, idx }))
-        .filter(({ card }) => !reviewedMap.has(String(card._id)))
+        .filter(({ card }) => {
+          const id = String(card._id);
+          // Exclude kartu yang baru saja di-rate (belum committed ke reviewedMap)
+          if (justRatedId && id === justRatedId) return false;
+          return !reviewedMap.has(id);
+        })
         .map(({ idx }) => idx)
         .sort((a, b) => a - b);
 
@@ -278,7 +283,9 @@ const useFlashcard = () => {
     });
 
     flashcardApi.reviewFlashcard(workspaceId, cardId, rating).catch(() => { });
-    nextCard(true);
+    
+    // Pass cardId sebagai justRatedId agar tidak masuk allUnreviewed
+    nextCard(true, cardId);
   };
 
   const shuffleCards = () => {
