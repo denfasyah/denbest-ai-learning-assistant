@@ -53,24 +53,37 @@ const FlashcardTab = () => {
     const result = nextCard();
 
     if (result?.blocked) {
-      // User sudah flip tapi belum rate — tampilkan Swal
-      await Swal.fire({
-        title: 'Eh, belum kasih reaksi nih 👆',
-        text: 'Kasih dulu Hard, Lumayan, atau Gampang — biar progress lu ke-track. Atau klik Skip kalau mau lewatin kartu ini dulu.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Oke, gue rate dulu',
-        cancelButtonText: 'Skip kartu ini',
-        confirmButtonColor: '#7c3aed',
-        cancelButtonColor: '#475569',
-        background: '#1e1e2e',
-        color: '#fff',
-      }).then((res) => {
-        if (res.isDismissed && res.dismiss === Swal.DismissReason.cancel) {
-          // User pilih skip — force next
-          nextCard(true);
-        }
-      });
+      if (!result.wasFlipped) {
+        // Belum flip sama sekali
+        await Swal.fire({
+          title: 'Lihat jawabannya dulu dong 👀',
+          text: 'Flip kartu ini dulu sebelum lanjut — klik kartunya atau tombol "Lihat Jawaban" ya.',
+          icon: 'info',
+          confirmButtonText: 'Oke siap',
+          confirmButtonColor: '#7c3aed',
+          background: '#1e1e2e',
+          color: '#fff',
+        });
+      } else {
+        // Sudah flip tapi belum rate
+        await Swal.fire({
+          title: 'Eh, belum kasih reaksi nih 👆',
+          text: 'Lu udah liat jawabannya — kasih Hard, Lumayan, atau Gampang biar progress ke-track. Atau klik Skip kalau mau lewatin kartu ini dulu.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Oke, gue rate dulu',
+          cancelButtonText: 'Skip kartu ini',
+          confirmButtonColor: '#7c3aed',
+          cancelButtonColor: '#475569',
+          background: '#1e1e2e',
+          color: '#fff',
+        }).then((res) => {
+          if (res.isDismissed && res.dismiss === Swal.DismissReason.cancel) {
+            // User pilih skip — force next
+            nextCard(true);
+          }
+        });
+      }
       return;
     }
 
