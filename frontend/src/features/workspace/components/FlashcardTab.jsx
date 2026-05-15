@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { 
-  Layers3, 
-  Sparkles, 
-  RefreshCw, 
-  ChevronLeft, 
-  ChevronRight, 
-  CheckCircle2, 
-  Frown, 
-  Smile, 
+import {
+  Layers3,
+  Sparkles,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+  CheckCircle2,
+  Frown,
+  Smile,
   Zap,
   Shuffle,
   RotateCcw,
@@ -133,9 +133,9 @@ const FlashcardTab = () => {
     return (
       <div className="w-full space-y-8 animate-pulse">
         <Card className="p-12 border-white/5 bg-white/2 rounded-3xl flex flex-col items-center justify-center">
-           <div className="h-40 w-full max-w-md bg-white/5 rounded-2xl mb-8"></div>
-           <div className="h-4 w-48 bg-white/5 rounded-full mb-4"></div>
-           <div className="h-3 w-32 bg-white/5 rounded-full"></div>
+          <div className="h-40 w-full max-w-md bg-white/5 rounded-2xl mb-8"></div>
+          <div className="h-4 w-48 bg-white/5 rounded-full mb-4"></div>
+          <div className="h-3 w-32 bg-white/5 rounded-full"></div>
         </Card>
       </div>
     );
@@ -154,12 +154,13 @@ const FlashcardTab = () => {
         <h2 className="text-2xl font-black text-white tracking-tight mb-3">AI sedang meracik materi...</h2>
         <p className="text-slate-500 font-medium mb-1">Aiden sedang membaca dokumen dan membuat flashcard terbaik buat kamu</p>
         <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-8">Estimasi: 15–30 detik</p>
-        
+
         <div className="w-64 h-2 bg-white/5 rounded-full overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 w-full -translate-x-full animate-[progress_2s_ease-in-out_infinite]"></div>
         </div>
-        
-        <style dangerouslySetInnerHTML={{ __html: `
+
+        <style dangerouslySetInnerHTML={{
+          __html: `
           @keyframes progress {
             0% { transform: translateX(-100%); }
             50% { transform: translateX(0); }
@@ -173,39 +174,52 @@ const FlashcardTab = () => {
   // State B — Empty
   if (flashcards.length === 0) {
     return (
-      <div className="w-full py-12 flex flex-col items-center justify-center text-center">
-        <div className="h-24 w-24 rounded-[2rem] bg-white/5 border border-white/10 flex items-center justify-center mb-8 rotate-12 group hover:rotate-0 transition-transform duration-500">
-           <Layers3 className="h-10 w-10 text-slate-500 group-hover:text-indigo-400 transition-colors" />
-        </div>
-        <h2 className="text-2xl font-black text-white tracking-tight mb-4">Belum ada flashcard</h2>
-        <p className="text-slate-500 font-medium max-w-sm mb-10 leading-relaxed">
-          Ubah materi dokumen kamu jadi kartu belajar interaktif biar lebih gampang hafal dan paham!
-        </p>
-        
-        <Card className="p-8 border-white/10 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex flex-col md:flex-row items-center gap-6 shadow-2xl">
-          <div className="space-y-1.5 text-left w-full md:w-auto">
-            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Jumlah Kartu</label>
-            <Select 
-              value={countSelect}
-              onChange={(e) => setCountSelect(e.target.value)}
-              className="w-full md:w-40 bg-black/20 border-white/10 rounded-2xl h-12"
-              options={[
-                { label: "5 Kartu", value: "5" },
-                { label: "10 Kartu (Best)", value: "10" },
-                { label: "15 Kartu", value: "15" },
-                { label: "20 Kartu", value: "20" },
-              ]}
-            />
+      <div className="w-full max-w-5xl mx-auto space-y-8 pb-12 animate-in fade-in duration-500">
+        <Card className="p-6 border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+                <Layers3 className="h-6 w-6 text-indigo-400" />
+              </div>
+              <div>
+                <h2 className="text-base font-black text-white tracking-tight leading-none">Flashcard</h2>
+                <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Validate Knowledge</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <Select
+                value={countSelect}
+                onChange={(e) => setCountSelect(e.target.value)}
+                className="w-full md:w-40 bg-black/20 border-white/10 rounded-2xl h-12"
+                options={[
+                  { label: "5 Kartu", value: "5" },
+                  { label: "10 Kartu (Best)", value: "10" },
+                  { label: "15 Kartu", value: "15" },
+                  { label: "20 Kartu", value: "20" },
+                ]}
+              />
+              <Button variant="primary" icon={Sparkles} onClick={() => generateFlashcards(parseInt(countSelect))} className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]">
+                Generate Flashcard
+              </Button>
+            </div>
           </div>
-          <Button 
-            variant="primary" 
-            icon={Sparkles} 
-            onClick={() => generateFlashcards(parseInt(countSelect))}
-            className="w-full md:w-auto h-14 px-8 rounded-2xl font-black italic tracking-tight text-sm shadow-lg shadow-indigo-500/20"
-          >
-            ✨ Generate Flashcards
-          </Button>
         </Card>
+
+        <div className="space-y-6">
+          <div className="p-8 flex flex-col items-center justify-center min-h-[280px] text-center">
+            <Layers3 className="h-12 w-12 text-indigo-400/30 mb-6" />
+            <h3 className="text-lg font-black text-white/60 tracking-tight mb-3">
+              Belum ada flashcard
+            </h3>
+            <p className="text-sm font-medium text-slate-500 max-w-xs leading-relaxed">
+              Klik <span className="text-indigo-400 font-bold">Generate Flashcard</span> di
+              atas untuk membuat ringkasan otomatis dari dokumen ini menggunakan AI.
+            </p>
+          </div>
+
+
+        </div>
       </div>
     );
   }
@@ -218,12 +232,12 @@ const FlashcardTab = () => {
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <CheckCircle2 className="h-64 w-64 text-emerald-400" />
           </div>
-          
+
           <div className="relative z-10 text-center space-y-8">
             <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mb-2">
               <CheckCircle2 className="h-10 w-10" />
             </div>
-            
+
             <div>
               <h2 className="text-4xl font-black text-white tracking-tighter mb-3">Sesi Selesai! 🎉</h2>
               <p className="text-slate-400 font-medium">GG! Lu udah review semua kartu materi ini.</p>
@@ -249,17 +263,17 @@ const FlashcardTab = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button 
-                variant="secondary" 
-                icon={RotateCcw} 
+              <Button
+                variant="secondary"
+                icon={RotateCcw}
                 onClick={resetSession}
                 className="flex-1 h-14 rounded-2xl font-black tracking-tight"
               >
                 Ulangi Sesi
               </Button>
-              <Button 
-                variant="primary" 
-                icon={RefreshCw} 
+              <Button
+                variant="primary"
+                icon={RefreshCw}
                 onClick={handleRegenerate}
                 className="flex-1 h-14 rounded-2xl font-black tracking-tight bg-indigo-500 shadow-lg shadow-indigo-500/20"
               >
@@ -274,19 +288,19 @@ const FlashcardTab = () => {
 
   // State E — Card Active
   const cardContainerStyle = { perspective: '1000px', width: '100%', height: '320px' };
-  const cardStyle = { 
-    position: 'relative', 
-    width: '100%', 
+  const cardStyle = {
+    position: 'relative',
+    width: '100%',
     height: '100%',
     transformStyle: 'preserve-3d',
     transition: 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)',
     transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
     cursor: 'pointer'
   };
-  const faceStyle = { 
-    position: 'absolute', 
-    width: '100%', 
-    height: '100%', 
+  const faceStyle = {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
     backfaceVisibility: 'hidden',
     display: 'flex',
     flexDirection: 'column',
@@ -302,58 +316,50 @@ const FlashcardTab = () => {
   const backFaceStyle = { ...faceStyle, transform: 'rotateY(180deg)', backgroundColor: 'rgba(15, 23, 42, 0.8)' };
 
   return (
-    <div className="w-full space-y-8 pb-12">
+    <div className="w-full max-w-5xl mx-auto space-y-8 pb-12 animate-in fade-in duration-500">
       {/* HEADER CONTROLS */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-2">
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-inner">
-             <Layers3 className="h-6 w-6 text-indigo-400" />
-          </div>
-          <div>
-            <h2 className="text-lg font-black text-white tracking-tight leading-none uppercase">
-              Kartu {currentIndex + 1} <span className="text-slate-600">/ {flashcards.length}</span>
-            </h2>
-            <div className="flex items-center gap-2 mt-2">
-               <div className="h-1 w-32 bg-white/5 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-indigo-500 transition-all duration-500" 
+      <Card className="p-6 border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+              <Layers3 className="h-6 w-6 text-indigo-400" />
+            </div>
+            <div>
+              <h2 className="text-base font-black text-white tracking-tight leading-none">Flashcard {currentIndex + 1} <span className="text-slate-600">/ {flashcards.length}</span></h2>
+              <div className="flex items-center gap-2 mt-2">
+                <div className="h-1 w-32 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-indigo-500 transition-all duration-500"
                     style={{ width: `${(progress.reviewed / progress.total) * 100}%` }}
                   />
-               </div>
-               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                 {Math.round((progress.reviewed / progress.total) * 100)}% Done
-               </span>
+                </div>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                  {Math.round((progress.reviewed / progress.total) * 100)}% Done
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <Button 
-            variant="secondary" 
-            size="sm" 
-            icon={Shuffle} 
-            onClick={handleShuffle}
-            className={`rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 transition-all ${
-              isShuffleLocked 
-                ? 'opacity-40 cursor-not-allowed grayscale' 
+          <div className="flex flex-wrap items-center gap-4">
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={Shuffle}
+              onClick={handleShuffle}
+              className={`rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 transition-all ${isShuffleLocked
+                ? 'opacity-40 cursor-not-allowed grayscale'
                 : 'hover:bg-white/10'
-            }`}
-            title={isShuffleLocked ? 'Tidak bisa shuffle saat review sedang berjalan' : 'Acak urutan kartu'}
-          >
-            Shuffle
-          </Button>
-          <Button 
-            variant="secondary" 
-            size="sm" 
-            icon={RefreshCw} 
-            onClick={handleRegenerate}
-            disabled={isGenerating}
-            className="rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 hover:bg-white/10"
-          >
-            Regenerate
-          </Button>
+                }`}
+              title={isShuffleLocked ? 'Tidak bisa shuffle saat review sedang berjalan' : 'Acak urutan kartu'}
+            >
+              Shuffle
+            </Button>
+            <Button variant="primary" icon={RefreshCw} onClick={handleRegenerate} disabled={isGenerating} className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]">
+              Regenerate
+            </Button>
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* ERROR MESSAGE */}
       {error && (
@@ -372,16 +378,16 @@ const FlashcardTab = () => {
               <div className="absolute top-8 left-8">
                 <Badge variant="indigo" className="px-3 py-1 text-[10px] font-black uppercase tracking-widest">Question</Badge>
               </div>
-              
+
               <h3 className="text-xl md:text-2xl font-black text-white text-center leading-tight tracking-tight max-w-md">
                 {currentCard?.frontText}
               </h3>
-              
+
               <div className="absolute bottom-10 flex flex-col items-center gap-2">
-                 <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-bounce">
-                    <RotateCcw className="h-4 w-4 text-slate-500" />
-                 </div>
-                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Klik untuk lihat jawaban</span>
+                <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-bounce">
+                  <RotateCcw className="h-4 w-4 text-slate-500" />
+                </div>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Klik untuk lihat jawaban</span>
               </div>
             </div>
 
@@ -399,21 +405,21 @@ const FlashcardTab = () => {
 
               {/* RATING BUTTONS (Inside Back Face) */}
               <div className="absolute bottom-8 left-0 w-full px-8 flex justify-center gap-3" onClick={(e) => e.stopPropagation()}>
-                <button 
+                <button
                   onClick={() => handleRate('hard')}
                   className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-all group/btn active:scale-95"
                 >
                   <Frown className="h-5 w-5 text-rose-400" />
                   <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest">😰 Susah</span>
                 </button>
-                <button 
+                <button
                   onClick={() => handleRate('medium')}
                   className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all group/btn active:scale-95"
                 >
                   <Smile className="h-5 w-5 text-amber-400" />
                   <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">😊 Lumayan</span>
                 </button>
-                <button 
+                <button
                   onClick={() => handleRate('easy')}
                   className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all group/btn active:scale-95"
                 >
@@ -427,20 +433,19 @@ const FlashcardTab = () => {
 
         {/* NAVIGATION OVERLAYS */}
         <div className="absolute top-1/2 -left-4 md:-left-20 -translate-y-1/2">
-          <button 
+          <button
             disabled={currentIndex === 0}
             onClick={() => { setToastMsg(''); prevCard(); }}
-            className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${
-              currentIndex === 0 
-                ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500' 
+            className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${currentIndex === 0
+                ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500'
                 : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 active:scale-90 shadow-xl'
-            }`}
+              }`}
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
         </div>
         <div className="absolute top-1/2 -right-4 md:-right-20 -translate-y-1/2">
-          <button 
+          <button
             onClick={handleNext}
             className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 text-white flex items-center justify-center hover:bg-white/10 active:scale-90 shadow-xl"
           >
@@ -466,7 +471,7 @@ const FlashcardTab = () => {
           {toastMsg}
         </div>
       )}
-      
+
       <p className="text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] italic">
         Tip: Review kartu tiap hari buat hasil belajar yang GG parah 🚀
       </p>
