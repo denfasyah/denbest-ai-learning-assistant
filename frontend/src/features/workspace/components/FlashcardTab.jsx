@@ -1,72 +1,394 @@
+import { useState } from 'react';
+import { 
+  Layers3, 
+  Sparkles, 
+  RefreshCw, 
+  ChevronLeft, 
+  ChevronRight, 
+  CheckCircle2, 
+  Frown, 
+  Smile, 
+  Zap,
+  Shuffle,
+  RotateCcw,
+  AlertCircle,
+  Loader2
+} from 'lucide-react';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Badge from '../../../components/ui/Badge';
-import { Layers3, Sparkles } from 'lucide-react';
-import useWorkspace from '../hooks/useWorkspace';
+import { Swal } from 'sweetalert2';
+import useFlashcard from '../hooks/useFlashcard';
 
 const FlashcardTab = () => {
-  const { workspace } = useWorkspace();
-  
-  const flashcards = [
-    {
-      question: `Apa inti utama dari materi "${workspace?.title || "ini"}"?`,
-      answer: "Sistem AI akan segera membantu Anda memahami konsep-konsep kunci melalui active recall.",
+  const {
+    flashcards,
+    currentIndex,
+    isFlipped,
+    isLoading,
+    isGenerating,
+    error,
+    sessionDone,
+    progress,
+    currentCard,
+    generateFlashcards,
+    regenerateFlashcards,
+    flipCard,
+    nextCard,
+    prevCard,
+    rateCard,
+    shuffleCards,
+    resetSession
+  } = useFlashcard();
+
+  const [countSelect, setCountSelect] = useState("10");
+
+  const handleRegenerate = async () => {
+    const result = await Swal.fire({
+      title: 'Regenerate Flashcards?',
+      text: 'Ini akan menghapus flashcard lama dan membuat set baru menggunakan AI.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, Regenerate!',
+      cancelButtonText: 'Batal',
+      background: '#0f172a',
+      color: '#fff',
+      confirmButtonColor: '#6366f1',
+      cancelButtonColor: '#334155',
+      customClass: {
+        popup: 'rounded-3xl border border-white/10 shadow-2xl',
+        title: 'font-black tracking-tight',
+        htmlContainer: 'text-slate-400 font-medium',
+        confirmButton: 'rounded-xl font-bold px-6 py-3',
+        cancelButton: 'rounded-xl font-bold px-6 py-3'
+      }
+    });
+
+    if (result.isConfirmed) {
+      regenerateFlashcards(parseInt(countSelect));
     }
-  ];
+  };
+
+  // State A — Loading
+  if (isLoading) {
+    return (
+      <div className="w-full space-y-8 animate-pulse">
+        <Card className="p-12 border-white/5 bg-white/2 rounded-3xl flex flex-col items-center justify-center">
+           <div className="h-40 w-full max-w-md bg-white/5 rounded-2xl mb-8"></div>
+           <div className="h-4 w-48 bg-white/5 rounded-full mb-4"></div>
+           <div className="h-3 w-32 bg-white/5 rounded-full"></div>
+        </Card>
+      </div>
+    );
+  }
+
+  // State C — Generating
+  if (isGenerating) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center py-20 bg-white/5 border border-white/10 rounded-3xl">
+        <div className="relative mb-12">
+          <div className="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-full animate-pulse"></div>
+          <div className="h-24 w-24 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center relative z-10">
+            <Sparkles className="h-10 w-10 text-indigo-400 animate-bounce" />
+          </div>
+        </div>
+        <h2 className="text-2xl font-black text-white tracking-tight mb-3">AI sedang meracik materi...</h2>
+        <p className="text-slate-500 font-medium mb-1">Aiden sedang membaca dokumen dan membuat flashcard terbaik buat kamu</p>
+        <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-8">Estimasi: 15–30 detik</p>
+        
+        <div className="w-64 h-2 bg-white/5 rounded-full overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-violet-500 w-full -translate-x-full animate-[progress_2s_ease-in-out_infinite]"></div>
+        </div>
+        
+        <style dangerouslySetInnerHTML={{ __html: `
+          @keyframes progress {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0); }
+            100% { transform: translateX(100%); }
+          }
+        `}} />
+      </div>
+    );
+  }
+
+  // State B — Empty
+  if (flashcards.length === 0) {
+    return (
+      <div className="w-full py-12 flex flex-col items-center justify-center text-center">
+        <div className="h-24 w-24 rounded-[2rem] bg-white/5 border border-white/10 flex items-center justify-center mb-8 rotate-12 group hover:rotate-0 transition-transform duration-500">
+           <Layers3 className="h-10 w-10 text-slate-500 group-hover:text-indigo-400 transition-colors" />
+        </div>
+        <h2 className="text-2xl font-black text-white tracking-tight mb-4">Belum ada flashcard</h2>
+        <p className="text-slate-500 font-medium max-w-sm mb-10 leading-relaxed">
+          Ubah materi dokumen kamu jadi kartu belajar interaktif biar lebih gampang hafal dan paham!
+        </p>
+        
+        <Card className="p-8 border-white/10 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex flex-col md:flex-row items-center gap-6 shadow-2xl">
+          <div className="space-y-1.5 text-left w-full md:w-auto">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Jumlah Kartu</label>
+            <Select 
+              value={countSelect}
+              onChange={(e) => setCountSelect(e.target.value)}
+              className="w-full md:w-40 bg-black/20 border-white/10 rounded-2xl h-12"
+              options={[
+                { label: "5 Kartu", value: "5" },
+                { label: "10 Kartu (Best)", value: "10" },
+                { label: "15 Kartu", value: "15" },
+                { label: "20 Kartu", value: "20" },
+              ]}
+            />
+          </div>
+          <Button 
+            variant="primary" 
+            icon={Sparkles} 
+            onClick={() => generateFlashcards(parseInt(countSelect))}
+            className="w-full md:w-auto h-14 px-8 rounded-2xl font-black italic tracking-tight text-sm shadow-lg shadow-indigo-500/20"
+          >
+            ✨ Generate Flashcards
+          </Button>
+        </Card>
+      </div>
+    );
+  }
+
+  // State D — Session Done
+  if (sessionDone) {
+    return (
+      <div className="w-full max-w-3xl mx-auto py-8">
+        <Card className="p-10 border-white/10 bg-white/5 backdrop-blur-2xl rounded-[3rem] overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-8 opacity-5">
+            <CheckCircle2 className="h-64 w-64 text-emerald-400" />
+          </div>
+          
+          <div className="relative z-10 text-center space-y-8">
+            <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mb-2">
+              <CheckCircle2 className="h-10 w-10" />
+            </div>
+            
+            <div>
+              <h2 className="text-4xl font-black text-white tracking-tighter mb-3">Sesi Selesai! 🎉</h2>
+              <p className="text-slate-400 font-medium">GG! Lu udah review semua kartu materi ini.</p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
+              <div className="p-4 rounded-2xl bg-white/2 border border-white/5">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total</p>
+                <p className="text-xl font-black text-white">{progress.total}</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/2 border border-white/5">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Easy</p>
+                <p className="text-xl font-black text-emerald-400">{progress.easy}</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/2 border border-white/5">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Medium</p>
+                <p className="text-xl font-black text-amber-400">{progress.medium}</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/2 border border-white/5">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Hard</p>
+                <p className="text-xl font-black text-rose-400">{progress.hard}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button 
+                variant="secondary" 
+                icon={RotateCcw} 
+                onClick={resetSession}
+                className="flex-1 h-14 rounded-2xl font-black tracking-tight"
+              >
+                Ulangi Sesi
+              </Button>
+              <Button 
+                variant="primary" 
+                icon={RefreshCw} 
+                onClick={handleRegenerate}
+                className="flex-1 h-14 rounded-2xl font-black tracking-tight bg-indigo-500 shadow-lg shadow-indigo-500/20"
+              >
+                Generate Ulang
+              </Button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // State E — Card Active
+  const cardContainerStyle = { perspective: '1000px', width: '100%', height: '320px' };
+  const cardStyle = { 
+    position: 'relative', 
+    width: '100%', 
+    height: '100%',
+    transformStyle: 'preserve-3d',
+    transition: 'transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)',
+    transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+    cursor: 'pointer'
+  };
+  const faceStyle = { 
+    position: 'absolute', 
+    width: '100%', 
+    height: '100%', 
+    backfaceVisibility: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '2rem',
+    borderRadius: '2.5rem',
+    border: '1px solid rgba(255,255,255,0.1)',
+    backgroundColor: 'rgba(30, 41, 59, 0.5)',
+    backdropFilter: 'blur(16px)',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+  };
+  const backFaceStyle = { ...faceStyle, transform: 'rotateY(180deg)', backgroundColor: 'rgba(15, 23, 42, 0.8)' };
 
   return (
     <div className="w-full space-y-8 pb-12">
-      {/* CONTROL PANEL - Smaller padding and clean font */}
-      <Card className="p-6 border-white/10 bg-white/5 backdrop-blur-xl rounded-3xl">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
-               <Layers3 className="h-6 w-6 text-indigo-400" />
-            </div>
-            <div>
-              <h2 className="text-base font-black text-white tracking-tight leading-none">Flashcard Engine</h2>
-              <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">AI Active Recall</p>
-            </div>
+      {/* HEADER CONTROLS */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-2">
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-inner">
+             <Layers3 className="h-6 w-6 text-indigo-400" />
           </div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <Select 
-              className="w-32"
-              options={[
-                { label: "5 Cards", value: "5" },
-                { label: "10 Cards", value: "10" },
-                { label: "20 Cards", value: "20" },
-              ]}
-            />
-            <Button variant="primary" icon={Sparkles} className="rounded-xl h-11 px-6 font-bold uppercase tracking-widest text-[10px]">
-              Generate Set
-            </Button>
+          <div>
+            <h2 className="text-lg font-black text-white tracking-tight leading-none uppercase">
+              Kartu {currentIndex + 1} <span className="text-slate-600">/ {flashcards.length}</span>
+            </h2>
+            <div className="flex items-center gap-2 mt-2">
+               <div className="h-1 w-32 bg-white/5 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-indigo-500 transition-all duration-500" 
+                    style={{ width: `${(progress.reviewed / progress.total) * 100}%` }}
+                  />
+               </div>
+               <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                 {Math.round((progress.reviewed / progress.total) * 100)}% Done
+               </span>
+            </div>
           </div>
         </div>
-      </Card>
 
-      {/* GRID - 3 columns desktop, 2 tablet, 1 mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {flashcards.map((card, index) => (
-          <Card key={index} hover className="p-6 group relative overflow-hidden bg-white/2 border-white/5 rounded-3xl flex flex-col min-h-55">
-             <div className="flex items-center gap-2 mb-6">
-                <Badge variant="indigo" className="px-2 py-1 text-[9px] font-black uppercase">Card #{index + 1}</Badge>
-                <Layers3 className="h-3 w-3 text-slate-700" />
-             </div>
-
-             <h3 className="text-base font-black text-white leading-tight mb-6 flex-1">
-                {card.question}
-             </h3>
-
-             <div className="pt-4 border-t border-white/5">
-                <p className="text-[13px] font-medium leading-relaxed text-slate-500 group-hover:text-slate-400 transition-colors">
-                  {card.answer}
-                </p>
-             </div>
-          </Card>
-        ))}
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            icon={Shuffle} 
+            onClick={shuffleCards}
+            className="rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 hover:bg-white/10"
+          >
+            Shuffle
+          </Button>
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            icon={RefreshCw} 
+            onClick={handleRegenerate}
+            disabled={isGenerating}
+            className="rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 hover:bg-white/10"
+          >
+            Regenerate
+          </Button>
+        </div>
       </div>
+
+      {/* ERROR MESSAGE */}
+      {error && (
+        <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3 text-rose-400 animate-in fade-in">
+          <AlertCircle className="h-5 w-5" />
+          <p className="text-sm font-bold">{error}</p>
+        </div>
+      )}
+
+      {/* CARD COMPONENT */}
+      <div className="relative group max-w-2xl mx-auto py-4">
+        <div style={cardContainerStyle}>
+          <div style={cardStyle} onClick={flipCard}>
+            {/* FRONT FACE */}
+            <div style={faceStyle} className="group-hover:border-indigo-500/30 transition-colors">
+              <div className="absolute top-8 left-8">
+                <Badge variant="indigo" className="px-3 py-1 text-[10px] font-black uppercase tracking-widest">Question</Badge>
+              </div>
+              
+              <h3 className="text-xl md:text-2xl font-black text-white text-center leading-tight tracking-tight max-w-md">
+                {currentCard?.frontText}
+              </h3>
+              
+              <div className="absolute bottom-10 flex flex-col items-center gap-2">
+                 <div className="h-10 w-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-bounce">
+                    <RotateCcw className="h-4 w-4 text-slate-500" />
+                 </div>
+                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest italic">Klik untuk lihat jawaban</span>
+              </div>
+            </div>
+
+            {/* BACK FACE */}
+            <div style={backFaceStyle}>
+              <div className="absolute top-8 left-8">
+                <Badge variant="emerald" className="px-3 py-1 text-[10px] font-black uppercase tracking-widest">Answer</Badge>
+              </div>
+
+              <div className="w-full flex-1 flex flex-col items-center justify-center overflow-y-auto custom-scrollbar mt-12 mb-20 px-4">
+                <p className="text-base md:text-lg font-medium text-slate-200 text-center leading-relaxed italic">
+                  "{currentCard?.backText}"
+                </p>
+              </div>
+
+              {/* RATING BUTTONS (Inside Back Face) */}
+              <div className="absolute bottom-8 left-0 w-full px-8 flex justify-center gap-3" onClick={(e) => e.stopPropagation()}>
+                <button 
+                  onClick={() => rateCard('hard')}
+                  className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-all group/btn active:scale-95"
+                >
+                  <Frown className="h-5 w-5 text-rose-400" />
+                  <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest">😰 Susah</span>
+                </button>
+                <button 
+                  onClick={() => rateCard('medium')}
+                  className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all group/btn active:scale-95"
+                >
+                  <Smile className="h-5 w-5 text-amber-400" />
+                  <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">😊 Lumayan</span>
+                </button>
+                <button 
+                  onClick={() => rateCard('easy')}
+                  className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all group/btn active:scale-95"
+                >
+                  <Zap className="h-5 w-5 text-emerald-400" />
+                  <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">😎 Gampang</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* NAVIGATION OVERLAYS */}
+        <div className="absolute top-1/2 -left-4 md:-left-20 -translate-y-1/2">
+          <button 
+            disabled={currentIndex === 0}
+            onClick={prevCard}
+            className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${
+              currentIndex === 0 
+                ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500' 
+                : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 active:scale-90 shadow-xl'
+            }`}
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+        </div>
+        <div className="absolute top-1/2 -right-4 md:-right-20 -translate-y-1/2">
+          <button 
+            onClick={nextCard}
+            className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 text-white flex items-center justify-center hover:bg-white/10 active:scale-90 shadow-xl"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </div>
+      </div>
+      
+      <p className="text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] italic">
+        Tip: Review kartu tiap hari buat hasil belajar yang GG parah 🚀
+      </p>
     </div>
   );
 };

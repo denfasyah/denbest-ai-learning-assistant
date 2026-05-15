@@ -167,8 +167,43 @@ ${contextText}${truncationNote}
 `;
 };
 
+/**
+ * Builds the flashcard prompt for the document.
+ * @param {string} extractedText - Text content extracted from the document.
+ * @param {number} count - Number of flashcards to generate.
+ * @returns {string} Fully constructed flashcard prompt.
+ */
+const buildFlashcardPrompt = (extractedText, count = 10) => {
+  let contextText = extractedText || '';
+  if (contextText.length > 30000) {
+    const lastSpace = contextText.lastIndexOf(' ', 30000);
+    contextText = contextText.substring(0, lastSpace !== -1 ? lastSpace : 30000);
+  }
+
+  return `Buat tepat ${count} flashcard dari dokumen berikut untuk membantu user belajar.
+
+ATURAN WAJIB:
+- Fokus pada konsep penting, definisi, rumus, dan fakta kunci dari dokumen
+- frontText: pertanyaan singkat dan jelas, maksimal 100 karakter
+- backText: jawaban lengkap namun ringkas, maksimal 300 karakter
+- Variasikan difficulty: sekitar 30% easy, 50% medium, 20% hard
+- JANGAN sertakan pertanyaan yang jawabannya tidak ada di dokumen
+
+RETURN FORMAT:
+Kembalikan HANYA JSON array murni. Tidak ada teks penjelasan, tidak ada markdown backticks, tidak ada komentar. Langsung dimulai dengan karakter "[".
+
+[
+  { "front": "Pertanyaan di sini?", "back": "Jawaban lengkap di sini.", "difficulty": "easy" },
+  { "front": "...", "back": "...", "difficulty": "medium" }
+]
+
+=== DOKUMEN ===
+${contextText}`;
+};
+
 module.exports = {
   buildSystemPrompt,
-  buildSummaryPrompt
+  buildSummaryPrompt,
+  buildFlashcardPrompt
 };
 
