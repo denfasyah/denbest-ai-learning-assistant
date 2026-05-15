@@ -129,7 +129,7 @@ const reviewFlashcard = async (flashcardId, userId, rating) => {
       $inc: { reviewCount: 1 }, 
       difficulty: rating 
     },
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   return updatedFlashcard;

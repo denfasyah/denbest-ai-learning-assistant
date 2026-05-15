@@ -14,11 +14,12 @@ import {
   AlertCircle,
   Loader2
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Badge from '../../../components/ui/Badge';
-import { Swal } from 'sweetalert2';
+
 import useFlashcard from '../hooks/useFlashcard';
 
 const FlashcardTab = () => {
@@ -32,6 +33,8 @@ const FlashcardTab = () => {
     sessionDone,
     progress,
     currentCard,
+    isInQueueMode,
+    isShuffleLocked,
     generateFlashcards,
     regenerateFlashcards,
     flipCard,
@@ -43,31 +46,73 @@ const FlashcardTab = () => {
   } = useFlashcard();
 
   const [countSelect, setCountSelect] = useState("10");
+  const [toastMsg, setToastMsg] = useState('');
+
+  const handleNext = async () => {
+    setToastMsg('');
+    const result = nextCard();
+
+    if (result?.blocked) {
+      // User sudah flip tapi belum rate — tampilkan Swal
+      await Swal.fire({
+        title: 'Eh, belum kasih reaksi nih 👆',
+        text: 'Kasih dulu Hard, Lumayan, atau Gampang — biar progress lu ke-track. Atau klik Skip kalau mau lewatin kartu ini dulu.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Oke, gue rate dulu',
+        cancelButtonText: 'Skip kartu ini',
+        confirmButtonColor: '#7c3aed',
+        cancelButtonColor: '#475569',
+        background: '#1e1e2e',
+        color: '#fff',
+      }).then((res) => {
+        if (res.isDismissed && res.dismiss === Swal.DismissReason.cancel) {
+          // User pilih skip — force next
+          nextCard(true);
+        }
+      });
+      return;
+    }
+
+    if (result?.queueMode) {
+      if (result?.navigatedTo) {
+        setToastMsg(
+          `Ada ${result.remaining} kartu yang belum di-review. Otomatis lompat ke kartu ${result.navigatedTo} dulu ya 👀`
+        );
+      } else {
+        setToastMsg(
+          `Sisa ${result.remaining} kartu lagi yang belum di-review 💪`
+        );
+      }
+    }
+  };
+
+  const handleShuffle = async () => {
+    const result = shuffleCards();
+    if (result?.locked) {
+      await Swal.fire({
+        title: 'Shuffle tidak bisa dilakukan 🔒',
+        text: 'Lu sudah mulai review. Shuffle hanya bisa dilakukan sebelum review dimulai. Selesaikan dulu sesi ini ya.',
+        icon: 'info',
+        confirmButtonText: 'Oke, lanjut review',
+        confirmButtonColor: '#7c3aed',
+        background: '#1e1e2e',
+        color: '#fff',
+      });
+    }
+  };
+
+  const handleRate = (rating) => {
+    setToastMsg('');
+    rateCard(rating);
+  };
 
   const handleRegenerate = async () => {
-    const result = await Swal.fire({
-      title: 'Regenerate Flashcards?',
-      text: 'Ini akan menghapus flashcard lama dan membuat set baru menggunakan AI.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Ya, Regenerate!',
-      cancelButtonText: 'Batal',
-      background: '#0f172a',
-      color: '#fff',
-      confirmButtonColor: '#6366f1',
-      cancelButtonColor: '#334155',
-      customClass: {
-        popup: 'rounded-3xl border border-white/10 shadow-2xl',
-        title: 'font-black tracking-tight',
-        htmlContainer: 'text-slate-400 font-medium',
-        confirmButton: 'rounded-xl font-bold px-6 py-3',
-        cancelButton: 'rounded-xl font-bold px-6 py-3'
-      }
-    });
-
-    if (result.isConfirmed) {
-      regenerateFlashcards(parseInt(countSelect));
-    }
+    const confirmed = window.confirm(
+      'Generate ulang akan menghapus semua flashcard saat ini. Lanjutkan?'
+    );
+    if (!confirmed) return;
+    await regenerateFlashcards(parseInt(countSelect));
   };
 
   // State A — Loading
@@ -274,8 +319,13 @@ const FlashcardTab = () => {
             variant="secondary" 
             size="sm" 
             icon={Shuffle} 
-            onClick={shuffleCards}
-            className="rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 hover:bg-white/10"
+            onClick={handleShuffle}
+            className={`rounded-xl h-10 px-4 font-bold text-[10px] uppercase tracking-widest border-white/5 transition-all ${
+              isShuffleLocked 
+                ? 'opacity-40 cursor-not-allowed grayscale' 
+                : 'hover:bg-white/10'
+            }`}
+            title={isShuffleLocked ? 'Tidak bisa shuffle saat review sedang berjalan' : 'Acak urutan kartu'}
           >
             Shuffle
           </Button>
@@ -303,7 +353,7 @@ const FlashcardTab = () => {
       {/* CARD COMPONENT */}
       <div className="relative group max-w-2xl mx-auto py-4">
         <div style={cardContainerStyle}>
-          <div style={cardStyle} onClick={flipCard}>
+          <div style={cardStyle} onClick={() => { setToastMsg(''); flipCard(); }}>
             {/* FRONT FACE */}
             <div style={faceStyle} className="group-hover:border-indigo-500/30 transition-colors">
               <div className="absolute top-8 left-8">
@@ -337,21 +387,21 @@ const FlashcardTab = () => {
               {/* RATING BUTTONS (Inside Back Face) */}
               <div className="absolute bottom-8 left-0 w-full px-8 flex justify-center gap-3" onClick={(e) => e.stopPropagation()}>
                 <button 
-                  onClick={() => rateCard('hard')}
+                  onClick={() => handleRate('hard')}
                   className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-all group/btn active:scale-95"
                 >
                   <Frown className="h-5 w-5 text-rose-400" />
                   <span className="text-[9px] font-black text-rose-500 uppercase tracking-widest">😰 Susah</span>
                 </button>
                 <button 
-                  onClick={() => rateCard('medium')}
+                  onClick={() => handleRate('medium')}
                   className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/20 transition-all group/btn active:scale-95"
                 >
                   <Smile className="h-5 w-5 text-amber-400" />
                   <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">😊 Lumayan</span>
                 </button>
                 <button 
-                  onClick={() => rateCard('easy')}
+                  onClick={() => handleRate('easy')}
                   className="flex-1 flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all group/btn active:scale-95"
                 >
                   <Zap className="h-5 w-5 text-emerald-400" />
@@ -366,7 +416,7 @@ const FlashcardTab = () => {
         <div className="absolute top-1/2 -left-4 md:-left-20 -translate-y-1/2">
           <button 
             disabled={currentIndex === 0}
-            onClick={prevCard}
+            onClick={() => { setToastMsg(''); prevCard(); }}
             className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${
               currentIndex === 0 
                 ? 'opacity-20 cursor-not-allowed bg-white/5 text-slate-500' 
@@ -378,13 +428,31 @@ const FlashcardTab = () => {
         </div>
         <div className="absolute top-1/2 -right-4 md:-right-20 -translate-y-1/2">
           <button 
-            onClick={nextCard}
+            onClick={handleNext}
             className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 text-white flex items-center justify-center hover:bg-white/10 active:scale-90 shadow-xl"
           >
             <ChevronRight className="h-6 w-6" />
           </button>
         </div>
       </div>
+
+      {/* QUEUE TOAST */}
+      {toastMsg && (
+        <div style={{
+          textAlign: 'center',
+          color: '#94a3b8',
+          fontSize: '12px',
+          margin: '8px 0',
+          padding: '8px 16px',
+          background: 'rgba(124, 58, 237, 0.1)',
+          borderRadius: '8px',
+          border: '1px solid rgba(124, 58, 237, 0.2)',
+          maxWidth: 'fit-content',
+          marginInline: 'auto'
+        }}>
+          {toastMsg}
+        </div>
+      )}
       
       <p className="text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] italic">
         Tip: Review kartu tiap hari buat hasil belajar yang GG parah 🚀

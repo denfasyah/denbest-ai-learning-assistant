@@ -13,14 +13,21 @@ const useFlashcard = () => {
   const [error, setError] = useState(null);
   const [sessionDone, setSessionDone] = useState(false);
   
-  // Bug 1 & 3: Use Map to track reviewed card IDs and their ratings
+  // Track reviewed card IDs and their ratings
   const [reviewedMap, setReviewedMap] = useState(new Map()); 
   
+  // Track which cards have been flipped in the current session
+  const [flippedInSession, setFlippedInSession] = useState(new Set());
+  
+  // Queue system for unreviewed cards
+  const [unreviewedQueue, setUnreviewedQueue] = useState([]);
+  const [isInQueueMode, setIsInQueueMode] = useState(false);
+
   const [progress, setProgress] = useState({ 
     reviewed: 0, 
     total: 0, 
     easy: 0, 
-    medium: 0, // Bug 2: Ensure medium is present
+    medium: 0, 
     hard: 0 
   });
 
@@ -59,7 +66,10 @@ const useFlashcard = () => {
         setCurrentIndex(0);
         setIsFlipped(false);
         setSessionDone(false);
-        setReviewedMap(new Map()); // Reset reviewed tracking
+        setReviewedMap(new Map());
+        setFlippedInSession(new Set());
+        setUnreviewedQueue([]);
+        setIsInQueueMode(false);
         setProgress({ 
           reviewed: 0, 
           total: data.length, 
@@ -81,7 +91,7 @@ const useFlashcard = () => {
   const regenerateFlashcards = async (count = 10) => {
     if (!workspaceId) return;
     setIsGenerating(true);
-    setError(null); // Bug 4: Clear error before starting
+    setError(null);
     try {
       const response = await flashcardApi.regenerateFlashcards(workspaceId, count);
       if (response.data.success) {
@@ -90,7 +100,10 @@ const useFlashcard = () => {
         setCurrentIndex(0);
         setIsFlipped(false);
         setSessionDone(false);
-        setReviewedMap(new Map()); // Reset reviewed tracking
+        setReviewedMap(new Map());
+        setFlippedInSession(new Set());
+        setUnreviewedQueue([]);
+        setIsInQueueMode(false);
         setProgress({ 
           reviewed: 0, 
           total: data.length, 
@@ -110,16 +123,87 @@ const useFlashcard = () => {
     }
   };
 
-  const flipCard = () => setIsFlipped(prev => !prev);
-
-  const nextCard = useCallback(() => {
-    setIsFlipped(false);
-    if (currentIndex + 1 >= flashcards.length) {
-      setSessionDone(true);
-    } else {
-      setCurrentIndex(prev => prev + 1);
+  const flipCard = () => {
+    const currentCard = flashcards[currentIndex];
+    if (currentCard && !isFlipped) {
+      // Kartu baru di-flip ke sisi jawaban — catat ke flippedInSession
+      setFlippedInSession(prev => new Set([...prev, String(currentCard._id)]));
     }
-  }, [currentIndex, flashcards.length]);
+    setIsFlipped(prev => !prev);
+  };
+
+  const nextCard = useCallback((force = false) => {
+    const currentCard = flashcards[currentIndex];
+    const cardId = currentCard ? String(currentCard._id) : null;
+    const alreadyReviewed = cardId ? reviewedMap.has(cardId) : false;
+    const alreadyFlipped = cardId ? flippedInSession.has(cardId) : false;
+
+    // Restriksi: sudah flip (lihat jawaban) tapi belum rate — dan tidak di-force
+    if (!force && alreadyFlipped && !alreadyReviewed) {
+      return { blocked: true };
+    }
+
+    setIsFlipped(false);
+
+    // Jika sedang dalam queue mode — navigasi ke queue berikutnya
+    if (isInQueueMode) {
+      const remainingQueue = unreviewedQueue.filter(idx => idx !== currentIndex);
+      if (remainingQueue.length === 0) {
+        // Queue habis — semua sudah di-rate
+        setIsInQueueMode(false);
+        setUnreviewedQueue([]);
+        setSessionDone(true);
+        return { blocked: false, sessionDone: true };
+      }
+      setUnreviewedQueue(remainingQueue);
+      setCurrentIndex(remainingQueue[0]);
+      return {
+        blocked: false,
+        queueMode: true,
+        remaining: remainingQueue.length,
+      };
+    }
+
+    // Normal mode: cek apakah ini kartu terakhir
+    if (currentIndex + 1 >= flashcards.length) {
+      // Hitung semua kartu yang sudah di-flip tapi belum di-rate
+      const unreviewed = flashcards
+        .map((card, idx) => ({ card, idx }))
+        .filter(({ card }) =>
+          flippedInSession.has(String(card._id)) &&
+          !reviewedMap.has(String(card._id))
+        )
+        .map(({ idx }) => idx);
+
+      // Hitung kartu yang sama sekali belum di-flip
+      const neverFlipped = flashcards
+        .map((card, idx) => ({ card, idx }))
+        .filter(({ card }) => !flippedInSession.has(String(card._id)))
+        .map(({ idx }) => idx);
+
+      const allUnreviewed = [...new Set([...unreviewed, ...neverFlipped])].sort((a, b) => a - b);
+
+      if (allUnreviewed.length === 0) {
+        // Semua sudah di-rate
+        setSessionDone(true);
+        return { blocked: false, sessionDone: true };
+      }
+
+      // Ada yang belum — masuk queue mode
+      setIsInQueueMode(true);
+      setUnreviewedQueue(allUnreviewed);
+      setCurrentIndex(allUnreviewed[0]);
+      return {
+        blocked: false,
+        queueMode: true,
+        remaining: allUnreviewed.length,
+        navigatedTo: allUnreviewed[0] + 1, // 1-based untuk display
+      };
+    }
+
+    setCurrentIndex(prev => prev + 1);
+    return { blocked: false };
+  }, [currentIndex, flashcards, reviewedMap, flippedInSession, isInQueueMode, unreviewedQueue]);
 
   const prevCard = () => {
     setIsFlipped(false);
@@ -133,19 +217,16 @@ const useFlashcard = () => {
     const cardId = String(currentCard._id);
     const previousRating = reviewedMap.get(cardId);
 
-    // Bug 1 & 3: Update reviewedMap and progress correctly
     setReviewedMap(prev => new Map([...prev, [cardId, rating]]));
 
     setProgress(prev => {
       if (!previousRating) {
-        // First time rating this card
         return {
           ...prev,
           reviewed: prev.reviewed + 1,
           [rating]: prev[rating] + 1,
         };
       } else {
-        // Already rated this card, update the counts
         return {
           ...prev,
           [previousRating]: Math.max(0, prev[previousRating] - 1),
@@ -154,17 +235,18 @@ const useFlashcard = () => {
       }
     });
 
-    // Non-blocking update
-    flashcardApi.reviewFlashcard(workspaceId, cardId, rating)
-      .catch(err => {
-        console.error('Error reviewing flashcard:', err);
-        // non-blocking toast
-      });
+    flashcardApi.reviewFlashcard(workspaceId, cardId, rating).catch(() => {});
 
-    nextCard();
+    // Force next — user sudah rate, langsung lanjut tanpa cek
+    nextCard(true);
   };
 
   const shuffleCards = () => {
+    // Lock shuffle jika sudah ada kartu yang di-rate
+    if (reviewedMap.size > 0) {
+      return { locked: true };
+    }
+
     const shuffled = [...flashcards];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -173,15 +255,18 @@ const useFlashcard = () => {
     setFlashcards(shuffled);
     setCurrentIndex(0);
     setIsFlipped(false);
-    // Note: reviewedMap is NOT reset on shuffle
-    toast.success('Kartu diacak!');
+    setFlippedInSession(new Set());
+    return { locked: false };
   };
 
   const resetSession = () => {
     setCurrentIndex(0);
     setIsFlipped(false);
     setSessionDone(false);
-    setReviewedMap(new Map()); // Reset reviewed tracking
+    setReviewedMap(new Map());
+    setFlippedInSession(new Set());
+    setUnreviewedQueue([]);
+    setIsInQueueMode(false);
     setProgress({ 
       reviewed: 0, 
       total: flashcards.length, 
@@ -201,6 +286,9 @@ const useFlashcard = () => {
     sessionDone,
     progress,
     currentCard: flashcards[currentIndex] || null,
+    isInQueueMode,
+    unreviewedQueue,
+    isShuffleLocked: reviewedMap.size > 0,
     loadFlashcards,
     generateFlashcards,
     regenerateFlashcards,
