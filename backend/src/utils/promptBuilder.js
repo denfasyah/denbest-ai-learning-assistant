@@ -201,9 +201,42 @@ Kembalikan HANYA JSON array murni. Tidak ada teks penjelasan, tidak ada markdown
 ${contextText}`;
 };
 
+const buildQuizPrompt = (extractedText, count = 5) => {
+  let contextText = extractedText || '';
+  if (contextText.length > 30000) {
+    const lastSpace = contextText.lastIndexOf(' ', 30000);
+    contextText = contextText.substring(0, lastSpace !== -1 ? lastSpace : 30000);
+    contextText += '\n[Dokumen terlalu panjang, ditampilkan sebagian]';
+  }
+
+  return `Buat TEPAT ${count} soal pilihan ganda dari dokumen berikut.
+
+ATURAN WAJIB:
+- Setiap soal HARUS punya TEPAT 4 pilihan jawaban
+- Hanya 1 jawaban benar
+- Nilai "correctAnswer" HARUS IDENTIK persis (karakter demi karakter) dengan salah satu nilai di array "options"
+- Sertakan penjelasan singkat (1-2 kalimat) untuk setiap jawaban benar
+- Soal berdasarkan ISI DOKUMEN, bukan pengetahuan umum
+
+RETURN FORMAT — JSON array murni SAJA, TANPA markdown code block, TANPA teks lain:
+[
+  {
+    "question": "...",
+    "options": ["Pilihan A", "Pilihan B", "Pilihan C", "Pilihan D"],
+    "correctAnswer": "Pilihan A",
+    "explanation": "..."
+  }
+]
+
+=== DOKUMEN ===
+${contextText}
+=== AKHIR DOKUMEN ===`;
+};
+
 module.exports = {
   buildSystemPrompt,
   buildSummaryPrompt,
-  buildFlashcardPrompt
+  buildFlashcardPrompt,
+  buildQuizPrompt
 };
 

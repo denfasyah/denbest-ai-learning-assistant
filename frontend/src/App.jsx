@@ -19,6 +19,7 @@ import ChatTab from './features/workspace/components/ChatTab';
 import SummaryTab from './features/workspace/components/SummaryTab';
 import FlashcardTab from './features/workspace/components/FlashcardTab';
 import QuizTab from './features/workspace/components/QuizTab';
+import QuizResultTab from './features/workspace/components/QuizResultTab';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/profile/ProfilePage';
 import AssistantPage from './pages/assistant/AssistantPage';
@@ -78,6 +79,7 @@ function App() {
                 <Route path="summary" element={<SummaryTab />} />
                 <Route path="flashcards" element={<FlashcardTab />} />
                 <Route path="quiz" element={<QuizTab />} />
+                <Route path="quiz/:quizId" element={<QuizResultTab />} />
               </Route>
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/assistant" element={<AssistantPage />} />
