@@ -15,15 +15,16 @@ const StatCard = ({ title, value, growth, icon: Icon, color = "blue" }) => {
             {growth}
           </Badge>
         )}
-      </div>
-
-      <h2 className="mt-6 text-3xl md:text-4xl font-bold text-white">
+        
+      <h2 className="text-3xl md:text-4xl font-bold text-white">
         {value}
       </h2>
 
-      <p className="mt-2 text-sm text-slate-400 font-medium">
+      <p className="mt-2 text-sm text-slate-200 font-medium">
         {title}
       </p>
+      </div>
+
     </Card>
   );
 };
