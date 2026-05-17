@@ -11,6 +11,7 @@ const summaryRoutes = require("./routes/summaryRoutes");
 const flashcardRoutes = require("./routes/flashcardRoutes");
 const quizRoutes = require("./routes/quizRoutes");
 const historyRoutes = require("./routes/historyRoutes");
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const { verifyToken } = require("./middlewares/authMiddleware");
 
 dotenv.config();
@@ -86,6 +87,8 @@ app.use(
   verifyToken,
   quizRoutes
 );
+
+app.use('/api/v1/dashboard', verifyToken, dashboardRoutes);
 
 // Health Check
 app.get('/api', (req, res) => {
