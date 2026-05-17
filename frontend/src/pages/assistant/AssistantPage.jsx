@@ -54,7 +54,7 @@ const AssistantPage = () => {
         <Card className="h-full p-5 overflow-hidden">
           <ChatSidebar 
             conversations={conversations}
-            onSelect={(id) => {}}
+            onSelect={() => {}}
             onNewChat={() => {}}
             openMenuId={openMenuId}
             setOpenMenuId={setOpenMenuId}

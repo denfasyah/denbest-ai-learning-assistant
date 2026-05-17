@@ -29,7 +29,8 @@ const DashboardLayout = ({ title: propTitle, description: propDescription }) => 
   }, [location.pathname, propTitle, propDescription]);
 
   return (
-    <div className="flex min-h-screen bg-[#020204] text-white selection:bg-indigo-500/30 selection:text-indigo-200 overflow-hidden">
+    <div className="relative flex min-h-screen justify-center overflow-hidden
+          bg-linear-to-t from-violet-950 to-black">
       {/* PREMIUM BACKGROUND BLURS */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/5 rounded-full blur-[120px] animate-pulse" />

@@ -5,7 +5,7 @@ import StatCard from "../../features/dashboard/components/StatCard";
 import QuickActions from "../../features/dashboard/components/QuickActions";
 import RecentActivity from "../../features/dashboard/components/RecentActivity";
 import Card from "../../components/ui/Card";
-import { FileText, Sparkles, Layers3 } from "lucide-react";
+import { FileText, Star } from "lucide-react";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -43,19 +43,12 @@ const DashboardPage = () => {
           <Card className="p-7">
             <div className="flex items-center justify-between gap-5 mb-8">
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight">Progress</h2>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Consistency Meter</p>
+                <h2 className="text-2xl font-black text-white tracking-tight">Favorite Document</h2>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">your fav</p>
               </div>
               <div className="rounded-2xl bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 text-sm font-black text-indigo-400">
-                78%
+                <Star className={`h-5 w-5 fill-amber-500`} />
               </div>
-            </div>
-
-            <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/3 border border-white/5">
-              <div 
-                className="h-full rounded-full bg-linear-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-[0_0_20px_rgba(79,70,229,0.4)]"
-                style={{ width: '78%' }}
-              />
             </div>
 
             <div className="mt-10 space-y-4">
@@ -65,32 +58,29 @@ const DashboardPage = () => {
                     <FileText className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">Documents</p>
-                    <h3 className="text-sm font-bold text-white">24 Learned</h3>
+                    <h3 className="text-sm font-bold text-white line-clamp-1">React</h3>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
+               <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
                 <div className="flex items-center gap-4">
-                  <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform">
-                    <Sparkles className="h-5 w-5" />
+                  <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform">
+                    <FileText className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">Summaries</p>
-                    <h3 className="text-sm font-bold text-white">34 Created</h3>
+                    <h3 className="text-sm font-bold text-white line-clamp-1">Vue Js</h3>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
+               <div className="flex items-center justify-between p-4 rounded-2xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors cursor-default group">
                 <div className="flex items-center gap-4">
-                  <div className="p-2.5 rounded-xl bg-pink-500/10 text-pink-400 group-hover:scale-110 transition-transform">
-                    <Layers3 className="h-5 w-5" />
+                  <div className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 group-hover:scale-110 transition-transform">
+                    <FileText className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">Flashcards</p>
-                    <h3 className="text-sm font-bold text-white">132 Mastered</h3>
+                    <h3 className="text-sm font-bold text-white line-clamp-1">Laravel</h3>
                   </div>
                 </div>
               </div>

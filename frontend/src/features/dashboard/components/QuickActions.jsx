@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Plus } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import Card from '../../../components/ui/Card';
-import Button from '../../../components/ui/Button';
 
 const QuickActions = ({ actions }) => {
   const navigate = useNavigate();
@@ -28,9 +27,6 @@ const QuickActions = ({ actions }) => {
           <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">AI-Powered Tools</p>
         </div>
 
-        <Button variant="secondary" icon={Plus}>
-          New Workspace
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

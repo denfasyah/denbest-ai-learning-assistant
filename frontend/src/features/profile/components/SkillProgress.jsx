@@ -1,4 +1,3 @@
-import React from 'react';
 import Card from '../../../components/ui/Card';
 
 const SkillProgress = ({ skills }) => {
@@ -21,7 +20,7 @@ const SkillProgress = ({ skills }) => {
               </span>
             </div>
 
-            <div className="h-2.5 overflow-hidden rounded-full bg-white/[0.02] border border-white/[0.05]">
+            <div className="h-2.5 overflow-hidden rounded-full bg-white/2 border border-white/5">
               <div
                 style={{ width: `${skill.progress}%` }}
                 className="h-full rounded-full bg-linear-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-[0_0_15px_rgba(79,70,229,0.4)] transition-all duration-1000"

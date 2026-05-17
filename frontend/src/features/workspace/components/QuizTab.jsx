@@ -35,93 +35,80 @@ const QuizTab = () => {
   };
 
   const renderHeader = () => {
-    return (
-      <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8 pb-8 border-b border-white/5">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
-            <BrainCircuit className="h-6 w-6 text-indigo-400" />
-          </div>
-          <div>
-            <h2 className="text-base font-black text-white tracking-tight leading-none">Intelligence Quiz</h2>
-            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Validasi Pengetahuan</p>
-          </div>
+  return (
+    <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between pb-8 border-b border-white/5">
+      <div className="flex items-center gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+          <BrainCircuit className="h-6 w-6 text-indigo-400" />
         </div>
-
-        {view === 'result' ? (
-          <div className="flex gap-2">
-            <Button
-              variant="secondary"
-              onClick={handleRetry}
-              className="rounded-xl h-10 px-4 text-xs font-bold"
-            >
-              Ulangi
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleReset}
-              className="rounded-xl h-10 px-4 text-xs font-bold"
-            >
-              Quiz Baru
-            </Button>
-          </div>
-        ) : view !== 'idle' ? (
-          <Button
-            variant="secondary"
-            icon={RefreshCcw}
-            onClick={handleReset}
-            className="rounded-xl h-10 px-4 text-xs font-bold"
-          >
-            Batalkan Quiz
-          </Button>
-        ) : null}
+        <div>
+          <h2 className="text-base font-black text-white tracking-tight leading-none">Intelligence Quiz</h2>
+          <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-1.5">Validasi Pengetahuan</p>
+        </div>
       </div>
-    );
-  };
 
-  const renderIdle = () => (
-    <div className="space-y-6 flex flex-col items-center py-10">
-      {isGenerating ? (
-        <div className="w-full flex flex-col items-center justify-center py-10">
-          <div className="relative mb-8">
-            <div className="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-full animate-pulse"></div>
-            <div className="h-20 w-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center relative z-10">
-              <Sparkles className="h-8 w-8 text-indigo-400 animate-bounce" />
-            </div>
-          </div>
-          <h2 className="text-xl font-black text-white tracking-tight mb-2">AI sedang membuat soal...</h2>
-          <p className="text-slate-500 font-medium text-sm">Estimasi 10–30 detik</p>
-        </div>
-      ) : (
-        <>
-          <div className="flex bg-black/20 p-1 rounded-2xl border border-white/5 mb-4">
-            <button
-              onClick={() => setCountSelect("5")}
-              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${countSelect === "5" ? "bg-white/10 text-white shadow" : "text-slate-500 hover:text-white"
-                }`}
-            >
-              5 Soal
-            </button>
-            <button
-              onClick={() => setCountSelect("10")}
-              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${countSelect === "10" ? "bg-white/10 text-white shadow" : "text-slate-500 hover:text-white"
-                }`}
-            >
-              10 Soal
-            </button>
-          </div>
+      {view === 'idle' && !isGenerating && (
+        <div className="flex items-center gap-3">
+          <select
+            value={countSelect}
+            onChange={(e) => setCountSelect(e.target.value)}
+            className="bg-black/20 border border-white/10 text-white rounded-2xl h-12 px-4 text-sm font-bold focus:outline-none focus:border-indigo-500/50 w-40"
+          >
+            <option value="5" className="bg-[#1a1a2e]">5 Soal</option>
+            <option value="10" className="bg-[#1a1a2e]">10 Soal (Best)</option>
+          </select>
           <Button
             variant="primary"
             icon={Sparkles}
             onClick={() => handleGenerate(parseInt(countSelect))}
-            className="rounded-xl h-12 px-8 font-bold uppercase tracking-widest text-[11px]"
+            className="rounded-xl h-12 px-6 font-bold uppercase tracking-widest text-[11px]"
           >
-            Mulai Quiz
+            Generate
           </Button>
-          {error && <p className="text-rose-400 text-sm mt-4">{error}</p>}
-        </>
+        </div>
       )}
+
+      {view === 'result' ? (
+        <div className="flex gap-2">
+          <Button variant="secondary" onClick={handleRetry} className="rounded-xl h-10 px-4 text-xs font-bold">Ulangi</Button>
+          <Button variant="primary" onClick={handleReset} className="rounded-xl h-10 px-4 text-xs font-bold">Quiz Baru</Button>
+        </div>
+      ) : view !== 'idle' ? (
+        <Button variant="secondary" icon={RefreshCcw} onClick={handleReset} className="rounded-xl h-10 px-4 text-xs font-bold">
+          Batalkan Quiz
+        </Button>
+      ) : null}
     </div>
   );
+};
+
+  const renderIdle = () => (
+  <div className="flex flex-col items-center justify-center py-16 gap-4">
+    {isGenerating ? (
+      <>
+        <div className="relative mb-4">
+          <div className="absolute inset-0 bg-indigo-500/20 blur-2xl rounded-full animate-pulse"></div>
+          <div className="h-20 w-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center relative z-10">
+            <Sparkles className="h-8 w-8 text-indigo-400 animate-bounce" />
+          </div>
+        </div>
+        <h2 className="text-xl font-black text-white tracking-tight">AI sedang membuat soal...</h2>
+        <p className="text-slate-500 font-medium text-sm">Estimasi 10–30 detik</p>
+      </>
+    ) : (
+      <>
+        <div className="h-16 w-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/10 flex items-center justify-center mb-2">
+          <BrainCircuit className="h-8 w-8 text-indigo-500/40" />
+        </div>
+        <p className="text-lg font-black text-white/60 tracking-tight">Belum ada quiz</p>
+        <p className="text-slate-500 text-sm text-center max-w-xs">
+          Klik <span className="text-indigo-400 font-bold">Generate</span> di atas untuk membuat quiz otomatis dari dokumen ini menggunakan AI.
+        </p>
+        {error && <p className="text-rose-400 text-sm mt-2">{error}</p>}
+      </>
+    )}
+  </div>
+);
 
   const renderActiveQuiz = () => {
     if (!activeQuiz) return null;
@@ -158,7 +145,7 @@ const QuizTab = () => {
           ))}
         </div>
 
-        <div className="p-8 bg-white/2 border border-white/5 rounded-3xl mb-6 min-h-[300px]">
+        <div className="p-8 bg-white/2 border border-white/5 rounded-3xl mb-6 min-h-75">
           <h3 className="text-xl font-black text-white leading-tight mb-8">
             {q.question}
           </h3>

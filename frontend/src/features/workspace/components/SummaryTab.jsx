@@ -91,7 +91,7 @@ const SummaryTab = () => {
         <h2 className="text-xl font-black text-white tracking-tight mb-2">AI sedang membaca dokumen...</h2>
         <p className="text-slate-500 font-medium mb-6">Estimasi: 10–30 detik</p>
         <div className="w-64 h-2 bg-white/5 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 w-1/3 animate-progress"></div>
+          <div className="h-full bg-linear-to-r from-indigo-500 to-violet-500 w-1/3 animate-progress"></div>
         </div>
       </div>
     );
@@ -103,7 +103,7 @@ const SummaryTab = () => {
       <div className="space-y-6 pb-12">
         <Card className="overflow-hidden border-white/10 bg-white/5 rounded-3xl">
           {/* Header */}
-          <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/[0.02]">
+          <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/2">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <FileText className="h-5 w-5 text-indigo-400" />
@@ -131,14 +131,14 @@ const SummaryTab = () => {
           </div>
 
           {/* Content */}
-          <div className="p-8 prose prose-invert prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-p:text-slate-300 prose-p:leading-relaxed prose-li:text-slate-300">
+          <div className="p-8 text-white prose prose-invert prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-p:text-slate-300 prose-p:leading-relaxed prose-li:text-slate-300">
             <ReactMarkdown>
               {summary.content}
             </ReactMarkdown>
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-white/10 flex gap-4 bg-white/[0.02]">
+          <div className="p-6 border-t border-white/10 flex gap-4 bg-white/2">
             <Button
               variant="secondary"
               icon={Copy}
@@ -178,7 +178,7 @@ const SummaryTab = () => {
 
       <Card className="overflow-hidden border-white/10 bg-white/5 rounded-3xl">
         {/* Header */}
-        <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/[0.02]">
+        <div className="p-6 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/2">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <FileText className="h-5 w-5 text-indigo-400" />
@@ -201,7 +201,7 @@ const SummaryTab = () => {
         </div>
 
         {/* Content */}
-        <div className="p-8 flex flex-col items-center justify-center min-h-[280px] text-center">
+        <div className="p-8 flex flex-col items-center justify-center min-h-70 text-center">
           <Sparkles className="h-12 w-12 text-indigo-400/30 mb-6" />
           <h3 className="text-lg font-black text-white/60 tracking-tight mb-3">
             Belum ada ringkasan
@@ -213,7 +213,7 @@ const SummaryTab = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-white/10 bg-white/[0.02]">
+        <div className="p-6 border-t border-white/10 bg-white/2">
           <p className="text-xs text-slate-600 text-center font-medium">
             💡 AI akan menganalisis seluruh isi dokumen dan menghasilkan
             ringkasan terstruktur dalam 10–30 detik
