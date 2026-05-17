@@ -1,8 +1,8 @@
 const Quiz = require('../models/Quiz');
 const Document = require('../models/Document');
 const Workspace = require('../models/Workspace');
-const History = require('../models/History');
 const aiService = require('./aiService');
+const historyService = require('./historyService');
 const { buildQuizPrompt } = require('../utils/promptBuilder');
 
 const parseQuizJson = (text) => {
@@ -63,7 +63,6 @@ const generateQuiz = async (workspaceId, userId, count = 5) => {
     throw err;
   }
 
-  // Validate correctAnswer
   questionsData.forEach(q => {
     if (!q.options.includes(q.correctAnswer)) {
       const flexMatch = q.options.find(opt => opt.trim().toLowerCase() === q.correctAnswer.trim().toLowerCase());
@@ -147,17 +146,22 @@ const submitQuiz = async (quizId, userId, answersArray) => {
   quiz.completedAt = new Date();
   await quiz.save();
 
-  const workspace = await Workspace.findById(quiz.workspaceId);
-  if (workspace) {
-    await History.create({
+  // ✅ Fix: pakai historyService dengan workspaceTitle snapshot + quizId di metadata
+  try {
+    const workspace = await Workspace.findById(quiz.workspaceId).select('title');
+    await historyService.logActivity(
       userId,
-      workspaceId: quiz.workspaceId,
-      actionType: 'quiz_completed',
-      metadata: {
-        title: workspace.title,
-        score: finalScore
+      quiz.workspaceId,
+      workspace?.title || 'Unknown Workspace',
+      'quiz_completed',
+      {
+        score: score,
+        totalQuestions: quiz.totalQuestions,
+        quizId: quiz._id.toString()
       }
-    });
+    );
+  } catch (logError) {
+    console.error('[HistoryLog] Failed to log quiz_completed:', logError.message);
   }
 
   return {

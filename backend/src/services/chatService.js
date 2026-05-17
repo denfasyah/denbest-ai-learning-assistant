@@ -1,15 +1,11 @@
 const Document = require('../models/Document');
 const AiConversation = require('../models/AiConversation');
 const Message = require('../models/Message');
+const Workspace = require('../models/Workspace');
 const aiService = require('./aiService');
 const promptBuilder = require('../utils/promptBuilder');
+const historyService = require('./historyService');
 
-/**
- * Send a message to AI and get a response
- * @param {string} workspaceId - Workspace ID
- * @param {string} userId - User ID
- * @param {string} userMessage - Message from the user
- */
 const sendMessage = async (workspaceId, userId, userMessage) => {
   // 1. Find document context
   const document = await Document.findOne({ workspaceId });
@@ -35,7 +31,6 @@ const sendMessage = async (workspaceId, userId, userMessage) => {
     .sort({ createdAt: -1 })
     .limit(10);
   
-  // Sort back to chronological order
   const sortedMessages = lastMessages.reverse();
 
   // 4. Format history for Gemini
@@ -62,8 +57,22 @@ const sendMessage = async (workspaceId, userId, userMessage) => {
     conversationId: conversation._id,
     role: 'assistant',
     content: aiResponse,
-    tokensUsed: 0 // Optional: track token usage if needed
+    tokensUsed: 0
   });
+
+  // 9. Log history (non-blocking)
+  try {
+    const workspace = await Workspace.findById(workspaceId).select('title');
+    await historyService.logActivity(
+      userId,
+      workspaceId,
+      workspace?.title || 'Unknown Workspace',
+      'chat_sent',
+      { messagePreview: userMessage.substring(0, 100) }
+    );
+  } catch (logError) {
+    console.error('[HistoryLog] Failed to log chat_sent:', logError.message);
+  }
 
   return {
     message: aiResponse,
@@ -72,18 +81,12 @@ const sendMessage = async (workspaceId, userId, userMessage) => {
   };
 };
 
-/**
- * Get chat history for a workspace
- * @param {string} workspaceId - Workspace ID
- * @param {string} userId - User ID
- */
 const getChatHistory = async (workspaceId, userId) => {
   const conversation = await AiConversation.findOne({ workspaceId, userId });
   if (!conversation) {
     return { conversationId: null, messages: [] };
   }
 
-  // Get last 50 messages
   const messages = await Message.find({ conversationId: conversation._id })
     .sort({ createdAt: 1 })
     .limit(50);
