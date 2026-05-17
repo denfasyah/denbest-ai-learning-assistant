@@ -14,6 +14,10 @@ const workspaceSchema = new mongoose.Schema({
   description: {
     type: String,
     trim: true
+  },
+  isFavorite: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true

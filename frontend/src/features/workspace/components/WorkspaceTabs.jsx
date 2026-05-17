@@ -1,28 +1,43 @@
+import { useNavigate, useLocation } from "react-router-dom";
+import { FileText, MessagesSquare, Sparkles, Layers3, BrainCircuit } from "lucide-react";
 
-const WorkspaceTabs = ({ tabs, activeTab, onTabChange }) => {
+const WorkspaceTabs = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const tabs = [
+    { id: 'content', label: 'Content', path: 'content', icon: FileText },
+    { id: 'chat', label: 'Chat AI', path: 'chat', icon: MessagesSquare },
+    { id: 'summary', label: 'Summary', path: 'summary', icon: Sparkles },
+    { id: 'flashcards', label: 'Flashcard', path: 'flashcards', icon: Layers3 },
+    { id: 'quiz', label: 'Quiz', path: 'quiz', icon: BrainCircuit },
+  ];
+
   return (
-    <div className="mb-8 flex flex-wrap gap-3">
-      {tabs.map((tab) => {
-        const Icon = tab.icon;
-        const isActive = activeTab === tab.id;
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-3 sm:flex items-center gap-5 p-1  rounded-2xl border border-white/5">
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = location.pathname.endsWith(tab.path);
 
-        return (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            className={`
-              flex items-center gap-2.5 rounded-2xl px-6 py-3.5 text-xs font-black uppercase tracking-widest transition-all duration-300
-              ${isActive
-                ? "bg-linear-to-r from-indigo-500 to-violet-500 text-white shadow-xl shadow-indigo-500/20 scale-105"
-                : "border border-white/5 bg-white/2 text-slate-500 hover:bg-white/5 hover:text-white"
-              }
-            `}
-          >
-            <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-600'}`} />
-            {tab.label}
-          </button>
-        );
-      })}
+          return (
+            <button
+              key={tab.id}
+              onClick={() => navigate(tab.path)}
+              className={`
+                flex items-center gap-2 rounded-xl px-5 py-2.5 text-[10px] font-black uppercase bg-white/2 tracking-widest transition-all duration-300 shrink-0
+                ${isActive
+                  ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
+                  : "text-slate-500 hover:bg-white/5 hover:text-slate-300"
+                }
+              `}
+            >
+              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-slate-600'}`} />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

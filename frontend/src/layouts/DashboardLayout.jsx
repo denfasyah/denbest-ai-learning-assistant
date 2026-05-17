@@ -29,7 +29,8 @@ const DashboardLayout = ({ title: propTitle, description: propDescription }) => 
   }, [location.pathname, propTitle, propDescription]);
 
   return (
-    <div className="flex min-h-screen bg-[#020204] text-white selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="relative flex min-h-screen justify-center overflow-hidden
+          bg-linear-to-t from-violet-950 to-black">
       {/* PREMIUM BACKGROUND BLURS */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/5 rounded-full blur-[120px] animate-pulse" />
@@ -53,7 +54,7 @@ const DashboardLayout = ({ title: propTitle, description: propDescription }) => 
       />
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex flex-1 flex-col lg:ml-72 relative z-10">
+      <main className="flex flex-1 flex-col lg:ml-72 relative z-10 min-w-0 overflow-x-hidden">
         <NavbarDashboard
           title={title}
           description={description}
@@ -62,7 +63,7 @@ const DashboardLayout = ({ title: propTitle, description: propDescription }) => 
           handleLogout={handleLogout}
         />
 
-        <div className="flex-1 px-5 py-8 lg:px-12 xl:px-16 pb-20">
+        <div className="flex-1 px-5 py-8 lg:px-12 xl:px-16 pb-20 overflow-x-hidden">
           <Outlet context={{ user, setSidebarOpen }} />
         </div>
       </main>

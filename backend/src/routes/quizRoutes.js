@@ -1,20 +1,17 @@
-const express = require("express");
-
+const express = require('express');
 const router = express.Router({ mergeParams: true });
+const quizController = require('../controllers/quizController');
 
-const {
-generateQuiz,
-getQuizzes,
-getQuizDetail,
-submitQuiz,
-} = require("../controllers/quizController");
+// POST /api/v1/workspaces/:workspaceId/quizzes
+router.post('/', quizController.generateQuiz);
 
-router.post("/generate", generateQuiz);
+// GET /api/v1/workspaces/:workspaceId/quizzes
+router.get('/', quizController.getQuizHistory);
 
-router.get("/", getQuizzes);
+// GET /api/v1/workspaces/:workspaceId/quizzes/:quizId
+router.get('/:quizId', quizController.getQuizResult);
 
-router.get("/", getQuizDetail);
-
-router.post("//submit", submitQuiz);
+// POST /api/v1/workspaces/:workspaceId/quizzes/:quizId/submit
+router.post('/:quizId/submit', quizController.submitQuiz);
 
 module.exports = router;

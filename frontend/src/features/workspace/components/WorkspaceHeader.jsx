@@ -1,38 +1,84 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText, Clock3 } from 'lucide-react';
+import { ArrowLeft, FileText, Clock3, HardDrive } from 'lucide-react';
 import Card from '../../../components/ui/Card';
+import useWorkspace from '../hooks/useWorkspace';
 
-const WorkspaceHeader = ({ title, uploadTime, size }) => {
+const WorkspaceHeader = () => {
+  const { workspace, document, isLoading } = useWorkspace();
+
+  const formatFileSize = (bytes) => {
+    if (!bytes) return "0 KB";
+    const kb = bytes / 1024;
+    if (kb < 1024) return `${kb.toFixed(1)} KB`;
+    const mb = kb / 1024;
+    return `${mb.toFixed(1)} MB`;
+  };
+
+  const formatTime = (date) => {
+    if (!date) return "";
+    return new Date(date).toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
   return (
-    <Card className="p-6 mb-8 bg-white/5 backdrop-blur-xl border-white/10">
-      <Link
-        to="/learning"
-        className="mb-5 inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-indigo-400 font-bold uppercase tracking-widest"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Learning
-      </Link>
+    <Card variant="glass" className="p-6 md:p-8">
+      <div className="flex flex-col gap-6">
+        <Link
+          to="/learning"
+          className="inline-flex items-center gap-2 text-[10px] text-slate-500 transition hover:text-indigo-400 font-black uppercase tracking-widest"
+        >
+          <ArrowLeft className="h-3 w-3" />
+          Back to Learning Center
+        </Link>
 
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex items-start gap-5">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-linear-to-br from-indigo-500/20 to-violet-500/20 border border-indigo-500/30">
-            <FileText className="h-8 w-8 text-indigo-400" />
+        <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+          <div className="relative h-16 w-16 shrink-0">
+            {isLoading ? (
+              <div className="absolute inset-0 rounded-3xl bg-white/5 animate-pulse" />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center rounded-3xl bg-linear-to-br from-indigo-500/20 to-violet-500/20 border border-indigo-500/30 shadow-lg shadow-indigo-500/10 text-indigo-400">
+                <FileText className="h-8 w-8" />
+              </div>
+            )}
           </div>
 
-          <div>
-            <h1 className="text-2xl font-black text-white tracking-tight leading-tight">
-              {title}
-            </h1>
+          <div className="flex-1 space-y-4">
+            <div className="space-y-1">
+              {isLoading ? (
+                <div className="w-full max-w-md h-8 bg-white/5 rounded-lg animate-pulse" />
+              ) : (
+                <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
+                  {workspace?.title}
+                </h1>
+              )}
+            </div>
 
-            <div className="mt-3 flex flex-wrap items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-              <div className="flex items-center gap-1.5">
-                <Clock3 className="h-3.5 w-3.5 text-indigo-400" />
-                Uploaded {uploadTime}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+              <div className="flex items-center gap-2">
+                <Clock3 className="h-4 w-4 text-indigo-500/60" />
+                <span>{formatTime(workspace?.createdAt)}</span>
               </div>
-              <span className="h-1 w-1 rounded-full bg-slate-800" />
-              <span className="rounded-full bg-white/5 border border-white/5 px-3 py-1 text-slate-400">PDF</span>
-              <span className="h-1 w-1 rounded-full bg-slate-800" />
-              <span className="text-slate-400">{size}</span>
+              <div className="flex items-center gap-2">
+                <div className="h-1 w-1 rounded-full bg-slate-800" />
+                <span className="text-indigo-400">{document?.fileType?.toUpperCase() || "PDF"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-1 w-1 rounded-full bg-slate-800" />
+                <HardDrive className="h-4 w-4 text-indigo-500/60" />
+                <span>{formatFileSize(document?.sizeBytes)}</span>
+              </div>
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="h-1 w-1 rounded-full bg-slate-800" />
+                <span
+                  title={document?.originalName || document?.fileName}
+                  className="truncate italic normal-case font-medium text-slate-400 max-w-50 md:max-w-100"
+                >
+                  {document?.originalName || document?.fileName}
+                </span>
+              </div>
             </div>
           </div>
         </div>

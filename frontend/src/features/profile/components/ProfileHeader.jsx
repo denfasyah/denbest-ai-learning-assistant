@@ -1,4 +1,3 @@
-import React from 'react';
 import { Mail, CalendarDays, Flame, Target } from 'lucide-react';
 import Card from '../../../components/ui/Card';
 import Badge from '../../../components/ui/Badge';
@@ -44,7 +43,7 @@ const ProfileHeader = ({ user, learningStreak, joinedDate, goal, goalDescription
         </div>
 
         {/* RIGHT SECTION - GOAL */}
-        <div className="rounded-[2.5rem] border border-white/[0.05] bg-white/[0.02] p-7 lg:max-w-xs relative overflow-hidden group">
+        <div className="rounded-[2.5rem] border border-white/5 bg-white/2 p-7 lg:max-w-xs relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
             <Target className="h-20 w-20 text-indigo-500" />
           </div>

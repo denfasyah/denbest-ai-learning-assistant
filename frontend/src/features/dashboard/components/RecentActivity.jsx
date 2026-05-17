@@ -1,11 +1,29 @@
-import Card from '../../../components/ui/Card';
+import Card from "../../../components/ui/Card";
+import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 
 const RecentActivity = ({ activities }) => {
   return (
     <Card className="p-7">
-      <div className="mb-8">
-        <h2 className="text-2xl font-black text-white tracking-tight">Recent Activity</h2>
-        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Timeline</p>
+      <div className="flex justify-between">
+        <div className="mb-8">
+          <h2 className="text-2xl font-black text-white tracking-tight">
+            Recent Activity
+          </h2>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">
+            Timeline
+          </p>
+        </div>
+        <div className="flex">
+          <Link
+            to={"/history"}
+            className="text-slate-500 mt-2 text-sm hover:text-blue-500 flex"
+          >
+            {" "}
+            View All{" "}
+            <ChevronRight className="h-5 w-5 text-slate-700 transition-all duration-300 group-hover:translate-x-1 group-hover:text-indigo-400" />{" "}
+          </Link>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -20,14 +38,19 @@ const RecentActivity = ({ activities }) => {
               </div>
 
               <div>
-                <h3 className="font-bold text-white group-hover:text-indigo-400 transition-colors">{item.title}</h3>
-                <p className={`text-[10px] font-bold uppercase tracking-tighter mt-0.5 ${item.status === 'deleted' ? 'text-rose-500/50 line-through' : 'text-slate-500'}`}>
-                  {item.description} {item.status === 'deleted' && '(Unavailable)'}
+                <h3 className="font-bold text-white group-hover:text-indigo-400 transition-colors">
+                  {item.title}
+                </h3>
+                <p
+                  className={`text-[10px] font-bold uppercase tracking-tighter mt-0.5 ${item.status === "deleted" ? "text-rose-500/50 line-through" : "text-slate-500"}`}
+                >
+                  {item.description}{" "}
+                  {item.status === "deleted" && "(Unavailable)"}
                 </p>
               </div>
             </div>
 
-            <div className="text-[10px] font-bold text-slate-700 uppercase tracking-widest whitespace-nowrap">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">
               {item.time}
             </div>
           </div>
@@ -36,6 +59,5 @@ const RecentActivity = ({ activities }) => {
     </Card>
   );
 };
-
 
 export default RecentActivity;

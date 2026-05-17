@@ -50,7 +50,7 @@ const SidebarDashboard = ({
             </div>
 
             <div>
-              <h1 className="text-2xl font-black tracking-[-0.5px]">
+              <h1 className="text-2xl text-white font-black tracking-[-0.5px]">
                 Ai
                 <span
                   className=" bg-linear-to-r
