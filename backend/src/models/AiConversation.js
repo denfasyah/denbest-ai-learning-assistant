@@ -4,7 +4,7 @@ const aiConversationSchema = new mongoose.Schema({
   workspaceId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Workspace',
-    required: true
+    required: false
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,6 +14,11 @@ const aiConversationSchema = new mongoose.Schema({
   title: {
     type: String,
     default: 'New Conversation'
+  },
+  type: {
+    type: String,
+    enum: ['workspace', 'global'],
+    default: 'workspace'
   }
 }, {
   timestamps: true

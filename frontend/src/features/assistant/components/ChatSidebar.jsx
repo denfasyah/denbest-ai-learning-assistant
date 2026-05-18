@@ -34,6 +34,7 @@ const SidebarContent = ({
   onMobileClose,
   showClose,
   activeConversationId,
+  isLoading,
 }) => (
   <div className="flex h-full flex-col gap-6">
     <div className="flex items-center gap-3">
@@ -60,7 +61,18 @@ const SidebarContent = ({
       </h3>
 
       <div className="space-y-2">
-        {conversations.map((chat) => (
+        {isLoading ? (
+          <div className="space-y-3 animate-pulse px-2">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="rounded-2xl border border-white/5 bg-white/2 p-4 space-y-3">
+                <div className="h-4 bg-white/10 rounded w-2/3" />
+                <div className="h-3 bg-white/5 rounded w-full" />
+                <div className="h-2 bg-white/5 rounded w-1/4" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          conversations.map((chat) => (
           <div
             key={chat.id}
             onClick={() => {
@@ -110,7 +122,8 @@ const SidebarContent = ({
               {formatTime(chat.time)}
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   </div>
@@ -127,6 +140,7 @@ const ChatSidebar = ({
   mobileOnly,
   desktopOnly,
   activeConversationId,
+  isLoading,
 }) => {
   const contentProps = {
     conversations,
@@ -136,6 +150,7 @@ const ChatSidebar = ({
     setOpenMenuId,
     onMobileClose,
     activeConversationId,
+    isLoading,
   };
 
   // Desktop mode — render konten langsung, tanpa drawer

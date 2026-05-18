@@ -6,15 +6,18 @@ export const assistantApi = {
     return axiosInstance.get('/assistant/conversations');
   },
 
-  // Mengambil history chat dari sebuah workspace
-  // (Menggunakan endpoint workspace/chat yang sudah ada)
-  getChatHistory: (workspaceId) => {
-    return axiosInstance.get(`/workspaces/${workspaceId}/chat/history`);
+  // Membuat global conversation baru
+  createConversation: () => {
+    return axiosInstance.post('/assistant/conversations');
   },
 
-  // Mengirim pesan ke AI
-  // (Menggunakan endpoint workspace/chat yang sudah ada)
-  sendMessage: (workspaceId, message) => {
-    return axiosInstance.post(`/workspaces/${workspaceId}/chat`, { message });
+  // Mengambil history chat dari sebuah conversationId (Unifikasi global & workspace)
+  getChatHistory: (conversationId) => {
+    return axiosInstance.get(`/assistant/conversations/${conversationId}/messages`);
+  },
+
+  // Mengirim pesan ke AI berdasarkan conversationId (Unifikasi global & workspace)
+  sendMessage: (conversationId, message) => {
+    return axiosInstance.post(`/assistant/conversations/${conversationId}/messages`, { message });
   }
 };

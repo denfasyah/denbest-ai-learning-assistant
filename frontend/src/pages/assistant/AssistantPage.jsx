@@ -1,61 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Bot, Plus } from "lucide-react";
 import ChatSidebar from "../../features/assistant/components/ChatSidebar";
 import ChatArea from "../../features/assistant/components/ChatArea";
 import Card from "../../components/ui/Card";
-
-const conversationsData = [
-  {
-    id: 1,
-    title: "Machine Learning Summary",
-    lastMessage: "Jelaskan supervised learning...",
-    time: "2 min ago",
-    active: true,
-  },
-  {
-    id: 2,
-    title: "React Authentication",
-    lastMessage: "Bagaimana cara kerja JWT?",
-    time: "1 hour ago",
-    active: false,
-  },
-  {
-    id: 3,
-    title: "Database Normalization",
-    lastMessage: "Apa itu 3NF?",
-    time: "Yesterday",
-    active: false,
-  },
-];
-
-const messagesData = [
-  {
-    role: "assistant",
-    text: "Halo 👋 Saya siap membantu memahami dokumen dan materi pembelajaran kamu.",
-  },
-  {
-    role: "user",
-    text: "Jelaskan supervised learning dengan bahasa sederhana.",
-  },
-  {
-    role: "assistant",
-    text: "Supervised learning adalah metode machine learning dimana AI belajar menggunakan data yang sudah memiliki jawaban atau label.",
-  },
-];
+import Button from "../../components/ui/Button";
+import useAssistantStore from "../../features/assistant/store/assistantStore";
 
 const AssistantPage = () => {
-  const [conversations] = useState(conversationsData);
-  const [messages] = useState(messagesData);
+  const navigate = useNavigate();
   const [openMenuId, setOpenMenuId] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const {
+    conversations,
+    activeConversationId,
+    messages,
+    isLoadingConversations,
+    isLoadingMessages,
+    isSendingMessage,
+    fetchConversations,
+    selectConversation,
+    sendMessage,
+    createNewConversation,
+  } = useAssistantStore();
+
+  useEffect(() => {
+    fetchConversations();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSelectConversation = (id) => {
+    selectConversation(id);
+    setMobileOpen(false);
+  };
+
+  const handleNewChat = () => {
+    createNewConversation();
+  };
+
+  const activeConversation = conversations.find((c) => c.id === activeConversationId);
+  const activeContext = activeConversation ? activeConversation.title : "";
+
   const sidebarProps = {
     conversations,
-    onSelect: () => {},
-    onNewChat: () => {},
+    onSelect: handleSelectConversation,
+    onNewChat: handleNewChat,
     openMenuId,
     setOpenMenuId,
     mobileOpen,
     onMobileClose: () => setMobileOpen(false),
+    activeConversationId,
+    isLoading: isLoadingConversations,
+  };
+
+  const renderChatArea = () => {
+    if (conversations.length === 0 && !isLoadingConversations) {
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6">
+          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-linear-to-br from-indigo-500/20 to-violet-500/20 border border-indigo-500/30 shadow-2xl shadow-indigo-500/10 animate-pulse">
+            <Bot className="h-10 w-10 text-indigo-400" />
+          </div>
+          <div className="max-w-md space-y-2">
+            <h2 className="text-2xl font-black text-white tracking-tight">AI Assistant</h2>
+            <p className="text-sm text-slate-400 font-medium leading-relaxed">
+              Mulai percakapan global dengan AI atau upload file melalui attachment.
+            </p>
+          </div>
+          <Button variant="primary" icon={Plus} onClick={handleNewChat} className="px-6 py-3 font-semibold shadow-lg shadow-indigo-500/20">
+            Start New Conversation
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <ChatArea
+        messages={messages}
+        activeContext={activeContext}
+        onMobileMenuOpen={() => setMobileOpen(true)}
+        onSendMessage={sendMessage}
+        isSendingMessage={isSendingMessage}
+        isLoading={isLoadingMessages}
+      />
+    );
   };
 
   return (
@@ -73,11 +100,7 @@ const AssistantPage = () => {
 
         {/* MAIN CHAT AREA */}
         <Card className="flex-1 flex flex-col p-0 overflow-hidden">
-          <ChatArea
-            messages={messages}
-            activeContext="Machine Learning Summary"
-            onMobileMenuOpen={() => setMobileOpen(true)}
-          />
+          {renderChatArea()}
         </Card>
       </div>
     </>

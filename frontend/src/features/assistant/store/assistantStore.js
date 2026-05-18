@@ -29,18 +29,32 @@ const useAssistantStore = create((set, get) => ({
     }
   },
 
+  createNewConversation: async () => {
+    set({ isLoadingConversations: true, error: null });
+    try {
+      const res = await assistantApi.createConversation();
+      const newConv = res.data?.data || res.data;
+      
+      // Prepend to conversations list
+      set((state) => ({
+        conversations: [newConv, ...state.conversations],
+        activeConversationId: newConv.id,
+        messages: [],
+        error: null
+      }));
+    } catch (err) {
+      set({ error: err.response?.data?.message || err.message });
+    } finally {
+      set({ isLoadingConversations: false });
+    }
+  },
+
   selectConversation: async (convId) => {
-    const { conversations } = get();
-    const targetConv = conversations.find(c => c.id === convId);
-    
-    if (!targetConv) return;
-    
     set({ activeConversationId: convId, isLoadingMessages: true, error: null, messages: [] });
     
     try {
-      // Ambil message history menggunakan workspaceId
-      const res = await assistantApi.getChatHistory(targetConv.workspaceId);
-      // Backend chatHistory mengembalikan array of messages
+      // Ambil message history menggunakan conversationId secara langsung (Unifikasi global & workspace)
+      const res = await assistantApi.getChatHistory(convId);
       const msgs = res.data?.data?.messages || res.data?.messages || [];
       set({ messages: msgs });
     } catch (err) {
@@ -51,11 +65,8 @@ const useAssistantStore = create((set, get) => ({
   },
 
   sendMessage: async (text) => {
-    const { activeConversationId, conversations, messages } = get();
+    const { activeConversationId, messages } = get();
     if (!activeConversationId) return;
-
-    const targetConv = conversations.find(c => c.id === activeConversationId);
-    if (!targetConv) return;
 
     // Optimistic Update UI (User Message)
     const newUserMsg = { role: 'user', content: text, text: text }; 
@@ -65,7 +76,7 @@ const useAssistantStore = create((set, get) => ({
     });
 
     try {
-      const res = await assistantApi.sendMessage(targetConv.workspaceId, text);
+      const res = await assistantApi.sendMessage(activeConversationId, text);
       const assistantMsg = res.data?.data || res.data;
       const content = assistantMsg?.message || assistantMsg?.content || '';
       
