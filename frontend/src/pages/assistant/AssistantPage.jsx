@@ -46,30 +46,41 @@ const AssistantPage = () => {
   const [conversations] = useState(conversationsData);
   const [messages] = useState(messagesData);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const sidebarProps = {
+    conversations,
+    onSelect: () => {},
+    onNewChat: () => {},
+    openMenuId,
+    setOpenMenuId,
+    mobileOpen,
+    onMobileClose: () => setMobileOpen(false),
+  };
 
   return (
-    <div className="flex h-[calc(100vh-140px)] gap-6 animate-in fade-in duration-500">
-      {/* LEFT SIDEBAR (CONVERSATIONS) */}
-      <div className="hidden xl:block w-80 shrink-0">
-        <Card className="h-full p-5 overflow-hidden">
-          <ChatSidebar 
-            conversations={conversations}
-            onSelect={() => {}}
-            onNewChat={() => {}}
-            openMenuId={openMenuId}
-            setOpenMenuId={setOpenMenuId}
+    <>
+      {/* Mobile drawer — di luar Card supaya tidak ter-trap overflow-hidden */}
+      <ChatSidebar {...sidebarProps} mobileOnly />
+
+      <div className="flex h-[calc(100vh-140px)] gap-6 animate-in fade-in duration-500">
+        {/* LEFT SIDEBAR desktop */}
+        <div className="hidden xl:block w-80 shrink-0">
+          <Card className="h-full p-5 overflow-hidden">
+            <ChatSidebar {...sidebarProps} desktopOnly />
+          </Card>
+        </div>
+
+        {/* MAIN CHAT AREA */}
+        <Card className="flex-1 flex flex-col p-0 overflow-hidden">
+          <ChatArea
+            messages={messages}
+            activeContext="Machine Learning Summary"
+            onMobileMenuOpen={() => setMobileOpen(true)}
           />
         </Card>
       </div>
-
-      {/* MAIN CHAT AREA */}
-      <Card className="flex-1 flex flex-col p-0 overflow-hidden">
-        <ChatArea 
-          messages={messages} 
-          activeContext="Machine Learning Summary"
-        />
-      </Card>
-    </div>
+    </>
   );
 };
 
