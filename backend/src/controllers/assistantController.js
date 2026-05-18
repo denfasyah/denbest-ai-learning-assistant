@@ -242,7 +242,22 @@ const sendConversationMessage = async (req, res) => {
       finalUserPrompt = `[USER ATTACHED FILE: ${attachment.fileName}]\n--- ISI FILE ---\n${extractedText}\n--- AKHIR ISI FILE ---\n\nPesan User: ${userPrompt}`;
     }
 
-    const aiResponse = await aiService.generateResponse(systemPrompt, history, finalUserPrompt);
+    let aiResponse;
+    try {
+      const imageAttachment = (attachment && attachment.fileType === 'image') ? {
+        path: req.file.path,
+        mimeType: req.file.mimetype
+      } : null;
+
+      aiResponse = await aiService.generateResponse(systemPrompt, history, finalUserPrompt, imageAttachment);
+    } catch (err) {
+      console.error('[sendConversationMessage] Gemini Multimodal Error:', err);
+      if (attachment && attachment.fileType === 'image') {
+        aiResponse = "Aku gagal memproses gambar ini sekarang, coba upload ulang ya";
+      } else {
+        throw err;
+      }
+    }
 
     // Auto title generation if title is default
     if (conversation.title === 'New Conversation' || conversation.title === 'New Chat') {

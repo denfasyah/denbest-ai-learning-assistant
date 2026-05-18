@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const fs = require('fs');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -7,27 +8,55 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
  * @param {string} systemPrompt - Instructions and document context
  * @param {Array} history - Previous messages in Gemini format
  * @param {string} userMessage - Latest message from the user
+ * @param {Object} imageAttachment - Optional image attachment details { path, mimeType }
  * @returns {Promise<string>} AI response text
  */
-const generateResponse = async (systemPrompt, history, userMessage) => {
+const generateResponse = async (systemPrompt, history, userMessage, imageAttachment = null) => {
   try {
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.5-flash',
       systemInstruction: systemPrompt
     });
 
-    const chat = model.startChat({
-      history: history
-    });
-
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('TIMEOUT')), 30000)
     );
 
-    const result = await Promise.race([
-      chat.sendMessage(userMessage),
-      timeoutPromise
-    ]);
+    let result;
+    if (imageAttachment && imageAttachment.path) {
+      const imageBuffer = fs.readFileSync(imageAttachment.path);
+      const base64Image = imageBuffer.toString('base64');
+      
+      const contents = [
+        ...history,
+        {
+          role: 'user',
+          parts: [
+            { text: userMessage },
+            {
+              inlineData: {
+                data: base64Image,
+                mimeType: imageAttachment.mimeType
+              }
+            }
+          ]
+        }
+      ];
+
+      result = await Promise.race([
+        model.generateContent({ contents }),
+        timeoutPromise
+      ]);
+    } else {
+      const chat = model.startChat({
+        history: history
+      });
+
+      result = await Promise.race([
+        chat.sendMessage(userMessage),
+        timeoutPromise
+      ]);
+    }
 
     if (!result || !result.response) {
       throw new Error('EMPTY_RESPONSE');
