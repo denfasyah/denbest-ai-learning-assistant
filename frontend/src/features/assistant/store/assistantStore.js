@@ -64,19 +64,31 @@ const useAssistantStore = create((set, get) => ({
     }
   },
 
-  sendMessage: async (text) => {
+  sendMessage: async (text, file = null) => {
     const { activeConversationId, messages } = get();
     if (!activeConversationId) return;
 
     // Optimistic Update UI (User Message)
-    const newUserMsg = { role: 'user', content: text, text: text }; 
+    const displayContent = text || (file ? `Mengirim file: ${file.name}` : '');
+    const isImage = file && (file.type.startsWith('image/') || ['.png', '.jpg', '.jpeg', '.webp'].some(ext => file.name.toLowerCase().endsWith(ext)));
+    const newUserMsg = { 
+      role: 'user', 
+      content: displayContent, 
+      text: displayContent,
+      attachment: file ? {
+        fileUrl: URL.createObjectURL(file),
+        fileName: file.name,
+        fileType: isImage ? 'image' : 'document',
+        mimeType: file.type
+      } : null
+    }; 
     set({ 
       messages: [...messages, newUserMsg],
       isSendingMessage: true 
     });
 
     try {
-      const res = await assistantApi.sendMessage(activeConversationId, text);
+      const res = await assistantApi.sendMessage(activeConversationId, text, file);
       const assistantMsg = res.data?.data || res.data;
       const content = assistantMsg?.message || assistantMsg?.content || '';
       
@@ -86,6 +98,16 @@ const useAssistantStore = create((set, get) => ({
       set((state) => ({
         messages: [...state.messages, finalMsg]
       }));
+
+      // Auto-update conversation title if returned
+      const updatedConv = res.data?.data?.conversation || res.data?.conversation;
+      if (updatedConv) {
+        set((state) => ({
+          conversations: state.conversations.map((c) =>
+            c.id === updatedConv.id || c.id === updatedConv._id ? { ...c, title: updatedConv.title } : c
+          )
+        }));
+      }
 
       // Background refresh conversation list (agar last message terupdate)
       get().fetchConversations();

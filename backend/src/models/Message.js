@@ -18,6 +18,16 @@ const messageSchema = new mongoose.Schema({
   tokensUsed: {
     type: Number,
     default: 0
+  },
+  attachment: {
+    fileUrl: { type: String, required: false },
+    fileName: { type: String, required: false },
+    fileType: { type: String, required: false },
+    mimeType: { type: String, required: false }
+  },
+  extractedText: {
+    type: String,
+    required: false
   }
 }, {
   timestamps: true

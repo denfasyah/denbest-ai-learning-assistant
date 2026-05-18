@@ -4,6 +4,7 @@ const Message = require('../models/Message');
 const Document = require('../models/Document');
 const aiService = require('../services/aiService');
 const promptBuilder = require('../utils/promptBuilder');
+const { extractTextFromFile } = require('../utils/textExtractor');
 
 /**
  * Get all conversations for the logged-in user across workspaces
@@ -165,11 +166,12 @@ const sendConversationMessage = async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
     const { message } = req.body;
+    const hasFile = !!req.file;
 
-    if (!message || message.trim() === '') {
+    if ((!message || message.trim() === '') && !hasFile) {
       return res.status(400).json({
         success: false,
-        message: 'Message required'
+        message: 'Message or file required'
       });
     }
 
@@ -182,19 +184,44 @@ const sendConversationMessage = async (req, res) => {
       });
     }
 
-    // Build history for Gemini
+    // Extract attachment metadata if exists
+    let attachment = null;
+    let extractedText = null;
+    if (req.file) {
+      const isImage = req.file.mimetype.startsWith('image/') || ['.png', '.jpg', '.jpeg', '.webp'].some(ext => req.file.originalname.toLowerCase().endsWith(ext));
+      attachment = {
+        fileUrl: `/api/v1/uploads/${req.file.filename}`,
+        fileName: req.file.originalname,
+        fileType: isImage ? 'image' : 'document',
+        mimeType: req.file.mimetype
+      };
+
+      // Extract text content if text-based document
+      const isTextBased = ['.pdf', '.txt', '.doc', '.docx'].some(ext => req.file.originalname.toLowerCase().endsWith(ext));
+      if (isTextBased) {
+        extractedText = await extractTextFromFile(req.file.path, req.file.mimetype);
+      }
+    }
+
+    // Build history for Gemini (injecting previous extractedText context)
     const lastMessages = await Message.find({ conversationId: id })
       .sort({ createdAt: -1 })
       .limit(10);
     
     const sortedMessages = lastMessages.reverse();
-    const history = sortedMessages.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
+    const history = sortedMessages.map(m => {
+      let text = m.content;
+      if (m.extractedText) {
+        text = `[USER ATTACHED FILE: ${m.attachment?.fileName || 'Document'}]\n--- ISI FILE ---\n${m.extractedText}\n--- AKHIR ISI FILE ---\n\nPesan User: ${m.content}`;
+      }
+      return {
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text }]
+      };
+    });
 
     // Build system prompt based on type
-    let systemPrompt = 'You are AiDen, a highly advanced global AI learning assistant developed by the Denbest team. Help the user learn anything, solve coding challenges, summarize texts, or clear up concepts with crystal-clear formatting.';
+    let systemPrompt = promptBuilder.buildGlobalSystemPrompt();
     if (conversation.workspaceId) {
       const document = await Document.findOne({ workspaceId: conversation.workspaceId });
       if (document && document.extractedText) {
@@ -202,14 +229,45 @@ const sendConversationMessage = async (req, res) => {
       }
     }
 
-    // Generate AI Response
-    const aiResponse = await aiService.generateResponse(systemPrompt, history, message.trim());
+    // Inject vision system instruction if conversation has an image in history or current message
+    const hasImageInHistory = sortedMessages.some(m => m.attachment && m.attachment.fileType === 'image') || (attachment && attachment.fileType === 'image');
+    if (hasImageInHistory) {
+      systemPrompt += `\n\n[Vision System Instruction]: Percakapan ini memiliki lampiran gambar. Jika user meminta untuk menganalisis atau mendeskripsikan gambar tersebut, jelaskan secara jujur, hangat, dan manis dengan nada Aiden: "Aku sudah menerima gambar kamu dan preview-nya tersimpan. Untuk analisis visual otomatis belum aktif saat ini." Jangan pernah berkata "Sebagai AI teks saya tidak bisa melihat gambar" atau "Saya adalah model bahasa besar yang tidak dapat memproses gambar". Tetap gunakan nada santai Aiden.`;
+    }
 
-    // Save user message
+    // Generate AI Response - works for documents & fallbacks dynamically
+    const userPrompt = message ? message.trim() : (attachment ? `Mengirim file: ${attachment.fileName}` : '');
+    let finalUserPrompt = userPrompt;
+    if (extractedText) {
+      finalUserPrompt = `[USER ATTACHED FILE: ${attachment.fileName}]\n--- ISI FILE ---\n${extractedText}\n--- AKHIR ISI FILE ---\n\nPesan User: ${userPrompt}`;
+    }
+
+    const aiResponse = await aiService.generateResponse(systemPrompt, history, finalUserPrompt);
+
+    // Auto title generation if title is default
+    if (conversation.title === 'New Conversation' || conversation.title === 'New Chat') {
+      const msgCount = await Message.countDocuments({ conversationId: id });
+      if (msgCount === 0) {
+        let newTitle = message ? message.trim() : `Upload: ${attachment ? attachment.fileName : 'File'}`;
+        const words = newTitle.split(/\s+/);
+        if (words.length > 7) {
+          newTitle = words.slice(0, 7).join(' ') + '...';
+        } else if (newTitle.length > 47) {
+          newTitle = newTitle.substring(0, 47) + '...';
+        }
+        conversation.title = newTitle;
+        await conversation.save();
+      }
+    }
+
+    // Save user message with attachment schema
+    const userContent = message ? message.trim() : `Mengirim file: ${attachment ? attachment.fileName : 'File'}`;
     await Message.create({
       conversationId: id,
       role: 'user',
-      content: message.trim()
+      content: userContent,
+      attachment,
+      extractedText
     });
 
     // Save assistant message
@@ -225,7 +283,8 @@ const sendConversationMessage = async (req, res) => {
         message: aiResponse,
         conversationId: id,
         role: 'assistant',
-        createdAt: assistantMsg.createdAt
+        createdAt: assistantMsg.createdAt,
+        conversation
       }
     });
   } catch (error) {

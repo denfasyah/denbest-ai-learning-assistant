@@ -41,44 +41,64 @@ const SidebarContent = ({
   onRename,
   onDelete,
   dropdownRef,
-}) => (
-  <div className="flex h-full flex-col gap-6">
-    <div className="flex items-center gap-3">
-      <Button variant="primary" icon={Plus} onClick={onNewChat} className="w-full">
-        New Conversation
-      </Button>
-      {showClose && (
-        <button
-          onClick={onMobileClose}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-all"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      )}
-    </div>
+}) => {
+  const [searchQuery, setSearchQuery] = useState('');
 
-    <div className="relative">
-      <Input placeholder="Search chat..." icon={Search} className="bg-slate-900/40" />
-    </div>
+  const filteredConversations = conversations.filter((chat) => {
+    const q = searchQuery.toLowerCase();
+    const titleMatch = chat.title?.toLowerCase().includes(q);
+    const lastMsgMatch = chat.lastMessage?.toLowerCase().includes(q);
+    return titleMatch || lastMsgMatch;
+  });
 
-    <div className="flex-1 overflow-y-auto space-y-4">
-      <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2">
-        Recent Conversations
-      </h3>
+  return (
+    <div className="flex h-full flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <Button variant="primary" icon={Plus} onClick={onNewChat} className="w-full">
+          New Conversation
+        </Button>
+        {showClose && (
+          <button
+            onClick={onMobileClose}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
+      </div>
 
-      <div className="space-y-2">
-        {isLoading ? (
-          <div className="space-y-3 animate-pulse px-2">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="rounded-2xl border border-white/5 bg-white/2 p-4 space-y-3">
-                <div className="h-4 bg-white/10 rounded w-2/3" />
-                <div className="h-3 bg-white/5 rounded w-full" />
-                <div className="h-2 bg-white/5 rounded w-1/4" />
-              </div>
-            ))}
-          </div>
-        ) : (
-          conversations.map((chat) => (
+      <div className="relative">
+        <Input 
+          placeholder="Search chat..." 
+          icon={Search} 
+          className="bg-slate-900/40" 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      <div className="flex-1 overflow-y-auto space-y-4">
+        <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2">
+          Recent Conversations
+        </h3>
+
+        <div className="space-y-2">
+          {isLoading ? (
+            <div className="space-y-3 animate-pulse px-2">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="rounded-2xl border border-white/5 bg-white/2 p-4 space-y-3">
+                  <div className="h-4 bg-white/10 rounded w-2/3" />
+                  <div className="h-3 bg-white/5 rounded w-full" />
+                  <div className="h-2 bg-white/5 rounded w-1/4" />
+                </div>
+              ))}
+            </div>
+          ) : filteredConversations.length === 0 ? (
+            <div className="text-center py-8 text-slate-500 text-xs font-semibold uppercase tracking-wider">
+              No conversations found
+            </div>
+          ) : (
+            filteredConversations.map((chat) => (
             <div
               key={chat.id}
               onClick={() => {
@@ -177,12 +197,13 @@ const SidebarContent = ({
                 {formatTime(chat.time)}
               </div>
             </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ChatSidebar = ({
   conversations,

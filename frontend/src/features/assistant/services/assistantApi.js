@@ -17,7 +17,17 @@ export const assistantApi = {
   },
 
   // Mengirim pesan ke AI berdasarkan conversationId (Unifikasi global & workspace)
-  sendMessage: (conversationId, message) => {
+  sendMessage: (conversationId, message, file = null) => {
+    if (file) {
+      const formData = new FormData();
+      if (message) formData.append('message', message);
+      formData.append('file', file);
+      return axiosInstance.post(`/assistant/conversations/${conversationId}/messages`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+    }
     return axiosInstance.post(`/assistant/conversations/${conversationId}/messages`, { message });
   },
 
