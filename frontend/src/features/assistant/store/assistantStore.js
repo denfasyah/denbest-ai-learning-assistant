@@ -100,6 +100,56 @@ const useAssistantStore = create((set, get) => ({
     }
   },
 
+  renameConversation: async (id, title) => {
+    // Optimistically update title locally
+    set((state) => ({
+      conversations: state.conversations.map((c) =>
+        c.id === id ? { ...c, title } : c
+      )
+    }));
+
+    try {
+      await assistantApi.renameConversation(id, title);
+    } catch (err) {
+      set({ error: err.response?.data?.message || err.message });
+      // Revert if error
+      get().fetchConversations();
+    }
+  },
+
+  deleteConversation: async (id) => {
+    const { activeConversationId, conversations } = get();
+    
+    // Find next conversation to select if the deleted one was active
+    let nextActiveId = activeConversationId;
+    if (activeConversationId === id) {
+      const remaining = conversations.filter((c) => c.id !== id);
+      nextActiveId = remaining.length > 0 ? remaining[0].id : null;
+    }
+
+    // Optimistically update conversations list
+    set((state) => ({
+      conversations: state.conversations.filter((c) => c.id !== id),
+      activeConversationId: nextActiveId,
+      error: null
+    }));
+
+    // If next conversation is selected, fetch its messages, otherwise clear messages
+    if (nextActiveId) {
+      get().selectConversation(nextActiveId);
+    } else {
+      set({ messages: [] });
+    }
+
+    try {
+      await assistantApi.deleteConversation(id);
+    } catch (err) {
+      set({ error: err.response?.data?.message || err.message });
+      // Revert if error
+      get().fetchConversations();
+    }
+  },
+
   clearError: () => set({ error: null })
 }));
 

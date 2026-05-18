@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { Plus, Search, MoreHorizontal, Clock3, Pencil, Trash2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../../components/ui/Button';
@@ -35,6 +36,11 @@ const SidebarContent = ({
   showClose,
   activeConversationId,
   isLoading,
+  editingChatId,
+  setEditingChatId,
+  onRename,
+  onDelete,
+  dropdownRef,
 }) => (
   <div className="flex h-full flex-col gap-6">
     <div className="flex items-center gap-3">
@@ -73,55 +79,104 @@ const SidebarContent = ({
           </div>
         ) : (
           conversations.map((chat) => (
-          <div
-            key={chat.id}
-            onClick={() => {
-              onSelect(chat.id);
-              onMobileClose();
-            }}
-            className={`group relative rounded-2xl border p-4 transition-all duration-300 cursor-pointer ${
-              chat.id === activeConversationId
-                ? 'border-indigo-500/30 bg-indigo-500/10'
-                : 'border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/10'
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <h4 className="font-bold text-sm text-white line-clamp-1 group-hover:text-indigo-400 transition-colors">
-                  {chat.title}
-                </h4>
-                <p className="mt-1 text-xs text-slate-500 line-clamp-1">{chat.lastMessage}</p>
+            <div
+              key={chat.id}
+              onClick={() => {
+                // Jangan select chat jika sedang diedit
+                if (editingChatId === chat.id) return;
+                onSelect(chat.id);
+                onMobileClose();
+              }}
+              className={`group relative rounded-2xl border p-4 transition-all duration-300 cursor-pointer ${
+                chat.id === activeConversationId
+                  ? 'border-indigo-500/30 bg-indigo-500/10'
+                  : 'border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/10'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  {editingChatId === chat.id ? (
+                    <input
+                      type="text"
+                      defaultValue={chat.title}
+                      autoFocus
+                      onBlur={(e) => {
+                        const newTitle = e.target.value.trim();
+                        if (newTitle && newTitle !== chat.title) {
+                          onRename(chat.id, newTitle);
+                        }
+                        setEditingChatId(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const newTitle = e.target.value.trim();
+                          if (newTitle && newTitle !== chat.title) {
+                            onRename(chat.id, newTitle);
+                          }
+                          setEditingChatId(null);
+                        } else if (e.key === 'Escape') {
+                          setEditingChatId(null);
+                        }
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="bg-white/5 border border-white/10 rounded px-2 py-0.5 text-sm text-white focus:outline-none focus:border-indigo-500/50 w-full"
+                    />
+                  ) : (
+                    <h4 className="font-bold text-sm text-white line-clamp-1 group-hover:text-indigo-400 transition-colors">
+                      {chat.title}
+                    </h4>
+                  )}
+                  <p className="mt-1 text-xs text-slate-500 line-clamp-1">{chat.lastMessage}</p>
+                </div>
+
+                <div className="relative shrink-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(openMenuId === chat.id ? null : chat.id);
+                    }}
+                    className="p-1 rounded-lg hover:bg-white/10 text-slate-500 transition-colors chat-dots-button"
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </button>
+
+                  {openMenuId === chat.id && (
+                    <div
+                      ref={dropdownRef}
+                      className="absolute right-0 mt-2 w-36 rounded-xl border border-white/10 bg-slate-900 p-1.5 shadow-2xl z-20 animate-in fade-in zoom-in duration-200"
+                    >
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingChatId(chat.id);
+                          setOpenMenuId(null);
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 hover:bg-white/5 cursor-pointer"
+                      >
+                        <Pencil className="h-3.5 w-3.5" /> Rename
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm('Apakah Anda yakin ingin menghapus percakapan ini?')) {
+                            onDelete(chat.id);
+                          }
+                          setOpenMenuId(null);
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-rose-400 hover:bg-rose-500/10 cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" /> Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="relative shrink-0">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpenMenuId(openMenuId === chat.id ? null : chat.id);
-                  }}
-                  className="p-1 rounded-lg hover:bg-white/10 text-slate-500 transition-colors"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </button>
-
-                {openMenuId === chat.id && (
-                  <div className="absolute right-0 mt-2 w-36 rounded-xl border border-white/10 bg-slate-900 p-1.5 shadow-2xl z-20 animate-in fade-in zoom-in duration-200">
-                    <button className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 hover:bg-white/5">
-                      <Pencil className="h-3.5 w-3.5" /> Rename
-                    </button>
-                    <button className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-rose-400 hover:bg-rose-500/10">
-                      <Trash2 className="h-3.5 w-3.5" /> Delete
-                    </button>
-                  </div>
-                )}
+              <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-600 font-bold uppercase tracking-tighter">
+                <Clock3 className="h-3 w-3" />
+                {formatTime(chat.time)}
               </div>
             </div>
-
-            <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-600 font-bold uppercase tracking-tighter">
-              <Clock3 className="h-3 w-3" />
-              {formatTime(chat.time)}
-            </div>
-          </div>
           ))
         )}
       </div>
@@ -141,7 +196,28 @@ const ChatSidebar = ({
   desktopOnly,
   activeConversationId,
   isLoading,
+  onRename,
+  onDelete,
 }) => {
+  const [editingChatId, setEditingChatId] = useState(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (openMenuId && dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        const isDotsButton = event.target.closest('.chat-dots-button');
+        if (!isDotsButton) {
+          setOpenMenuId(null);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [openMenuId, setOpenMenuId]);
+
   const contentProps = {
     conversations,
     onSelect,
@@ -151,6 +227,11 @@ const ChatSidebar = ({
     onMobileClose,
     activeConversationId,
     isLoading,
+    editingChatId,
+    setEditingChatId,
+    onRename,
+    onDelete,
+    dropdownRef,
   };
 
   // Desktop mode — render konten langsung, tanpa drawer

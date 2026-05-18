@@ -133,11 +133,12 @@ const ChatArea = ({ messages, activeContext, onMobileMenuOpen, onSendMessage, is
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-indigo-500/10 border-indigo-500/20 shadow-lg shadow-indigo-500/10">
                 <Bot className="h-5 w-5 text-indigo-400" />
               </div>
-              <div className="group relative max-w-[80%] rounded-4xl border px-7 py-5 transition-all border-white/3 bg-white/2 text-slate-200">
-                <div className="flex gap-1.5 items-center py-1">
-                  <span className="h-2 w-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="h-2 w-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="h-2 w-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="group relative max-w-[80%] rounded-4xl border px-7 py-5 transition-all border-white/3 bg-white/2 text-slate-200 flex items-center gap-3">
+                <span className="text-sm font-semibold text-slate-350">AiDen sedang mengetik</span>
+                <div className="flex gap-1 items-center pt-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>

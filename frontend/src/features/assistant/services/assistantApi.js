@@ -19,5 +19,15 @@ export const assistantApi = {
   // Mengirim pesan ke AI berdasarkan conversationId (Unifikasi global & workspace)
   sendMessage: (conversationId, message) => {
     return axiosInstance.post(`/assistant/conversations/${conversationId}/messages`, { message });
+  },
+
+  // Mengubah nama percakapan
+  renameConversation: (id, title) => {
+    return axiosInstance.patch(`/assistant/conversations/${id}`, { title });
+  },
+
+  // Menghapus percakapan
+  deleteConversation: (id) => {
+    return axiosInstance.delete(`/assistant/conversations/${id}`);
   }
 };

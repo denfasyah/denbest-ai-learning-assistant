@@ -23,6 +23,8 @@ const AssistantPage = () => {
     selectConversation,
     sendMessage,
     createNewConversation,
+    renameConversation,
+    deleteConversation,
   } = useAssistantStore();
 
   useEffect(() => {
@@ -51,6 +53,8 @@ const AssistantPage = () => {
     onMobileClose: () => setMobileOpen(false),
     activeConversationId,
     isLoading: isLoadingConversations,
+    onRename: renameConversation,
+    onDelete: deleteConversation,
   };
 
   const renderChatArea = () => {

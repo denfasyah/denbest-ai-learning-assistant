@@ -237,9 +237,87 @@ const sendConversationMessage = async (req, res) => {
   }
 };
 
+/**
+ * Rename a specific conversation
+ * PATCH /api/v1/assistant/conversations/:id
+ */
+const renameConversation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { title } = req.body;
+
+    if (!title || title.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Title is required'
+      });
+    }
+
+    const conversation = await AiConversation.findOneAndUpdate(
+      { _id: id, userId },
+      { title: title.trim() },
+      { new: true }
+    );
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: 'Conversation not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: conversation
+    });
+  } catch (error) {
+    console.error('[AssistantController] renameConversation Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to rename conversation'
+    });
+  }
+};
+
+/**
+ * Delete a specific conversation (cascade delete messages)
+ * DELETE /api/v1/assistant/conversations/:id
+ */
+const deleteConversation = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const conversation = await AiConversation.findOneAndDelete({ _id: id, userId });
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: 'Conversation not found'
+      });
+    }
+
+    // Cascade delete all messages in this conversation
+    await Message.deleteMany({ conversationId: id });
+
+    res.status(200).json({
+      success: true,
+      message: 'Conversation and all messages successfully deleted'
+    });
+  } catch (error) {
+    console.error('[AssistantController] deleteConversation Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete conversation'
+    });
+  }
+};
+
 module.exports = {
   getConversations,
   createConversation,
   getConversationMessages,
-  sendConversationMessage
+  sendConversationMessage,
+  renameConversation,
+  deleteConversation
 };
