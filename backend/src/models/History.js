@@ -30,6 +30,7 @@ const historySchema = new mongoose.Schema(
         "summary_generated",
         "flashcard_generated",
         "quiz_completed",
+        "assistant_chat",
       ],
       required: true,
     },

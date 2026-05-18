@@ -5,6 +5,7 @@ const Document = require('../models/Document');
 const aiService = require('../services/aiService');
 const promptBuilder = require('../utils/promptBuilder');
 const { extractTextFromFile } = require('../utils/textExtractor');
+const historyService = require('../services/historyService');
 
 const activeGenerations = new Set();
 
@@ -303,6 +304,26 @@ const sendConversationMessage = async (req, res) => {
       role: 'assistant',
       content: aiResponse
     });
+
+    // Log to history service if this is the first user message
+    try {
+      const msgCount = await Message.countDocuments({ conversationId: id, role: 'user' });
+      if (msgCount === 1) {
+        await historyService.logActivity(
+          userId,
+          null,
+          conversation.title || "New Conversation",
+          "assistant_chat",
+          {
+            source: "assistant",
+            conversationId: conversation._id,
+            preview: userContent
+          }
+        );
+      }
+    } catch (histErr) {
+      console.error('[sendConversationMessage] Failed to log history:', histErr);
+    }
 
     res.status(200).json({
       success: true,

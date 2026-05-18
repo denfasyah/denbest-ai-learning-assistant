@@ -7,6 +7,7 @@ const FILTER_OPTIONS = [
   { label: 'Summary Dibuat', value: 'summary_generated' },
   { label: 'Flashcard Dibuat', value: 'flashcard_generated' },
   { label: 'Quiz Selesai', value: 'quiz_completed' },
+  { label: 'Assistant Chat', value: 'assistant_chat' },
 ];
 
 const HistoryToolbar = ({ activeFilter, onFilterChange }) => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Bot, Plus } from "lucide-react";
 import ChatSidebar from "../../features/assistant/components/ChatSidebar";
 import ChatArea from "../../features/assistant/components/ChatArea";
@@ -9,6 +9,8 @@ import useAssistantStore from "../../features/assistant/store/assistantStore";
 
 const AssistantPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const queryConversationId = searchParams.get("conversationId");
   const [openMenuId, setOpenMenuId] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -28,8 +30,14 @@ const AssistantPage = () => {
   } = useAssistantStore();
 
   useEffect(() => {
-    fetchConversations();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const init = async () => {
+      await fetchConversations();
+      if (queryConversationId) {
+        selectConversation(queryConversationId);
+      }
+    };
+    init();
+  }, [queryConversationId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelectConversation = (id) => {
     selectConversation(id);

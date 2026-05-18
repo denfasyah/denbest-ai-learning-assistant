@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   CalendarDays,
   FileText,
+  Bot,
 } from "lucide-react";
 import Card from "../../../components/ui/Card";
 
@@ -43,9 +44,20 @@ const ACTION_CONFIG = {
     label: "Quiz Selesai",
     color: "text-rose-400",
   },
+  assistant_chat: {
+    icon: Bot,
+    label: "Assistant Chat",
+    color: "text-indigo-400",
+  },
 };
 
-const getCTA = (actionType, workspaceId) => {
+const getCTA = (actionType, workspaceId, metadata) => {
+  if (actionType === "assistant_chat") {
+    return {
+      label: "Buka Assistant",
+      path: `/assistant?conversationId=${metadata?.conversationId}`
+    };
+  }
   if (!workspaceId) return null;
   const base = `/learning/workspace/${workspaceId}`;
   switch (actionType) {
@@ -88,7 +100,7 @@ const HistoryCard = ({
     ACTION_CONFIG[actionType] || ACTION_CONFIG["workspace_created"];
   const Icon = config.icon;
   const cta = getCTA(actionType, workspaceId, metadata);
-  const isDeleted = !workspaceId;
+  const isDeleted = !workspaceId && actionType !== "assistant_chat";
 
   return (
     <Card
