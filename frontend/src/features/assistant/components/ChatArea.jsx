@@ -1,14 +1,29 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Bot, User, Send, Paperclip, Mic, Sparkles, FileText, Menu } from 'lucide-react';
 
-const ChatArea = ({ messages, activeContext, onMobileMenuOpen }) => {
+const ChatArea = ({ messages, activeContext, onMobileMenuOpen, onSendMessage, isSendingMessage }) => {
   const scrollRef = useRef(null);
+  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isSendingMessage]);
+
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (!inputValue.trim() || isSendingMessage) return;
+    onSendMessage(inputValue.trim());
+    setInputValue('');
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
 
   return (
     <div className="flex flex-1 flex-col h-full overflow-hidden">
@@ -75,36 +90,62 @@ const ChatArea = ({ messages, activeContext, onMobileMenuOpen }) => {
               }`}
             >
               <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">
-                {message.text}
+                {message.content || message.text}
               </p>
             </div>
           </div>
         ))}
+        {isSendingMessage && (
+          <div className="flex items-start gap-5 flex-row animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-indigo-500/10 border-indigo-500/20 shadow-lg shadow-indigo-500/10">
+              <Bot className="h-5 w-5 text-indigo-400" />
+            </div>
+            <div className="group relative max-w-[80%] rounded-4xl border px-7 py-5 transition-all border-white/3 bg-white/2 text-slate-200">
+              <div className="flex gap-1.5 items-center py-1">
+                <span className="h-2 w-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="h-2 w-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="h-2 w-2 rounded-full bg-indigo-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* CHAT INPUT */}
       <div className="p-4 md:p-8 bg-white/1 border-t border-white/3">
         <div className="max-w-4xl mx-auto">
-          <div className="relative flex items-end gap-3 rounded-[2.5rem] border border-white/5 bg-white/1 p-3 focus-within:border-indigo-500/30 transition-all shadow-2xl">
-            <button className="h-12 w-12 rounded-full flex items-center justify-center text-slate-500 hover:text-indigo-400 hover:bg-white/5 transition-all shrink-0">
+          <form onSubmit={handleSubmit} className="relative flex items-end gap-3 rounded-[2.5rem] border border-white/5 bg-white/1 p-3 focus-within:border-indigo-500/30 transition-all shadow-2xl">
+            <button type="button" className="h-12 w-12 rounded-full flex items-center justify-center text-slate-500 hover:text-indigo-400 hover:bg-white/5 transition-all shrink-0">
               <Paperclip className="h-5 w-5" />
             </button>
 
             <textarea
               rows={1}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={isSendingMessage}
               placeholder="Ask AiDen anything..."
               className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-2 py-3 text-sm text-white outline-none placeholder:text-slate-500 font-medium"
             />
 
             <div className="flex items-center gap-2">
-              <button className="h-12 w-12 rounded-full hidden sm:flex items-center justify-center text-slate-500 hover:text-indigo-400 hover:bg-white/5 transition-all shrink-0">
+              <button type="button" className="h-12 w-12 rounded-full hidden sm:flex items-center justify-center text-slate-500 hover:text-indigo-400 hover:bg-white/5 transition-all shrink-0">
                 <Mic className="h-5 w-5" />
               </button>
-              <button className="h-12 w-12 rounded-full flex items-center justify-center bg-indigo-500 text-white shadow-xl shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all shrink-0">
+              <button
+                type="submit"
+                disabled={isSendingMessage || !inputValue.trim()}
+                className={`h-12 w-12 rounded-full flex items-center justify-center text-white shadow-xl transition-all shrink-0 ${
+                  isSendingMessage || !inputValue.trim()
+                    ? 'bg-white/5 border border-white/5 text-slate-700 cursor-not-allowed opacity-50 shadow-none'
+                    : 'bg-indigo-500 shadow-indigo-500/20 hover:scale-105 active:scale-95 cursor-pointer'
+                }`}
+              >
                 <Send className="h-5 w-5" />
               </button>
             </div>
-          </div>
+          </form>
           <p className="mt-4 text-center text-[9px] text-slate-500 font-black uppercase tracking-[0.2em]">
             AiDen Intelligence Engine • Version 2.0.4
           </p>

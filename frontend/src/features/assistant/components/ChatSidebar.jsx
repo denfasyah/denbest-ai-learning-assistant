@@ -3,6 +3,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 
+const formatTime = (timeStr) => {
+  if (!timeStr) return '';
+  try {
+    const date = new Date(timeStr);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays < 7) return `${diffDays}d ago`;
+
+    return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+  } catch (e) {
+    return timeStr;
+  }
+};
+
 const SidebarContent = ({
   conversations,
   onSelect,
@@ -11,6 +33,7 @@ const SidebarContent = ({
   setOpenMenuId,
   onMobileClose,
   showClose,
+  activeConversationId,
 }) => (
   <div className="flex h-full flex-col gap-6">
     <div className="flex items-center gap-3">
@@ -45,7 +68,7 @@ const SidebarContent = ({
               onMobileClose();
             }}
             className={`group relative rounded-2xl border p-4 transition-all duration-300 cursor-pointer ${
-              chat.active
+              chat.id === activeConversationId
                 ? 'border-indigo-500/30 bg-indigo-500/10'
                 : 'border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/10'
             }`}
@@ -84,7 +107,7 @@ const SidebarContent = ({
 
             <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-600 font-bold uppercase tracking-tighter">
               <Clock3 className="h-3 w-3" />
-              {chat.time}
+              {formatTime(chat.time)}
             </div>
           </div>
         ))}
@@ -103,6 +126,7 @@ const ChatSidebar = ({
   onMobileClose,
   mobileOnly,
   desktopOnly,
+  activeConversationId,
 }) => {
   const contentProps = {
     conversations,
@@ -111,6 +135,7 @@ const ChatSidebar = ({
     openMenuId,
     setOpenMenuId,
     onMobileClose,
+    activeConversationId,
   };
 
   // Desktop mode — render konten langsung, tanpa drawer
