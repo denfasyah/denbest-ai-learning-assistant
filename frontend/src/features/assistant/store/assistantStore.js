@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { assistantApi } from '../services/assistantApi';
+import Swal from 'sweetalert2';
 
 const useAssistantStore = create((set, get) => ({
   conversations: [],
@@ -43,6 +44,19 @@ const useAssistantStore = create((set, get) => ({
         error: null
       }));
     } catch (err) {
+      if (err.response?.status === 429) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Rate Limit',
+          text: 'Terlalu banyak request, tunggu sebentar ya',
+          timer: 3000,
+          showConfirmButton: false,
+          background: '#0f172a',
+          color: '#fff',
+          toast: true,
+          position: 'top-end'
+        });
+      }
       set({ error: err.response?.data?.message || err.message });
     } finally {
       set({ isLoadingConversations: false });
@@ -112,8 +126,34 @@ const useAssistantStore = create((set, get) => ({
       // Background refresh conversation list (agar last message terupdate)
       get().fetchConversations();
     } catch (err) {
+      const errMsg = err.response?.data?.message || err.message;
+      if (err.response?.status === 429) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Rate Limit',
+          text: 'Terlalu banyak request, tunggu sebentar ya',
+          timer: 3000,
+          showConfirmButton: false,
+          background: '#0f172a',
+          color: '#fff',
+          toast: true,
+          position: 'top-end'
+        });
+      } else if (err.response?.status === 400 && errMsg.includes('finished')) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Processing',
+          text: 'Mohon tunggu respon sebelumnya selesai ya',
+          timer: 3000,
+          showConfirmButton: false,
+          background: '#0f172a',
+          color: '#fff',
+          toast: true,
+          position: 'top-end'
+        });
+      }
       set({ 
-        error: err.response?.data?.message || err.message,
+        error: errMsg,
         // Rollback last optimistic message
         messages: get().messages.slice(0, -1)
       });

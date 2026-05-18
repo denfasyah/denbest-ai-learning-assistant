@@ -10,11 +10,16 @@ const {
 } = require('../controllers/assistantController');
 const { verifyToken } = require('../middlewares/authMiddleware');
 const assistantUpload = require('../middlewares/assistantUploadMiddleware');
+const { 
+  createConversationLimiter, 
+  sendMessageLimiter, 
+  uploadLimiter 
+} = require('../middlewares/assistantRateLimiter');
 
 router.get('/conversations', verifyToken, getConversations);
-router.post('/conversations', verifyToken, createConversation);
+router.post('/conversations', verifyToken, createConversationLimiter, createConversation);
 router.get('/conversations/:id/messages', verifyToken, getConversationMessages);
-router.post('/conversations/:id/messages', verifyToken, assistantUpload.single('file'), sendConversationMessage);
+router.post('/conversations/:id/messages', verifyToken, assistantUpload.single('file'), uploadLimiter, sendMessageLimiter, sendConversationMessage);
 router.patch('/conversations/:id', verifyToken, renameConversation);
 router.delete('/conversations/:id', verifyToken, deleteConversation);
 

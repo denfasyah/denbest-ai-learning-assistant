@@ -6,6 +6,8 @@ const aiService = require('../services/aiService');
 const promptBuilder = require('../utils/promptBuilder');
 const { extractTextFromFile } = require('../utils/textExtractor');
 
+const activeGenerations = new Set();
+
 /**
  * Get all conversations for the logged-in user across workspaces
  * GET /api/v1/assistant/conversations
@@ -162,19 +164,29 @@ const getConversationMessages = async (req, res) => {
  * POST /api/v1/assistant/conversations/:id/messages
  */
 const sendConversationMessage = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  const { message } = req.body;
+  const hasFile = !!req.file;
+
+  if ((!message || message.trim() === '') && !hasFile) {
+    return res.status(400).json({
+      success: false,
+      message: 'Message or file required'
+    });
+  }
+
+  // Block duplicate send if conversation is currently processing AI response
+  if (activeGenerations.has(id)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please wait until current response is finished'
+    });
+  }
+
+  activeGenerations.add(id);
+
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
-    const { message } = req.body;
-    const hasFile = !!req.file;
-
-    if ((!message || message.trim() === '') && !hasFile) {
-      return res.status(400).json({
-        success: false,
-        message: 'Message or file required'
-      });
-    }
-
     // Verify ownership
     const conversation = await AiConversation.findOne({ _id: id, userId });
     if (!conversation) {
@@ -308,6 +320,8 @@ const sendConversationMessage = async (req, res) => {
       success: false,
       message: 'Failed to communicate with AI'
     });
+  } finally {
+    activeGenerations.delete(id);
   }
 };
 
