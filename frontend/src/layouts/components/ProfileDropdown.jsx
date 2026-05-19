@@ -28,8 +28,8 @@ const ProfileDropdown = ({ user, onLogout }) => {
           {initials}
         </div>
         <div className="hidden md:block text-left mr-2">
-           <p className="text-xs font-black text-white tracking-tight leading-none uppercase">{user?.name || "Member"}</p>
-           <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Research Fellow</p>
+          <p className="text-xs font-black text-white tracking-tight leading-none uppercase">{user?.name || "Member"}</p>
+          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Research Fellow</p>
         </div>
         <ChevronDown className={`h-4 w-4 text-slate-500 group-hover:text-white transition-all ${isOpen ? 'rotate-180' : ''}`} />
       </button>
@@ -42,8 +42,8 @@ const ProfileDropdown = ({ user, onLogout }) => {
           </div>
 
           <div className="p-3">
-            <Link 
-              to="/profile" 
+            <Link
+              to="/profile"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-400 hover:text-white hover:bg-white/5 transition-all group"
             >
@@ -53,8 +53,8 @@ const ProfileDropdown = ({ user, onLogout }) => {
               <span className="text-xs font-black uppercase tracking-widest">My Profile</span>
             </Link>
 
-            <Link 
-              to="/setting" 
+            <Link
+              to="/setting"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-4 px-4 py-3 rounded-2xl text-slate-400 hover:text-white hover:bg-white/5 transition-all group"
             >
@@ -73,7 +73,7 @@ const ProfileDropdown = ({ user, onLogout }) => {
               <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-rose-500/10">
                 <LogOut className="h-5 w-5" />
               </div>
-              <span className="text-xs font-black uppercase tracking-widest">Sign Out</span>
+              <span className="text-xs font-black uppercase tracking-widest">LogOut</span>
             </button>
           </div>
         </div>
