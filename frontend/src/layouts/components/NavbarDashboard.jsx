@@ -1,19 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Menu, Bell} from "lucide-react";
 import SectionHeader from "../../components/ui/SectionHeader";
 import ProfileDropdown from "./ProfileDropdown";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useNotificationStore from "../../features/notification/store/notificationStore";
+import axiosInstance from "../../services/axiosInstance";
 
 const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, description }) => {
   const { unreadCount, fetchUnreadCount } = useNotificationStore();
+  const location = useLocation();
+  const [notifEnabled, setNotifEnabled] = useState(true);
 
   useEffect(() => {
-    fetchUnreadCount();
-    // Poll setiap 60 detik untuk update badge
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get('/users/preferences');
+        if (res.data?.success) {
+          setNotifEnabled(res.data.data.notifications_enabled);
+        }
+      } catch (e) {
+        console.error('Failed to fetch preference:', e);
+      }
+      fetchUnreadCount();
+    };
+
+    fetchData();
+    
+    // Poll every 60 seconds
     const interval = setInterval(fetchUnreadCount, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [location.pathname, fetchUnreadCount]);
 
   return (
     <div>
@@ -63,7 +79,7 @@ const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, descriptio
                 "
             >
               <Bell className="h-5 w-5 text-slate-300" />
-              {unreadCount > 0 && (
+              {notifEnabled && unreadCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 h-4 w-4 flex items-center justify-center rounded-full bg-indigo-500 text-[9px] font-black text-white">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>

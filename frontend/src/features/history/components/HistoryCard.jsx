@@ -10,7 +10,9 @@ import {
   CalendarDays,
   FileText,
   Bot,
-  NotebookPen
+  NotebookPen,
+  UserCircle,
+  Settings
 } from "lucide-react";
 import Card from "../../../components/ui/Card";
 
@@ -55,6 +57,16 @@ const ACTION_CONFIG = {
     label: "Note Dibuat",
     color: "text-teal-400",
   },
+  profile: {
+    icon: UserCircle,
+    label: "Profil",
+    color: "text-blue-500",
+  },
+  setting: {
+    icon: Settings,
+    label: "Pengaturan",
+    color: "text-slate-400",
+  },
 };
 
 const getCTA = (actionType, workspaceId, metadata) => {
@@ -63,6 +75,12 @@ const getCTA = (actionType, workspaceId, metadata) => {
       label: "Buka Assistant",
       path: `/assistant?conversationId=${metadata?.conversationId}`
     };
+  }
+  if (actionType === "profile") {
+    return { label: "Lihat Profil", path: "/profile" };
+  }
+  if (actionType === "setting") {
+    return { label: "Lihat Pengaturan", path: "/setting" };
   }
   if (!workspaceId && actionType !== "note_created") return null;
   const base = workspaceId ? `/learning/workspace/${workspaceId}` : "";
@@ -145,7 +163,7 @@ const HistoryCard = ({
             </div>
 
             <h2 className="text-2xl font-black text-white tracking-tight leading-none group-hover:text-indigo-400 transition-colors">
-              {workspaceTitle || "Workspace Tidak Diketahui"}
+              {metadata?.action || workspaceTitle || "Workspace Tidak Diketahui"}
             </h2>
 
             {/* Score badge untuk quiz */}
@@ -158,7 +176,7 @@ const HistoryCard = ({
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <div className="inline-flex items-center gap-3 rounded-2xl border border-white/5 bg-white/2 px-4 py-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 <FileText className="h-4 w-4 text-indigo-500" />
-                {workspaceTitle}
+                {metadata?.action || workspaceTitle}
               </div>
 
               {isDeleted && !isNoteDeleted && (

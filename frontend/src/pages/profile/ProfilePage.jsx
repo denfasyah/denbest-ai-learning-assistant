@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Camera, Edit3, Save, X, Mail, Calendar, Flame, MapPin } from "lucide-react";
+import { Camera, Edit3, Save, X, Mail, Calendar, MapPin } from "lucide-react";
+import axiosInstance from "../../services/axiosInstance";
 
 const ProfilePage = () => {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [errorToast, setErrorToast] = useState(false);
 
   const [form, setForm] = useState({
     name: user?.name || "Adent",
@@ -17,19 +20,88 @@ const ProfilePage = () => {
 
   const [draft, setDraft] = useState({ ...form });
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axiosInstance.get('/users/profile');
+        if (res.data?.success) {
+          const profile = res.data.data;
+          
+          // Format date joined
+          const dateStr = new Date(profile.createdAt).toLocaleDateString('id-ID', {
+            month: 'long',
+            year: 'numeric'
+          });
+
+          const newForm = {
+            name: profile.name,
+            email: profile.email,
+            bio: profile.bio,
+            location: profile.location,
+            joinedDate: dateStr,
+          };
+          setForm(newForm);
+          setDraft(newForm);
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const initials = form.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const previousForm = { ...form };
+    
+    // Optimistic update
     setForm({ ...draft });
     setEditing(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    
+    try {
+      await axiosInstance.patch('/users/profile', {
+        name: draft.name,
+        location: draft.location,
+        bio: draft.bio
+      });
+      
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+      
+      if (refreshUser) await refreshUser();
+      
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+      // Revert if failed
+      setForm(previousForm);
+      setDraft(previousForm);
+      setErrorToast(true);
+      setTimeout(() => setErrorToast(false), 2500);
+    }
   };
 
   const handleCancel = () => {
     setDraft({ ...form });
     setEditing(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-20">
+        <div className="w-full max-w-2xl bg-[#0f0628] rounded-2xl border border-indigo-500/10 p-8">
+          <div className="animate-pulse flex flex-col gap-4">
+            <div className="h-24 bg-white/5 rounded-xl w-full"></div>
+            <div className="h-6 bg-white/5 rounded-md w-1/3"></div>
+            <div className="h-4 bg-white/5 rounded-md w-1/2"></div>
+            <div className="h-4 bg-white/5 rounded-md w-2/3"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-20">
@@ -38,6 +110,11 @@ const ProfilePage = () => {
       {saved && (
         <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-green-950 border border-green-600 text-green-400 text-sm font-medium px-5 py-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
           ✓ Profil berhasil disimpan
+        </div>
+      )}
+      {errorToast && (
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-red-950 border border-red-600 text-red-400 text-sm font-medium px-5 py-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
+          ✗ Gagal menyimpan, coba lagi
         </div>
       )}
 

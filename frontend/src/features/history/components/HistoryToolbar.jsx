@@ -9,6 +9,8 @@ const FILTER_OPTIONS = [
   { label: 'Quiz Selesai', value: 'quiz_completed' },
   { label: 'Assistant Chat', value: 'assistant_chat' },
   { label: 'Note Dibuat', value: 'note_created' },
+  { label: 'Profil', value: 'profile' },
+  { label: 'Pengaturan', value: 'setting' },
 ];
 
 const HistoryToolbar = ({ activeFilter, onFilterChange }) => {

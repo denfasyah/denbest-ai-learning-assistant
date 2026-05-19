@@ -32,6 +32,8 @@ const historySchema = new mongoose.Schema(
         "quiz_completed",
         "assistant_chat",
         "note_created",
+        "profile",
+        "setting",
       ],
       required: true,
     },

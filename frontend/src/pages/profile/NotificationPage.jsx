@@ -10,6 +10,8 @@ import {
   Clock3,
   CheckCheck,
   Search,
+  UserCircle,
+  Settings
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import Card from "../../components/ui/Card";
@@ -87,6 +89,10 @@ const NotificationPage = () => {
         return <FileText className="h-5 w-5 text-cyan-400" />;
       case "assistant":
         return <Bot className="h-5 w-5 text-emerald-400" />;
+      case "profile":
+        return <UserCircle className="h-5 w-5 text-blue-500" />;
+      case "setting":
+        return <Settings className="h-5 w-5 text-slate-400" />;
       default:
         return <Bell className="h-5 w-5 text-yellow-400" />;
     }

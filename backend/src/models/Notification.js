@@ -11,7 +11,7 @@ const notificationSchema = new mongoose.Schema(
     historyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'History',
-      required: true,
+      required: false,
     },
     // Snapshot data dari history (agar tidak perlu join setiap saat)
     type: {

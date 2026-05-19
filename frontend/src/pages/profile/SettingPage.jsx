@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import {
   Bell, Shield, Monitor, KeyRound, Mail,
   Trash2, ChevronRight, AlertTriangle,
 } from "lucide-react";
+import axiosInstance from "../../services/axiosInstance";
 
 const SettingPage = () => {
   const { logout } = useAuth();
@@ -12,46 +13,123 @@ const SettingPage = () => {
     allNotifications: true,
     darkMode: true,
   });
-  const toggle = (key) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
+
+  const [loadingPrefs, setLoadingPrefs] = useState(true);
+
+  useEffect(() => {
+    const fetchPrefs = async () => {
+      try {
+        const res = await axiosInstance.get('/users/preferences');
+        if (res.data?.success) {
+          setPrefs(prev => ({
+            ...prev,
+            allNotifications: res.data.data.notifications_enabled
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch preferences', error);
+      } finally {
+        setLoadingPrefs(false);
+      }
+    };
+    fetchPrefs();
+  }, []);
+
+  const toggleNotifications = async () => {
+    const newVal = !prefs.allNotifications;
+    setPrefs(p => ({ ...p, allNotifications: newVal }));
+    try {
+      await axiosInstance.patch('/users/preferences', {
+        notifications_enabled: newVal
+      });
+      // Show toast on success
+      setToastMsg(newVal ? '✓ Notifikasi diaktifkan' : '✓ Notifikasi dinonaktifkan');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2500);
+    } catch (err) {
+      console.error('Failed to update preferences', err);
+      setPrefs(p => ({ ...p, allNotifications: !newVal })); // revert
+    }
+  };
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const [toastErr, setToastErr] = useState("");
+  const [showErrToast, setShowErrToast] = useState(false);
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [pwForm, setPwForm] = useState({ current: "", new: "", confirm: "" });
-  const [pwSaved, setPwSaved] = useState(false);
+  const [pwLoading, setPwLoading] = useState(false);
 
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [emailForm, setEmailForm] = useState({ new: "", confirm: "" });
-  const [emailSaved, setEmailSaved] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const handlePwSave = () => {
-    if (!pwForm.current || !pwForm.new || pwForm.new !== pwForm.confirm) return;
-    setShowPasswordForm(false);
-    setPwForm({ current: "", new: "", confirm: "" });
-    setPwSaved(true);
-    setTimeout(() => setPwSaved(false), 2500);
+  const handlePwSave = async () => {
+    if (!pwForm.current || !pwForm.new || pwForm.new !== pwForm.confirm || pwForm.new.length < 8) return;
+    setPwLoading(true);
+    try {
+      await axiosInstance.patch('/users/change-password', {
+        currentPassword: pwForm.current,
+        newPassword: pwForm.new
+      });
+      setShowPasswordForm(false);
+      setPwForm({ current: "", new: "", confirm: "" });
+      setToastMsg("✓ Password berhasil diperbarui");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2500);
+    } catch (error) {
+      setToastErr(error.response?.data?.message || "✗ Password saat ini tidak sesuai");
+      setShowErrToast(true);
+      setTimeout(() => setShowErrToast(false), 2500);
+    } finally {
+      setPwLoading(false);
+    }
   };
 
-  const handleEmailSave = () => {
+  const handleEmailSave = async () => {
     if (!emailForm.new || emailForm.new !== emailForm.confirm) return;
-    setShowEmailForm(false);
-    setEmailForm({ new: "", confirm: "" });
-    setEmailSaved(true);
-    setTimeout(() => setEmailSaved(false), 2500);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailForm.new)) {
+      setToastErr("✗ Format email tidak valid");
+      setShowErrToast(true);
+      setTimeout(() => setShowErrToast(false), 2500);
+      return;
+    }
+    
+    setEmailLoading(true);
+    try {
+      await axiosInstance.patch('/users/change-email', {
+        newEmail: emailForm.new
+      });
+      setShowEmailForm(false);
+      setEmailForm({ new: "", confirm: "" });
+      setToastMsg("✓ Email berhasil diperbarui");
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2500);
+    } catch (error) {
+      setToastErr(error.response?.data?.message || "✗ Email sudah digunakan atau terjadi kesalahan");
+      setShowErrToast(true);
+      setTimeout(() => setShowErrToast(false), 2500);
+    } finally {
+      setEmailLoading(false);
+    }
   };
 
   return (
     <div className="max-w-2xl mx-auto pb-16">
 
       {/* Toasts */}
-      {pwSaved && (
+      {showToast && (
         <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-green-950 border border-green-600 text-green-400 text-sm font-medium px-5 py-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
-          ✓ Password berhasil diperbarui
+          {toastMsg}
         </div>
       )}
-      {emailSaved && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-green-950 border border-green-600 text-green-400 text-sm font-medium px-5 py-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
-          ✓ Email berhasil diperbarui
+      {showErrToast && (
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-red-950 border border-red-600 text-red-400 text-sm font-medium px-5 py-3 rounded-xl animate-in fade-in slide-in-from-top-2 duration-300">
+          {toastErr}
         </div>
       )}
 
@@ -63,17 +141,26 @@ const SettingPage = () => {
             label="All Notifications"
             desc="Aktifkan atau nonaktifkan semua notifikasi"
             on={prefs.allNotifications}
-            onToggle={() => toggle("allNotifications")}
+            onToggle={toggleNotifications}
+            disabled={loadingPrefs}
           />
         </Card>
 
         {/* ── Tampilan ── */}
         <Card title="Tampilan" icon={<Monitor size={16} className="text-indigo-400" />}>
           <ToggleRow
-            label="Dark Mode"
+            label={
+              <span className="flex items-center gap-2">
+                Dark Mode
+                <span className="bg-indigo-500/20 text-indigo-300 text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded-md border border-indigo-500/30">
+                  Coming Soon
+                </span>
+              </span>
+            }
             desc="Tema gelap untuk kenyamanan mata"
             on={prefs.darkMode}
-            onToggle={() => toggle("darkMode")}
+            onToggle={() => {}}
+            disabled={true}
           />
         </Card>
 
@@ -105,14 +192,14 @@ const SettingPage = () => {
             {showPasswordForm && (
               <div className="pb-4 flex flex-col gap-3">
                 {[
-                  { key: "current", label: "Password Saat Ini", placeholder: "••••••••" },
-                  { key: "new", label: "Password Baru", placeholder: "Min. 8 karakter" },
-                  { key: "confirm", label: "Konfirmasi Password Baru", placeholder: "Ulangi password baru" },
-                ].map(({ key, label, placeholder }) => (
+                  { key: "current", label: "Password Saat Ini", placeholder: "••••••••", type: "password" },
+                  { key: "new", label: "Password Baru", placeholder: "Min. 8 karakter", type: "password" },
+                  { key: "confirm", label: "Konfirmasi Password Baru", placeholder: "Ulangi password baru", type: "password" },
+                ].map(({ key, label, placeholder, type }) => (
                   <div key={key} className="flex flex-col gap-1.5">
                     <label className="text-[0.68rem] text-slate-500 uppercase tracking-widest font-medium">{label}</label>
                     <input
-                      type="password"
+                      type={type}
                       value={pwForm[key]}
                       onChange={(e) => setPwForm((f) => ({ ...f, [key]: e.target.value }))}
                       placeholder={placeholder}
@@ -120,14 +207,18 @@ const SettingPage = () => {
                     />
                   </div>
                 ))}
+                {pwForm.new && pwForm.new.length < 8 && (
+                  <p className="text-red-400 text-xs mt-0.5">Password baru minimal 8 karakter</p>
+                )}
                 {pwForm.new && pwForm.confirm && pwForm.new !== pwForm.confirm && (
                   <p className="text-red-400 text-xs mt-0.5">Password tidak cocok</p>
                 )}
                 <button
                   onClick={handlePwSave}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-semibold py-2.5 rounded-lg cursor-pointer border-none mt-1 hover:opacity-90 transition-opacity"
+                  disabled={pwLoading || !pwForm.current || !pwForm.new || pwForm.new !== pwForm.confirm || pwForm.new.length < 8}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-semibold py-2.5 rounded-lg cursor-pointer border-none mt-1 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Simpan Password
+                  {pwLoading ? "Menyimpan..." : "Simpan Password"}
                 </button>
               </div>
             )}
@@ -158,13 +249,13 @@ const SettingPage = () => {
             {showEmailForm && (
               <div className="pb-4 flex flex-col gap-3">
                 {[
-                  { key: "new", label: "Email Baru", placeholder: "email@contoh.com" },
-                  { key: "confirm", label: "Konfirmasi Email Baru", placeholder: "Ulangi email baru" },
-                ].map(({ key, label, placeholder }) => (
+                  { key: "new", label: "Email Baru", placeholder: "email@contoh.com", type: "email" },
+                  { key: "confirm", label: "Konfirmasi Email Baru", placeholder: "Ulangi email baru", type: "email" },
+                ].map(({ key, label, placeholder, type }) => (
                   <div key={key} className="flex flex-col gap-1.5">
                     <label className="text-[0.68rem] text-slate-500 uppercase tracking-widest font-medium">{label}</label>
                     <input
-                      type="email"
+                      type={type}
                       value={emailForm[key]}
                       onChange={(e) => setEmailForm((f) => ({ ...f, [key]: e.target.value }))}
                       placeholder={placeholder}
@@ -177,9 +268,10 @@ const SettingPage = () => {
                 )}
                 <button
                   onClick={handleEmailSave}
-                  className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-semibold py-2.5 rounded-lg cursor-pointer border-none mt-1 hover:opacity-90 transition-opacity"
+                  disabled={emailLoading || !emailForm.new || emailForm.new !== emailForm.confirm}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-sm font-semibold py-2.5 rounded-lg cursor-pointer border-none mt-1 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Simpan Email
+                  {emailLoading ? "Menyimpan..." : "Simpan Email"}
                 </button>
               </div>
             )}
@@ -242,14 +334,15 @@ const Card = ({ title, icon, children }) => (
   </div>
 );
 
-const ToggleRow = ({ label, desc, on, onToggle }) => (
-  <div className="flex items-center justify-between py-3.5 border-b border-white/[0.04]">
+const ToggleRow = ({ label, desc, on, onToggle, disabled }) => (
+  <div className={`flex items-center justify-between py-3.5 border-b border-white/[0.04] ${disabled ? "opacity-50 pointer-events-none" : ""}`}>
     <div>
       <p className="text-slate-200 text-sm font-medium mb-0.5">{label}</p>
       <p className="text-slate-500 text-xs">{desc}</p>
     </div>
     <button
       onClick={onToggle}
+      disabled={disabled}
       className="relative flex-shrink-0 w-10 h-[22px] rounded-full border-none cursor-pointer transition-colors duration-200"
       style={{ background: on ? "#818cf8" : "rgba(255,255,255,0.08)" }}
     >

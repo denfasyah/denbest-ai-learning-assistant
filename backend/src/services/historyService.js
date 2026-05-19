@@ -67,13 +67,17 @@ exports.logActivity = async (userId, workspaceId, workspaceTitle, actionType, me
   try {
     const notifContent = generateNotificationContent(actionType, workspaceTitle, metadata);
     if (notifContent) {
-      await Notification.create({
-        userId,
-        historyId: history._id,
-        type: notifContent.type,
-        title: notifContent.title,
-        description: notifContent.description,
-      });
+      const UserPreference = require('../models/UserPreference');
+      const pref = await UserPreference.findOne({ userId });
+      if (!pref || pref.notifications_enabled !== false) {
+        await Notification.create({
+          userId,
+          historyId: history._id,
+          type: notifContent.type,
+          title: notifContent.title,
+          description: notifContent.description,
+        });
+      }
     }
   } catch (notifError) {
     console.error('[Notification] Failed to create notification:', notifError.message);
