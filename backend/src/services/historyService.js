@@ -34,6 +34,12 @@ const generateNotificationContent = (actionType, workspaceTitle, metadata) => {
         description: `AI memberikan respons baru di ${name}.`,
         type: 'assistant',
       };
+    case 'assistant_chat':
+      return {
+        title: 'AI Assistant Baru',
+        description: `Percakapan baru "${name}" berhasil dimulai dengan AI.`,
+        type: 'assistant',
+      };
     case 'note_created':
       return {
         title: 'Note Tersimpan',
