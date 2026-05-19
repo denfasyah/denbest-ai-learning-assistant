@@ -1,8 +1,20 @@
+import { useEffect } from "react";
 import { Menu, Bell} from "lucide-react";
 import SectionHeader from "../../components/ui/SectionHeader";
 import ProfileDropdown from "./ProfileDropdown";
 import { Link } from "react-router-dom";
+import useNotificationStore from "../../features/notification/store/notificationStore";
+
 const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, description }) => {
+  const { unreadCount, fetchUnreadCount } = useNotificationStore();
+
+  useEffect(() => {
+    fetchUnreadCount();
+    // Poll setiap 60 detik untuk update badge
+    const interval = setInterval(fetchUnreadCount, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div>
       <header
@@ -43,6 +55,7 @@ const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, descriptio
             {/* NOTIF */}
             <Link to={"/notification"}
               className="
+                  relative
                   flex h-11 w-11 items-center justify-center
                   rounded-2xl
                   border border-white/10
@@ -50,6 +63,11 @@ const NavbarDashboard = ({ setSidebarOpen, user, handleLogout, title, descriptio
                 "
             >
               <Bell className="h-5 w-5 text-slate-300" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 h-4 w-4 flex items-center justify-center rounded-full bg-indigo-500 text-[9px] font-black text-white">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </Link>
             <ProfileDropdown user={user} onLogout={handleLogout} />
           </div>

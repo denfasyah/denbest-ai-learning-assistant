@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Bell,
   Trash2,
@@ -16,100 +16,64 @@ import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
+import useNotificationStore from "../../features/notification/store/notificationStore";
+import Pagination from "../../features/learning/components/Pagination";
+
+const formatTimeAgo = (dateStr) => {
+  if (!dateStr) return "";
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffMins < 1) return 'Baru saja';
+  if (diffMins < 60) return `${diffMins} menit yang lalu`;
+  if (diffHours < 24) return `${diffHours} jam yang lalu`;
+  if (diffDays === 1) return 'Kemarin';
+  return `${diffDays} hari yang lalu`;
+};
 
 const NotificationPage = () => {
   // eslint-disable-next-line no-unused-vars
   const { user } = useAuth();
 
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "summary",
-      title: "AI Summary Ready",
-      description: "Machine Learning Fundamentals.pdf summary berhasil dibuat.",
-      time: "2 minutes ago",
-      read: false,
-    },
-    {
-      id: 2,
-      type: "quiz",
-      title: "Quiz Generated",
-      description: "10 soal quiz baru berhasil dibuat dari React Authentication.",
-      time: "10 minutes ago",
-      read: false,
-    },
-    {
-      id: 3,
-      type: "flashcard",
-      title: "Flashcards Generated",
-      description: "15 flashcards baru berhasil dibuat dari materi Database.",
-      time: "1 hour ago",
-      read: true,
-    },
-    {
-      id: 4,
-      type: "document",
-      title: "Document Uploaded",
-      description: "Advanced NodeJS.pdf berhasil diupload ke workspace.",
-      time: "Yesterday",
-      read: true,
-    },
-    {
-      id: 5,
-      type: "assistant",
-      title: "AI Assistant Replied",
-      description: "AI Assistant memberikan jawaban baru untuk pertanyaanmu.",
-      time: "Yesterday",
-      read: false,
-    },
-    {
-      id: 6,
-      type: "reminder",
-      title: "Learning Reminder",
-      description: "Jangan lupa lanjutkan progress belajar hari ini.",
-      time: "2 days ago",
-      read: true,
-    },
-  ]);
+  const {
+    notifications,
+    unreadCount,
+    isLoading,
+    currentPage,
+    totalPages,
+    filter,
+    fetchNotifications,
+    fetchUnreadCount,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    setFilter,
+    setPage,
+  } = useNotificationStore();
+
+  useEffect(() => {
+    fetchNotifications(1, 'all');
+    fetchUnreadCount();
+  }, []);
 
   const filteredNotifications = useMemo(() => {
     let filtered = [...notifications];
 
-    filtered = filtered.filter(
-      (item) =>
-        item.title.toLowerCase().includes(search.toLowerCase()) ||
-        item.description.toLowerCase().includes(search.toLowerCase())
-    );
-
-    if (filter === "unread") {
-      filtered = filtered.filter((item) => !item.read);
-    }
-
-    if (filter === "read") {
-      filtered = filtered.filter((item) => item.read);
+    if (search) {
+      filtered = filtered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(search.toLowerCase()) ||
+          item.description.toLowerCase().includes(search.toLowerCase())
+      );
     }
 
     return filtered;
-  }, [notifications, search, filter]);
-
-  const unreadCount = notifications.filter((item) => !item.read).length;
-
-  const markAsRead = (id) => {
-    setNotifications((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, read: true } : item))
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
-  };
-
-  const deleteNotification = (id) => {
-    setNotifications((prev) => prev.filter((item) => item.id !== id));
-  };
+  }, [notifications, search]);
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -188,7 +152,13 @@ const NotificationPage = () => {
       </div>
 
       {/* LIST */}
-      {filteredNotifications.length === 0 ? (
+      {isLoading ? (
+        <div className="space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="rounded-3xl border border-white/5 bg-white/2 p-6 animate-pulse h-24" />
+          ))}
+        </div>
+      ) : filteredNotifications.length === 0 ? (
         <Card className="flex flex-col items-center justify-center p-20 text-center border-dashed border-white/10">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-500/5 text-indigo-500/50 mb-6">
             <Bell className="h-10 w-10" />
@@ -217,7 +187,7 @@ const NotificationPage = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <div className="flex items-center gap-1.5 text-[10px] font-black text-slate-500 uppercase tracking-widest">
                         <Clock3 className="h-3 w-3" />
-                        {item.time}
+                        {formatTimeAgo(item.createdAt)}
                       </div>
                     </div>
                     <h2 className="text-xl font-black text-white tracking-tight group-hover:text-indigo-400 transition-colors">
@@ -248,6 +218,16 @@ const NotificationPage = () => {
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex justify-center pt-8">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </div>
       )}
     </div>
