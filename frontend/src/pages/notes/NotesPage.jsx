@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   Plus,
@@ -18,77 +18,26 @@ import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
 import Badge from "../../components/ui/Badge";
 import Pagination from "../../features/learning/components/Pagination";
+import useNotesStore from "../../features/notes/store/notesStore";
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 const NotesPage = () => {
-  // const { user } = useAuth();
-
-  const [search, setSearch] = useState("");
-  // const [viewMode, setViewMode] = useState("grid");
-  const [filter, setFilter] = useState("newest");
   const [openMenuId, setOpenMenuId] = useState(null);
   const [selectedNote, setSelectedNote] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editNote, setEditNote] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const NOTES_PER_PAGE = 6;
-
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
-      title: "Supervised Learning",
-      content:
-        "Supervised learning adalah metode machine learning dimana model belajar menggunakan data yang memiliki label.",
-      tag: "Machine Learning",
-      pinned: true,
-      updatedAt: "2 min ago",
-    },
-    {
-      id: 2,
-      title: "JWT Authentication",
-      content:
-        "JWT digunakan untuk proses authentication dan authorization berbasis token.",
-      tag: "Backend",
-      pinned: false,
-      updatedAt: "1 hour ago",
-    },
-    {
-      id: 3,
-      title: "Database Normalization",
-      content:
-        "3NF bertujuan untuk mengurangi redundancy data pada database relational.",
-      tag: "Database",
-      pinned: false,
-      updatedAt: "Yesterday",
-    },
-    {
-      id: 4,
-      title: "React Context",
-      content:
-        "React Context digunakan untuk state management global sederhana.",
-      tag: "Frontend",
-      pinned: false,
-      updatedAt: "Yesterday",
-    },
-    {
-      id: 5,
-      title: "Tailwind Utility",
-      content:
-        "Tailwind CSS mempermudah styling dengan utility-first approach.",
-      tag: "UI Design",
-      pinned: true,
-      updatedAt: "2 days ago",
-    },
-    {
-      id: 6,
-      title: "REST API",
-      content:
-        "REST API memungkinkan komunikasi client dan server menggunakan HTTP.",
-      tag: "Backend",
-      pinned: false,
-      updatedAt: "3 days ago",
-    },
-  ]);
 
   const [newNote, setNewNote] = useState({
     title: "",
@@ -96,75 +45,77 @@ const NotesPage = () => {
     tag: "",
   });
 
-  const filteredNotes = useMemo(() => {
-    let filtered = [...notes];
+  const {
+    notes,
+    isLoading,
+    currentPage,
+    totalPages,
+    search,
+    filter,
+    fetchNotes,
+    createNote,
+    updateNote,
+    togglePin,
+    deleteNote,
+    setSearch,
+    setFilter,
+    setPage,
+  } = useNotesStore();
 
-    filtered = filtered.filter(
-      (note) =>
-        note.title.toLowerCase().includes(search.toLowerCase()) ||
-        note.content.toLowerCase().includes(search.toLowerCase()) ||
-        note.tag.toLowerCase().includes(search.toLowerCase())
-    );
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
-    filtered.sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-
-      if (filter === "newest") {
-        return b.id - a.id;
-      }
-
-      return a.id - b.id;
-    });
-
-    return filtered;
-  }, [notes, search, filter]);
-
-  const totalPages = Math.ceil(filteredNotes.length / NOTES_PER_PAGE);
-
-  const paginatedNotes = filteredNotes.slice(
-    (currentPage - 1) * NOTES_PER_PAGE,
-    currentPage * NOTES_PER_PAGE
-  );
-
-  const handleTogglePin = (id) => {
-    setNotes((prev) =>
-      prev.map((note) =>
-        note.id === id ? { ...note, pinned: !note.pinned } : note
-      )
-    );
+  const handleTogglePin = async (id) => {
+    try {
+      await togglePin(id);
+    } catch (err) {
+      console.error(err);
+    }
     setOpenMenuId(null);
   };
 
-  const handleDeleteNote = (id) => {
+  const handleDeleteNote = async (id) => {
     if (!window.confirm("Yakin ingin menghapus note ini?")) return;
-    setNotes((prev) => prev.filter((note) => note.id !== id));
+    try {
+      await deleteNote(id);
+      if (selectedNote?.id === id || selectedNote?._id === id) {
+        setSelectedNote(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
     setOpenMenuId(null);
-    if (selectedNote?.id === id) {
-      setSelectedNote(null);
+  };
+
+  const handleCreateNote = async () => {
+    if (!newNote.title || !newNote.content || !newNote.tag) return;
+    try {
+      await createNote({
+        title: newNote.title,
+        content: newNote.content,
+        tag: newNote.tag,
+        sourceType: "manual",
+      });
+      setNewNote({ title: "", content: "", tag: "" });
+      setIsCreateModalOpen(false);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleCreateNote = () => {
-    if (!newNote.title || !newNote.content || !newNote.tag) return;
-    const note = {
-      id: Date.now(),
-      title: newNote.title,
-      content: newNote.content,
-      tag: newNote.tag,
-      pinned: false,
-      updatedAt: "Just now",
-    };
-    setNotes((prev) => [note, ...prev]);
-    setNewNote({ title: "", content: "", tag: "" });
-    setIsCreateModalOpen(false);
-  };
-
-  const handleSaveEdit = () => {
-    setNotes((prev) =>
-      prev.map((note) => (note.id === editNote.id ? editNote : note))
-    );
-    setEditNote(null);
+  const handleSaveEdit = async () => {
+    if (!editNote.title || !editNote.content || !editNote.tag) return;
+    try {
+      await updateNote(editNote.id, {
+        title: editNote.title,
+        content: editNote.content,
+        tag: editNote.tag,
+      });
+      setEditNote(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -186,14 +137,14 @@ const NotesPage = () => {
               </p>
             </div>
           </div>
-          
-          <Button 
-            variant="primary" 
-            icon={Plus} 
+
+          <Button
+            variant="primary"
+            icon={Plus}
             onClick={() => setIsCreateModalOpen(true)}
             className="rounded-2xl h-14 px-8 font-black italic tracking-tight"
           >
-            NEW ARCHIVE
+            New Note
           </Button>
         </div>
       </Card>
@@ -203,7 +154,7 @@ const NotesPage = () => {
         <div className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-center">
           <div className="w-full lg:max-w-md">
             <Input
-              placeholder="Search through your archives..."
+              placeholder="Search through your notes..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               icon={Search}
@@ -224,17 +175,23 @@ const NotesPage = () => {
       </div>
 
       {/* GRID */}
-      {paginatedNotes.length === 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="rounded-3xl border border-white/5 bg-white/2 p-7 animate-pulse h-64" />
+          ))}
+        </div>
+      ) : notes.length === 0 ? (
         <Card className="flex flex-col items-center justify-center p-20 text-center border-dashed border-white/10">
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-500/5 text-indigo-500/50 mb-6">
             <Sparkles className="h-10 w-10" />
           </div>
-          <h2 className="text-2xl font-black text-white">No Archives Found</h2>
+          <h2 className="text-2xl font-black text-white">No Notes Found</h2>
           <p className="mt-2 text-sm text-slate-500 font-medium">Your knowledge base is currently empty.</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {paginatedNotes.map((note) => (
+          {notes.map((note) => (
             <Card
               key={note.id}
               hover
@@ -247,7 +204,7 @@ const NotesPage = () => {
                     <Pin className="h-4 w-4 fill-amber-500" />
                   </div>
                 )}
-                
+
                 <div className="relative">
                   <button
                     onClick={(e) => {
@@ -278,7 +235,7 @@ const NotesPage = () => {
                         onClick={(e) => { e.stopPropagation(); handleDeleteNote(note.id); }}
                         className="flex w-full items-center gap-3 px-4 py-3 text-xs font-bold text-rose-500 hover:bg-rose-500/10 transition-colors"
                       >
-                        <Trash2 className="h-3.5 w-3.5" /> DELETE ARCHIVE
+                        <Trash2 className="h-3.5 w-3.5" /> Delete Note
                       </button>
                     </div>
                   )}
@@ -289,7 +246,7 @@ const NotesPage = () => {
                 <Badge variant="indigo">{note.tag}</Badge>
               </div>
 
-              <h2 className="text-xl font-black text-white tracking-tight mb-3 group-hover:text-indigo-400 transition-colors">
+              <h2 className="text-xl font-black text-white tracking-tight mb-3 group-hover:text-indigo-400 transition-colors line-clamp-2">
                 {note.title}
               </h2>
 
@@ -299,7 +256,7 @@ const NotesPage = () => {
 
               <div className="mt-auto pt-6 border-t border-white/3 flex items-center gap-2 text-[10px] font-black text-slate-600 uppercase tracking-widest">
                 <Clock3 className="h-3.5 w-3.5" />
-                Updated {note.updatedAt}
+                Updated {formatDate(note.updatedAt)}
               </div>
             </Card>
           ))}
@@ -308,7 +265,7 @@ const NotesPage = () => {
 
       {totalPages > 1 && (
         <div className="flex justify-center pt-8">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </div>
       )}
 
@@ -316,49 +273,49 @@ const NotesPage = () => {
       {(selectedNote || isCreateModalOpen || editNote) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-5 animate-in fade-in duration-300">
           <Card className="w-full max-w-2xl bg-[#0B1120] border-white/10 p-8">
-             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black text-white">
-                  {selectedNote ? "Archive View" : isCreateModalOpen ? "New Archive" : "Edit Archive"}
-                </h2>
-                <button onClick={() => { setSelectedNote(null); setIsCreateModalOpen(false); setEditNote(null); }} className="h-10 w-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors">
-                  <X className="h-5 w-5" />
-                </button>
-             </div>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-black text-white">
+                {selectedNote ? "Note View" : isCreateModalOpen ? "New Note" : "Edit Note"}
+              </h2>
+              <button onClick={() => { setSelectedNote(null); setIsCreateModalOpen(false); setEditNote(null); }} className="h-10 w-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-white transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
 
-             <div className="space-y-6">
-                {(isCreateModalOpen || editNote) ? (
-                  <>
-                    <Input 
-                      placeholder="Archive Title" 
-                      value={isCreateModalOpen ? newNote.title : editNote.title} 
-                      onChange={(e) => isCreateModalOpen ? setNewNote({...newNote, title: e.target.value}) : setEditNote({...editNote, title: e.target.value})}
-                    />
-                    <Input 
-                      placeholder="Category Tag" 
-                      value={isCreateModalOpen ? newNote.tag : editNote.tag} 
-                      onChange={(e) => isCreateModalOpen ? setNewNote({...newNote, tag: e.target.value}) : setEditNote({...editNote, tag: e.target.value})}
-                    />
-                    <textarea 
-                      rows={8}
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-indigo-500 transition-colors"
-                      placeholder="Write your knowledge here..."
-                      value={isCreateModalOpen ? newNote.content : editNote.content}
-                      onChange={(e) => isCreateModalOpen ? setNewNote({...newNote, content: e.target.value}) : setEditNote({...editNote, content: e.target.value})}
-                    />
-                    <Button variant="primary" className="w-full h-14 rounded-2xl font-black" onClick={isCreateModalOpen ? handleCreateNote : handleSaveEdit}>
-                      {isCreateModalOpen ? "COMMIT TO ARCHIVE" : "SAVE CHANGES"}
-                    </Button>
-                  </>
-                ) : (
-                  <div className="space-y-6">
-                    <Badge variant="indigo">{selectedNote.tag}</Badge>
-                    <h3 className="text-3xl font-black text-white">{selectedNote.title}</h3>
-                    <div className="bg-white/2 rounded-3xl p-6 border border-white/5 max-h-96 overflow-y-auto">
-                      <p className="text-slate-300 leading-loose">{selectedNote.content}</p>
-                    </div>
+            <div className="space-y-6">
+              {(isCreateModalOpen || editNote) ? (
+                <>
+                  <Input
+                    placeholder="Note Title"
+                    value={isCreateModalOpen ? newNote.title : editNote.title}
+                    onChange={(e) => isCreateModalOpen ? setNewNote({ ...newNote, title: e.target.value }) : setEditNote({ ...editNote, title: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Category Tag"
+                    value={isCreateModalOpen ? newNote.tag : editNote.tag}
+                    onChange={(e) => isCreateModalOpen ? setNewNote({ ...newNote, tag: e.target.value }) : setEditNote({ ...editNote, tag: e.target.value })}
+                  />
+                  <textarea
+                    rows={8}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-indigo-500 transition-colors"
+                    placeholder="Write your knowledge here..."
+                    value={isCreateModalOpen ? newNote.content : editNote.content}
+                    onChange={(e) => isCreateModalOpen ? setNewNote({ ...newNote, content: e.target.value }) : setEditNote({ ...editNote, content: e.target.value })}
+                  />
+                  <Button variant="primary" className="w-full h-14 rounded-2xl font-black" onClick={isCreateModalOpen ? handleCreateNote : handleSaveEdit}>
+                    {isCreateModalOpen ? "COMMIT TO NOTE" : "SAVE CHANGES"}
+                  </Button>
+                </>
+              ) : (
+                <div className="space-y-6">
+                  <Badge variant="indigo">{selectedNote.tag}</Badge>
+                  <h3 className="text-3xl font-black text-white">{selectedNote.title}</h3>
+                  <div className="bg-white/2 rounded-3xl p-6 border border-white/5 max-h-96 overflow-y-auto">
+                    <p className="text-slate-300 leading-loose">{selectedNote.content}</p>
                   </div>
-                )}
-             </div>
+                </div>
+              )}
+            </div>
           </Card>
         </div>
       )}

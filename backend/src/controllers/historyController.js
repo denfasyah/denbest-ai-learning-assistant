@@ -1,5 +1,6 @@
 const History = require("../models/History");
 const Workspace = require("../models/Workspace");
+const Note = require('../models/Note');
 
 exports.getHistory = async (req, res) => {
   try {
@@ -58,6 +59,24 @@ exports.getHistory = async (req, res) => {
       existingWorkspaces.map((w) => w._id.toString()),
     );
 
+    // Resolusi note_created: cek apakah note masih exist
+    const noteHistories = histories.filter(
+      h => h.actionType === 'note_created' && h.metadata?.noteId
+    );
+    const noteIds = noteHistories.map(h => h.metadata.noteId).filter(Boolean);
+
+    let deletedNoteIds = new Set();
+    if (noteIds.length > 0) {
+      const existingNotes = await Note.find({ _id: { $in: noteIds } }).select('_id').lean();
+      const existingNoteIds = new Set(existingNotes.map(n => n._id.toString()));
+      // Yang tidak ada di existingNoteIds berarti sudah dihapus
+      noteIds.forEach(id => {
+        if (!existingNoteIds.has(id.toString())) {
+          deletedNoteIds.add(id.toString());
+        }
+      });
+    }
+
     // 5. Map response
     // Buat map workspaceId → title dari DB
     const workspaceTitleMap = {};
@@ -68,6 +87,18 @@ exports.getHistory = async (req, res) => {
     const data = histories.map((h) => {
       const wsId = h.workspaceId?.toString();
       const wsExists = wsId && existingIds.has(wsId);
+
+      let metadata = h.metadata || {};
+
+      // Jika note_created dan noteId sudah terhapus, flag noteDeleted
+      if (
+        h.actionType === 'note_created' &&
+        metadata.noteId &&
+        deletedNoteIds.has(metadata.noteId.toString())
+      ) {
+        metadata = { ...metadata, noteDeleted: true };
+      }
+
       return {
         id: h._id,
         actionType: h.actionType,
@@ -75,7 +106,7 @@ exports.getHistory = async (req, res) => {
           ? workspaceTitleMap[wsId] || h.workspaceTitle
           : h.workspaceTitle,
         workspaceId: wsExists ? h.workspaceId : null,
-        metadata: h.metadata || {},
+        metadata,
         createdAt: h.createdAt,
       };
     });

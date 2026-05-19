@@ -10,6 +10,7 @@ import {
   CalendarDays,
   FileText,
   Bot,
+  NotebookPen
 } from "lucide-react";
 import Card from "../../../components/ui/Card";
 
@@ -49,6 +50,11 @@ const ACTION_CONFIG = {
     label: "Assistant Chat",
     color: "text-indigo-400",
   },
+  note_created: {
+    icon: NotebookPen,
+    label: "Note Dibuat",
+    color: "text-teal-400",
+  },
 };
 
 const getCTA = (actionType, workspaceId, metadata) => {
@@ -58,9 +64,12 @@ const getCTA = (actionType, workspaceId, metadata) => {
       path: `/assistant?conversationId=${metadata?.conversationId}`
     };
   }
-  if (!workspaceId) return null;
-  const base = `/learning/workspace/${workspaceId}`;
+  if (!workspaceId && actionType !== "note_created") return null;
+  const base = workspaceId ? `/learning/workspace/${workspaceId}` : "";
   switch (actionType) {
+    case "note_created":
+      if (metadata?.noteDeleted) return null;
+      return { label: "Lihat Notes", path: "/notes" };
     case "workspace_created":
     case "document_uploaded":
       return { label: "Buka Workspace", path: `${base}/content` };
@@ -100,7 +109,8 @@ const HistoryCard = ({
     ACTION_CONFIG[actionType] || ACTION_CONFIG["workspace_created"];
   const Icon = config.icon;
   const cta = getCTA(actionType, workspaceId, metadata);
-  const isDeleted = !workspaceId && actionType !== "assistant_chat";
+  const isNoteDeleted = actionType === 'note_created' && metadata?.noteDeleted === true;
+  const isDeleted = (!workspaceId && actionType !== 'assistant_chat' && actionType !== 'note_created') || isNoteDeleted;
 
   return (
     <Card
@@ -151,19 +161,34 @@ const HistoryCard = ({
                 {workspaceTitle}
               </div>
 
-              {isDeleted && (
+              {isDeleted && !isNoteDeleted && (
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-[9px] font-black text-rose-500 uppercase tracking-widest">
                   <AlertTriangle className="h-3 w-3" />
                   Workspace Dihapus
                 </div>
               )}
+
+              {isNoteDeleted && (
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-[9px] font-black text-rose-500 uppercase tracking-widest">
+                  <AlertTriangle className="h-3 w-3" />
+                  Note Dihapus
+                </div>
+              )}
             </div>
 
-            {isDeleted && (
+            {isDeleted && !isNoteDeleted && (
               <div className="mt-4 rounded-2xl bg-rose-500/2 border border-rose-500/10 p-5">
                 <p className="text-[11px] text-rose-500/60 leading-loose font-bold uppercase tracking-widest">
                   Workspace telah dihapus. Riwayat aktivitas tetap tersimpan
                   sebagai referensi.
+                </p>
+              </div>
+            )}
+
+            {isNoteDeleted && (
+              <div className="mt-4 rounded-2xl bg-rose-500/2 border border-rose-500/10 p-5">
+                <p className="text-[11px] text-rose-500/60 leading-loose font-bold uppercase tracking-widest">
+                  Note telah dihapus. Riwayat aktivitas tetap tersimpan sebagai referensi.
                 </p>
               </div>
             )}
