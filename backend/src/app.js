@@ -14,6 +14,7 @@ const historyRoutes = require("./routes/historyRoutes");
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const assistantRoutes = require('./routes/assistantRoutes');
 const noteRoutes = require('./routes/noteRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 const { verifyToken } = require("./middlewares/authMiddleware");
 
 dotenv.config();
@@ -93,6 +94,7 @@ app.use(
 app.use('/api/v1/dashboard', verifyToken, dashboardRoutes);
 app.use('/api/v1/notes', verifyToken, noteRoutes);
 app.use('/api/v1/assistant', assistantRoutes);
+app.use('/api/v1/notifications', verifyToken, notificationRoutes);
 
 // Health Check
 app.get('/api', (req, res) => {
