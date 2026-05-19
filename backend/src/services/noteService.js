@@ -1,4 +1,5 @@
 const Note = require('../models/Note');
+const historyService = require('./historyService');
 
 /**
  * Get user notes with optional search, filter, and pagination
@@ -51,7 +52,26 @@ const createNote = async (userId, { title, content, tag, sourceType, sourceWorks
     sourceWorkspaceTitle: sourceWorkspaceTitle || null
   });
 
-  return await note.save();
+  const savedNote = await note.save();
+
+  try {
+    await historyService.logActivity(
+      userId,
+      null,                                          // workspaceId null (notes tidak terikat workspace)
+      `Note: ${title}`,                              // workspaceTitle berisi judul note sebagai label
+      'note_created',
+      {
+        noteId: savedNote._id.toString(),
+        noteTitle: title,
+        tag: tag || 'General',
+        sourceType: sourceType || 'manual',
+      }
+    );
+  } catch (logError) {
+    console.error('[HistoryLog] Failed to log note_created:', logError.message);
+  }
+
+  return savedNote;
 };
 
 /**

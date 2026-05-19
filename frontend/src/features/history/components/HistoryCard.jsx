@@ -10,6 +10,7 @@ import {
   CalendarDays,
   FileText,
   Bot,
+  NotebookPen
 } from "lucide-react";
 import Card from "../../../components/ui/Card";
 
@@ -49,6 +50,11 @@ const ACTION_CONFIG = {
     label: "Assistant Chat",
     color: "text-indigo-400",
   },
+  note_created: {
+    icon: NotebookPen,
+    label: "Note Dibuat",
+    color: "text-teal-400",
+  },
 };
 
 const getCTA = (actionType, workspaceId, metadata) => {
@@ -58,9 +64,11 @@ const getCTA = (actionType, workspaceId, metadata) => {
       path: `/assistant?conversationId=${metadata?.conversationId}`
     };
   }
-  if (!workspaceId) return null;
-  const base = `/learning/workspace/${workspaceId}`;
+  if (!workspaceId && actionType !== "note_created") return null;
+  const base = workspaceId ? `/learning/workspace/${workspaceId}` : "";
   switch (actionType) {
+    case "note_created":
+      return { label: "Lihat Notes", path: "/notes" };
     case "workspace_created":
     case "document_uploaded":
       return { label: "Buka Workspace", path: `${base}/content` };
@@ -100,7 +108,7 @@ const HistoryCard = ({
     ACTION_CONFIG[actionType] || ACTION_CONFIG["workspace_created"];
   const Icon = config.icon;
   const cta = getCTA(actionType, workspaceId, metadata);
-  const isDeleted = !workspaceId && actionType !== "assistant_chat";
+  const isDeleted = !workspaceId && actionType !== "assistant_chat" && actionType !== "note_created";
 
   return (
     <Card
