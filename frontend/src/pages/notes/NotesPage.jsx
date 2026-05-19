@@ -222,13 +222,13 @@ const NotesPage = () => {
                         onClick={(e) => { e.stopPropagation(); setEditNote(note); setOpenMenuId(null); }}
                         className="flex w-full items-center gap-3 px-4 py-3 text-xs font-bold text-slate-300 hover:bg-white/5 transition-colors"
                       >
-                        <Pencil className="h-3.5 w-3.5" /> EDIT NOTE
+                        <Pencil className="h-3.5 w-3.5" /> Edit note
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleTogglePin(note.id); }}
                         className="flex w-full items-center gap-3 px-4 py-3 text-xs font-bold text-slate-300 hover:bg-white/5 transition-colors"
                       >
-                        <Pin className="h-3.5 w-3.5" /> {note.pinned ? "UNPIN" : "PIN TO TOP"}
+                        <Pin className="h-3.5 w-3.5" /> {note.pinned ? "Unpin" : "Pin to top"}
                       </button>
                       <div className="h-px bg-white/5 mx-2" />
                       <button

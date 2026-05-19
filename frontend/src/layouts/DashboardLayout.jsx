@@ -19,7 +19,7 @@ const DashboardLayout = ({ title: propTitle, description: propDescription }) => 
     if (path === '/learning') return { title: 'My Learning', description: 'Manage your documents and courses.' };
     if (path.startsWith('/learning/workspace')) return { title: 'Workspace', description: 'Interactive AI learning session.' };
     if (path === '/assistant') return { title: 'AI Assistant', description: 'Interactive learning with your documents.' };
-    if (path === '/notes') return { title: 'My Notes', description: 'Capture and organize your thoughts.' };
+    if (path === '/notes') return { title: 'Notes', description: 'Capture and organize your thoughts.' };
     if (path === '/history') return { title: 'History', description: 'Your past learning activities.' };
     if (path === '/profile') return { title: 'Profile', description: 'Manage your account settings.' };
     if (path === '/setting') return { title: 'Settings', description: 'App preferences and configurations.' };

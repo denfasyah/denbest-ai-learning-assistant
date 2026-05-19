@@ -171,13 +171,12 @@ const NotificationPage = () => {
           {filteredNotifications.map((item) => (
             <Card
               key={item.id}
-              className={`group relative overflow-hidden transition-all duration-300 ${
-                item.read ? "bg-white/1 border-white/3" : "bg-indigo-500/2 border-indigo-500/20"
-              }`}
+              className={`group relative overflow-hidden transition-all duration-300 ${item.read ? "bg-white/1 border-white/3" : "bg-indigo-500/2 border-indigo-500/20"
+                }`}
             >
               {!item.read && <div className="absolute right-6 top-6 h-3 w-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]" />}
-              
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+
+              <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between py-2">
                 <div className="flex gap-5">
                   <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/3 border border-white/5 group-hover:bg-indigo-500/10 transition-colors">
                     {getNotificationIcon(item.type)}
