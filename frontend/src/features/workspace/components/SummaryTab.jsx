@@ -5,17 +5,24 @@ import {
   Save,
   Loader2,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Check
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { useState } from 'react';
 import useWorkspace from '../hooks/useWorkspace';
 import useSummary from '../hooks/useSummary';
 import Card from '../../../components/ui/Card';
 import Button from '../../../components/ui/Button';
 import Swal from 'sweetalert2';
+import useNotesStore from '../../notes/store/notesStore';
 
 const SummaryTab = () => {
-  const { workspaceId } = useWorkspace();
+  const { workspaceId, workspace } = useWorkspace();
+  const createNote = useNotesStore((state) => state.createNote);
+  const [isSavingNote, setIsSavingNote] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
+
   const {
     summary,
     isLoading,
@@ -67,6 +74,47 @@ const SummaryTab = () => {
         position: 'top-end'
       });
 
+    }
+  };
+
+  const handleSaveToNotes = async () => {
+    if (!summary?.content || isSavingNote) return;
+    setIsSavingNote(true);
+    try {
+      await createNote({
+        title: `Summary: ${workspace?.title || 'Dokumen'}`,
+        content: summary.content,
+        tag: 'Summary',
+        sourceType: 'summary',
+        sourceWorkspaceId: workspaceId,
+        sourceWorkspaceTitle: workspace?.title || '',
+      });
+      setNoteSaved(true);
+      Swal.fire({
+        icon: 'success',
+        title: 'Tersimpan!',
+        text: 'Summary berhasil disimpan ke Notes.',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#1e293b',
+        color: '#fff',
+        toast: true,
+        position: 'top-end',
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal',
+        text: 'Gagal menyimpan ke Notes. Coba lagi.',
+        timer: 2000,
+        showConfirmButton: false,
+        background: '#1e293b',
+        color: '#fff',
+        toast: true,
+        position: 'top-end',
+      });
+    } finally {
+      setIsSavingNote(false);
     }
   };
 
@@ -147,18 +195,16 @@ const SummaryTab = () => {
             >
               Copy to Clipboard
             </Button>
-            <div className="flex-1 group relative">
+            <div className="flex-1">
               <Button
                 variant="secondary"
-                icon={Save}
-                disabled
-                className="w-full rounded-xl font-black italic tracking-tight text-xs opacity-50"
+                icon={isSavingNote ? Loader2 : noteSaved ? Check : Save}
+                onClick={handleSaveToNotes}
+                disabled={isSavingNote || noteSaved}
+                className="w-full rounded-xl font-black italic tracking-tight text-xs"
               >
-                Save to Notes
+                {isSavingNote ? 'Menyimpan...' : noteSaved ? 'Tersimpan!' : 'Save to Notes'}
               </Button>
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                Coming soon
-              </div>
             </div>
           </div>
         </Card>

@@ -13,6 +13,7 @@ const quizRoutes = require("./routes/quizRoutes");
 const historyRoutes = require("./routes/historyRoutes");
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const assistantRoutes = require('./routes/assistantRoutes');
+const noteRoutes = require('./routes/noteRoutes');
 const { verifyToken } = require("./middlewares/authMiddleware");
 
 dotenv.config();
@@ -90,6 +91,7 @@ app.use(
 );
 
 app.use('/api/v1/dashboard', verifyToken, dashboardRoutes);
+app.use('/api/v1/notes', verifyToken, noteRoutes);
 app.use('/api/v1/assistant', assistantRoutes);
 
 // Health Check
